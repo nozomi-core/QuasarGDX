@@ -60,3 +60,8 @@ project(":core") {
         
     }
 }
+
+project(":tools") {
+    apply plugin: "java-library"
+}
+
