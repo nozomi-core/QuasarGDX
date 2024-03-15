@@ -1,5 +1,11 @@
 sourceCompatibility = 1.8
-sourceSets.main.java.srcDirs = [ "src/" ]
+
+sourceSets {
+    main {
+        java.srcDirs = ["src"]
+        kotlin.srcDirs = ["src"]
+    }
+}
 
 eclipse.project.name = appName + "-tools"
 repositories {
