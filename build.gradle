@@ -1,3 +1,4 @@
+
 buildscript {
     
 
@@ -12,6 +13,10 @@ buildscript {
         
 
     }
+}
+
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.9.23"
 }
 
 allprojects {
@@ -63,5 +68,6 @@ project(":core") {
 
 project(":tools") {
     apply plugin: "java-library"
+    apply plugin: "org.jetbrains.kotlin.jvm"
 }
 

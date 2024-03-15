@@ -112,4 +112,6 @@ Thumbs.db
 /ios/xcode/native/
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
-tools/build/tmp/compileJava/previous-compilation-data.bin
+
+## Build
+/tools/build/
