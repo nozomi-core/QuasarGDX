@@ -38,13 +38,25 @@ class ExampleTest {
             file.writeInt(8, 4)
             file.writeInt(8, 8)
             file.writeInt(8, 16);
+            file.writeStringArray(87, arrayOf("apple", "named", "welcome"))
         }
 
         val inp = BinaryFile.createMemoryIn(out)
         val output = BinaryOutput()
 
         while(inp.read(output)) {
-            println(output.data)
+            val type = output.type
+            when(type) {
+                BinaryFile.TYPE_STRING_255_XOR_ARRAY -> {
+                    val pop = output.data as Array<String>
+                    pop.forEach {
+                        println(it)
+                    }
+                }
+                else ->println(output.data)
+            }
+
+
         }
     }
 
@@ -54,7 +66,7 @@ class ExampleTest {
             for (i in 1..100) {
                 val uuid = UUID.randomUUID().toString()
 
-                writer.writeStringXOR(9, uuid);
+                writer.writeString(9, uuid);
             }
         }
     }

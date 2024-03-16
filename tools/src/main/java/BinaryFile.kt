@@ -10,18 +10,23 @@ class BinaryFile {
         fun writeString(id: Int, data: String) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_STRING)
-            out.writeUTF(data)
-        }
-
-        @Throws(IOException::class)
-        fun writeStringXOR(id: Int, data: String) {
-            validateId(id)
-            out.writeInt(id)
             val bytes = BinaryUtils.xor255(data.toByteArray(Charsets.UTF_8))
             out.write(TYPE_STRING_255_XOR)
             out.writeInt(bytes.size)
             out.write(bytes)
+        }
+
+        @Throws(IOException::class)
+        fun writeStringArray(id: Int, data: Array<String>) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_STRING_255_XOR_ARRAY)
+            out.writeInt(data.size)
+            data.forEach { iString ->
+                val bytes = BinaryUtils.xor255(iString.toByteArray(Charsets.UTF_8))
+                out.writeInt(bytes.size)
+                out.write(bytes)
+            }
         }
 
         @Throws(IOException::class)
@@ -33,11 +38,25 @@ class BinaryFile {
         }
 
         @Throws(IOException::class)
-        fun writeDouble(id: Int, data: Double) {
+        fun writeIntArray(id: Int, data: Array<Int>) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_DOUBLE)
-            out.writeDouble(data)
+            out.write(TYPE_INT_ARRAY)
+            out.writeInt(data.size)
+            data.forEach {
+                out.writeInt(it)
+            }
+        }
+
+        @Throws(IOException::class)
+        fun writeDoubleArray(id: Int, data: Array<Double>) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_DOUBLE_ARRAY)
+            out.writeInt(data.size)
+            data.forEach {
+                out.writeDouble(it)
+            }
         }
 
         @Throws(IOException::class)
@@ -81,23 +100,59 @@ class BinaryFile {
                 TYPE_INT -> {
                     record.data = inp.readInt()
                 }
+                TYPE_INT_ARRAY -> {
+                    val size = inp.readInt()
+                    val intArray = Array(size) { 0 }
+                    intArray.forEachIndexed { index, _ ->
+                        intArray[index] = inp.readInt()
+                    }
+                    record.data = intArray
+                }
                 TYPE_STRING -> {
                     record.data = inp.readUTF()
                 }
+                TYPE_STRING_ARRAY -> {
+                    val size = inp.readInt()
+                    val stringArray = Array(size){ "" }
+                    stringArray.forEachIndexed { index, _ ->
+                        stringArray[index] = inp.readUTF()
+                    }
+                    record.data = stringArray
+                }
                 TYPE_DOUBLE -> {
                     record.data = inp.readDouble()
+                }
+                TYPE_DOUBLE -> {
+                    val size = inp.readInt()
+                    val doubleArray = Array(size){ 0.0 }
+                    doubleArray.forEachIndexed { index, _ ->
+                        doubleArray[index] = inp.readDouble()
+                    }
+                    record.data = doubleArray
                 }
                 TYPE_BYTE_ARRAY -> {
                     val size = inp.readInt()
                     val byteData = ByteArray(size)
                     record.data = inp.read(byteData)
                 }
-                TYPE_STRING_255_XOR -> {
+                TYPE_STRING -> {
                     //Decode the XOR operation to get the original string in plain text
                     val size = inp.readInt()
                     val byteData = ByteArray(size)
                     inp.read(byteData)
                     record.data = String(BinaryUtils.xor255(byteData))
+                }
+                TYPE_STRING -> {
+                    val size = inp.readInt()
+                    val stringArray = Array(size){ "" }
+                    stringArray.forEachIndexed { index, _ ->
+                        val size = inp.readInt()
+                        val byteStrings = ByteArray(size)
+                        inp.read(byteStrings)
+                        val decodedBytes = BinaryUtils.xor255(byteStrings)
+                        stringArray[index] = String(decodedBytes)
+                    }
+                    record.data = stringArray
                 }
 
                 else -> throw Exception("type id not supported")
@@ -108,12 +163,14 @@ class BinaryFile {
     }
 
     companion object {
-        const val TYPE_INT: Int = 1
-        const val TYPE_STRING: Int = 2
-        const val TYPE_DOUBLE: Int = 3
-        const val TYPE_BYTE_ARRAY: Int = 4
-        const val TYPE_STRING_255_XOR = 5
-        const val TYPE_BINARY_RECORDS: Int = 6 //TODO: Support child binary record types
+        const val TYPE_INT: Int =               1
+        const val TYPE_INT_ARRAY: Int =         2
+        const val TYPE_STRING: Int =            3
+        const val TYPE_STRING_ARRAY: Int =      4
+        const val TYPE_DOUBLE: Int =            5
+        const val TYPE_DOUBLE_ARRAY: Int =      6
+        const val TYPE_BYTE_ARRAY: Int =        7
+        const val TYPE_BINARY_RECORDS: Int =    8 //TODO: Support child binary record types
 
         const val ID_END_OF_DATA = -1
 
