@@ -1,36 +1,34 @@
 package app.quasar.gdx
 
+import app.quasar.gdx.game.screen.main.MainScreen
 import app.quasar.gdx.lumber.setupLumber
-import com.badlogic.gdx.ApplicationAdapter
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.Game
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.utils.ScreenUtils
 
 class QuasarGame(
     private val gameConfig: QuasarConfig
-): ApplicationAdapter() {
+): Game() {
 
-    private val batch by lazy { SpriteBatch() }
-    private val img by lazy { Texture("badlogic.jpg") }
+    private val spriteBatch by lazy { SpriteBatch() }
+
 
     override fun create() {
-        super.create()
+        //Setup core game modules here
+        useLumber()
 
-        setupLumber {
-            isDebug = gameConfig.isDebug
-        }
+        //set starting screen for launcher
+        startMainMenu()
     }
 
+    private fun useLumber() = setupLumber {
+        isDebug = gameConfig.isDebug
+    }
 
-    override fun render() {
-        ScreenUtils.clear(1f, 0f, 0f, 1f)
-        batch.begin()
-        batch.draw(img, 0f, 0f)
-        batch.end()
+    private fun startMainMenu() {
+        setScreen(MainScreen(spriteBatch))
     }
 
     override fun dispose() {
-        batch.dispose()
-        img.dispose()
+        spriteBatch.dispose()
     }
 }
