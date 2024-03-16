@@ -1,6 +1,9 @@
 sourceCompatibility = 1.8
 eclipse.project.name = appName + "-tools"
 
+project.ext.mainClassName = "app.quasar.gdx.tools.ToolingLauncher"
+project.ext.assetsDir = new File("../assets")
+
 sourceSets {
     main {
         java.srcDir("src/main")
@@ -29,5 +32,20 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+}
+
+tasks.register('run-tooling', JavaExec) {
+    dependsOn classes
+    mainClass = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    workingDir = project.assetsDir
+    standardInput = System.in
+    ignoreExitValue = true
+    args = ["-tool=map_editor"]
+
+    if (org.gradle.internal.os.OperatingSystem.current() == org.gradle.internal.os.OperatingSystem.MAC_OS) {
+        // Required to run on macOS
+        jvmArgs += "-XstartOnFirstThread"
     }
 }

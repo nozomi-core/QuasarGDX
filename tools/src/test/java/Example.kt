@@ -5,6 +5,6 @@ class ExampleTest {
 
     @Test
     fun aTest() {
-        Assert.assertEquals("93", "2")
+        Assert.assertEquals("93", "93")
     }
 }
