@@ -1,7 +1,5 @@
 
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -10,7 +8,6 @@ buildscript {
         google()
     }
     dependencies {
-        
 
     }
 }
@@ -23,6 +20,7 @@ allprojects {
     apply plugin: "eclipse"
 
     version = '1.0'
+
     ext {
         appName = "QuasarGDX"
         gdxVersion = '1.12.1'
@@ -47,22 +45,18 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        
     }
 }
 
 project(":core") {
     apply plugin: "java-library"
 
-
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        
     }
 }
 
@@ -70,4 +64,3 @@ project(":tools") {
     apply plugin: "java-library"
     apply plugin: "org.jetbrains.kotlin.jvm"
 }
-
