@@ -65,4 +65,11 @@ project(":core") {
 project(":tools") {
     apply plugin: "java-library"
     apply plugin: "org.jetbrains.kotlin.jvm"
+
+    dependencies {
+        implementation project(":core")
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
 }

@@ -21,6 +21,21 @@ tasks.register('run', JavaExec) {
     }
 }
 
+tasks.register('run-debug', JavaExec) {
+    dependsOn classes
+    mainClass = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.assetsDir
+    ignoreExitValue = true
+    args = ["-debug"]
+
+    if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
+        // Required to run on macOS
+        jvmArgs += "-XstartOnFirstThread"
+    }
+}
+
 tasks.register('debug', JavaExec) {
     dependsOn classes
     mainClass = project.mainClassName
@@ -42,7 +57,6 @@ tasks.register('dist', Jar) {
     }
     with jar
 }
-
 
 dist.dependsOn classes
 

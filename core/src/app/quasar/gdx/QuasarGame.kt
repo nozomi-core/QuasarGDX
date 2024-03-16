@@ -1,18 +1,28 @@
 package app.quasar.gdx
 
+import app.quasar.gdx.lumber.Lumber
+import app.quasar.gdx.lumber.LumberConfig
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 
-class KotlinGame: ApplicationAdapter() {
-    lateinit var batch: SpriteBatch
-    lateinit var img: Texture
+class QuasarGame(
+    private val gameConfig: QuasarConfig
+): ApplicationAdapter() {
+
+    private val batch by lazy { SpriteBatch() }
+    private val img by lazy { Texture("badlogic.jpg") }
 
     override fun create() {
         super.create()
-        batch = SpriteBatch()
-        img = Texture("badlogic.jpg")
+        setupLumber()
+    }
+
+    private fun setupLumber() {
+        Lumber.setup(
+            LumberConfig(isDebug = gameConfig.isDebug)
+        )
     }
 
     override fun render() {
