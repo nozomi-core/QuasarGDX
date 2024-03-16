@@ -65,7 +65,6 @@ class BinaryFile {
                 isFinished = true
             }
         }
-
     }
 
     class In(private val inp: DataInputStream) {
