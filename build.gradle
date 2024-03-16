@@ -44,6 +44,7 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java-library"
+    apply plugin: "org.jetbrains.kotlin.jvm"
 
     dependencies {
         implementation project(":core")
@@ -54,6 +55,7 @@ project(":desktop") {
 
 project(":core") {
     apply plugin: "java-library"
+    apply plugin: "org.jetbrains.kotlin.jvm"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
