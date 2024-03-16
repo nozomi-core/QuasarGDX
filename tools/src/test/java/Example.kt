@@ -30,6 +30,25 @@ class ExampleTest {
     }
 
     @Test
+    fun countingTest() {
+
+
+        val out = BinaryFile.createMemoryOut { file ->
+            file.writeInt(8, 2)
+            file.writeInt(8, 4)
+            file.writeInt(8, 8)
+            file.writeInt(8, 16);
+        }
+
+        val inp = BinaryFile.createMemoryIn(out)
+        val output = BinaryOutput()
+
+        while(inp.read(output)) {
+            println(output.data)
+        }
+    }
+
+    @Test
     fun aTest() {
         val write = BinaryFile.createFileOut(File("mydata.txt")) { writer ->
             for (i in 1..100) {

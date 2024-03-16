@@ -124,6 +124,18 @@ class BinaryFile {
         }
 
         fun createFileIn(file: File): In = In(DataInputStream(FileInputStream(file)))
+
+        fun createMemoryOut(writeCallback: (out: Out) -> Unit): InlineBinaryFormat {
+            val byteOut = ByteArrayOutputStream()
+            val memoryStream = Out(DataOutputStream(byteOut))
+            writeCallback(memoryStream)
+            memoryStream.finish()
+            return InlineBinaryFormat(byteOut.toByteArray())
+        }
+
+        fun createMemoryIn(memory: InlineBinaryFormat): In {
+            return In(DataInputStream(ByteArrayInputStream(memory.byteData)))
+        }
     }
 }
 
@@ -132,3 +144,6 @@ class BinaryOutput {
     var type = -1
     var data: Any = -1
 }
+
+class InlineBinaryFormat(val byteData: ByteArray)
+
