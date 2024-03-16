@@ -1,7 +1,5 @@
 import app.quasar.gdx.tools.BinaryUtils
 import java.io.*
-import java.nio.charset.Charset
-import kotlin.experimental.xor
 
 class BinaryFile {
 

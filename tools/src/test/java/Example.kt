@@ -1,13 +1,33 @@
-import app.quasar.gdx.tools.BinaryUtils
-import org.junit.Assert
+import app.quasar.gdx.tools.BinaryFormat
+import org.junit.Before
 import org.junit.Test
-import java.io.DataOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.io.FileWriter
 import java.util.*
 
+
+annotation class BinaryId(val name: Int)
+
+@BinaryId(BinTypes.CUSTOMERS)
+data class Customer(
+    @BinaryId(BinTypes.CUSTOMERS_ID)
+    val id: Int? = null,
+    @BinaryId(BinTypes.CUSTOMERS_NAME)
+    val name: String? = null,
+    @BinaryId(BinTypes.CUSTOMERS_AGE)
+    val age: Int? = null
+)
+
 class ExampleTest {
+
+    @Before
+    fun setupFormat() {
+        BinaryFormat.extend(listOf(Customer::class)) { typeId ->
+            when(typeId) {
+                BinTypes.CUSTOMERS -> Customer::class
+                else -> null
+            }
+        }
+    }
 
     @Test
     fun aTest() {
