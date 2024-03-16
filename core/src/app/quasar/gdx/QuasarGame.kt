@@ -1,7 +1,6 @@
 package app.quasar.gdx
 
-import app.quasar.gdx.lumber.Lumber
-import app.quasar.gdx.lumber.LumberConfig
+import app.quasar.gdx.lumber.setupLumber
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -16,14 +15,12 @@ class QuasarGame(
 
     override fun create() {
         super.create()
-        setupLumber()
+
+        setupLumber {
+            isDebug = gameConfig.isDebug
+        }
     }
 
-    private fun setupLumber() {
-        Lumber.setup(
-            LumberConfig(isDebug = gameConfig.isDebug)
-        )
-    }
 
     override fun render() {
         ScreenUtils.clear(1f, 0f, 0f, 1f)

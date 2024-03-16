@@ -1,14 +1,20 @@
 package app.quasar.gdx.lumber
 
+class LumberConfig() {
+    var isDebug = false
+}
+
+fun setupLumber(callback: LumberConfig.() -> Unit) {
+    val dslConfig = LumberConfig()
+    callback(dslConfig)
+    Lumber.setup(dslConfig)
+}
+
 object Lumber {
     private var config: LumberConfig? = null
 
-    fun setup(setupConfig: LumberConfig) {
-        if(config == null) {
-            config = setupConfig
-        } else {
-            warn("Lumber setup should only be called once, we ignore any further called to setup")
-        }
+    fun setup(dsl: LumberConfig) {
+        config = dsl
     }
 
     fun debug(message: String) {
