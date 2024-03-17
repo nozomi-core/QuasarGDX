@@ -1,4 +1,4 @@
-package app.quasar.gdx.tools;
+package app.quasar.qgl.serialize;
 
 public class BinaryUtils {
 

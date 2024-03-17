@@ -1,1 +1,1 @@
-include 'desktop', 'core', 'tools'
+include 'desktop', 'core', 'tools', 'quasar'

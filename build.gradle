@@ -73,3 +73,8 @@ project(":tools") {
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
+
+project(":quasar") {
+    apply plugin: "java-library"
+    apply plugin: "org.jetbrains.kotlin.jvm"
+}

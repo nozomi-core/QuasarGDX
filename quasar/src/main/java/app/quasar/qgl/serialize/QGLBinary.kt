@@ -1,33 +1,11 @@
-import app.quasar.gdx.tools.BinaryUtils
+package app.quasar.qgl.serialize
+
 import java.io.*
 
-class BinaryFile {
+class QGLBinary {
 
     class Out(private val out: DataOutputStream) {
         private var isFinished = false
-
-        @Throws(IOException::class)
-        fun writeString(id: Int, data: String) {
-            validateId(id)
-            out.writeInt(id)
-            val bytes = BinaryUtils.xor255(data.toByteArray(Charsets.UTF_8))
-            out.write(TYPE_STRING)
-            out.writeInt(bytes.size)
-            out.write(bytes)
-        }
-
-        @Throws(IOException::class)
-        fun writeStringArray(id: Int, data: Array<String>) {
-            validateId(id)
-            out.writeInt(id)
-            out.write(TYPE_STRING_ARRAY)
-            out.writeInt(data.size)
-            data.forEach { iString ->
-                val bytes = BinaryUtils.xor255(iString.toByteArray(Charsets.UTF_8))
-                out.writeInt(bytes.size)
-                out.write(bytes)
-            }
-        }
 
         @Throws(IOException::class)
         fun writeInt(id: Int, data: Int) {
@@ -38,7 +16,7 @@ class BinaryFile {
         }
 
         @Throws(IOException::class)
-        fun writeIntArray(id: Int, data: Array<Int>) {
+        fun writeIntArray(id: Int, data: IntArray) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_INT_ARRAY)
@@ -49,7 +27,34 @@ class BinaryFile {
         }
 
         @Throws(IOException::class)
-        fun writeDoubleArray(id: Int, data: Array<Double>) {
+        fun writeLong(id: Int, data: Long) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_LONG)
+            out.writeLong(data)
+        }
+
+        @Throws(IOException::class)
+        fun writeLongArray(id: Int, data: LongArray) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_LONG_ARRAY)
+            out.writeInt(data.size)
+            data.forEach {
+                out.writeLong(it)
+            }
+        }
+
+        @Throws(IOException::class)
+        fun writeDouble(id: Int, data: Double) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_DOUBLE)
+            out.writeDouble(data)
+        }
+
+        @Throws(IOException::class)
+        fun writeDoubleArray(id: Int, data: DoubleArray) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_DOUBLE_ARRAY)
@@ -63,9 +68,46 @@ class BinaryFile {
         fun writeBytes(id: Int, data: ByteArray) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_BYTE_ARRAY)
+            out.write(TYPE_BYTES)
             out.writeInt(data.size)
             out.write(data)
+        }
+
+        @Throws(IOException::class)
+        fun writeByteMatrix(id: Int, data: ByteMatrix) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_BYTE_MATRIX)
+            out.writeInt(data.size)
+            for(index in 0 until data.size) {
+                val childBytes = data[index]
+                out.writeInt(childBytes.size)
+                out.write(childBytes)
+            }
+        }
+
+        @Throws(IOException::class)
+        fun writeString(id: Int, data: String) {
+            validateId(id)
+            out.writeInt(id)
+            val bytes = BinaryUtils.xor255(data.toByteArray(Charsets.UTF_8))
+            out.write(TYPE_STRING)
+            out.writeInt(bytes.size)
+            out.write(bytes)
+        }
+
+        @Throws(IOException::class)
+        fun writeStringMatrix(id: Int, data: StringMatrix) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_STRING_MATRIX)
+            out.writeInt(data.size)
+
+            for(index in 0 until data.size) {
+                val bytes = BinaryUtils.xor255(data[index].toByteArray(Charsets.UTF_8))
+                out.writeInt(bytes.size)
+                out.write(bytes)
+            }
         }
 
         @Throws(IOException::class)
@@ -92,12 +134,20 @@ class BinaryFile {
 
         private fun writeRecord(record: BinaryRecord) {
             when(record.data) {
+                is Int -> writeInt(record.id, record.data)
+                is IntArray -> writeIntArray(record.id, record.data)
+                is Long -> writeLong(record.id, record.data)
+                is LongArray -> writeLongArray(record.id, record.data)
+                is Double -> writeDouble(record.id, record.data)
+                is DoubleArray -> writeDoubleArray(record.id, record.data)
+                is ByteArray -> writeBytes(record.id, record.data)
+                is ByteMatrix -> writeByteMatrix(record.id, record.data)
                 is String -> writeString(record.id, record.data)
-                else -> throw Exception("Not implemented")
+
+
+                else -> throw Exception("Type in record not supported")
             }
         }
-
-
 
         private fun validateId(id: Int) {
             if(id <= -1) {
@@ -132,55 +182,79 @@ class BinaryFile {
                     record.data = inp.readInt()
                 }
                 TYPE_INT_ARRAY -> {
-                    val size = inp.readInt()
-                    val intArray = Array(size) { 0 }
+                    val typeSize = inp.readInt()
+                    val intArray = IntArray(typeSize)
                     intArray.forEachIndexed { index, _ ->
                         intArray[index] = inp.readInt()
                     }
                     record.data = intArray
                 }
+                TYPE_LONG -> {
+                    record.data = inp.readLong()
+                }
+                TYPE_LONG_ARRAY -> {
+                    val typeSize = inp.readInt()
+                    val longArray = LongArray(typeSize)
+                    longArray.forEachIndexed { index, _ ->
+                        longArray[index] = inp.readLong()
+                    }
+                    record.data = longArray
+                }
                 TYPE_DOUBLE -> {
                     record.data = inp.readDouble()
                 }
-                TYPE_DOUBLE -> {
-                    val size = inp.readInt()
-                    val doubleArray = Array(size){ 0.0 }
+                TYPE_DOUBLE_ARRAY -> {
+                    val typeSize = inp.readInt()
+                    val doubleArray = DoubleArray(typeSize)
                     doubleArray.forEachIndexed { index, _ ->
                         doubleArray[index] = inp.readDouble()
                     }
                     record.data = doubleArray
                 }
-                TYPE_BYTE_ARRAY -> {
-                    val size = inp.readInt()
-                    val byteData = ByteArray(size)
+                TYPE_BYTES -> {
+                    val typeSize = inp.readInt()
+                    val byteData = ByteArray(typeSize)
                     record.data = inp.read(byteData)
+                }
+                TYPE_BYTE_MATRIX -> {
+                    val size = inp.readInt()
+                    val bytesArray = mutableListOf<ByteArray>()
+                    for(i in 0 until size) {
+                        val byteArraySize = inp.readInt()
+                        val childBytes = ByteArray(byteArraySize)
+                        inp.read(childBytes)
+                        bytesArray.add(childBytes)
+                    }
+                    record.data = ByteMatrix(bytesArray)
                 }
                 TYPE_STRING -> {
                     //Decode the XOR operation to get the original string in plain text
-                    val size = inp.readInt()
-                    val byteData = ByteArray(size)
+                    val typeSize = inp.readInt()
+                    val byteData = ByteArray(typeSize)
                     inp.read(byteData)
                     record.data = String(BinaryUtils.xor255(byteData))
                 }
-                TYPE_STRING -> {
-                    val size = inp.readInt()
-                    val stringArray = Array(size){ "" }
-                    stringArray.forEachIndexed { index, _ ->
-                        val size = inp.readInt()
-                        val byteStrings = ByteArray(size)
+                TYPE_STRING_MATRIX -> {
+                    val typeSize = inp.readInt()
+                    val stringList = mutableListOf<String>()
+
+                    for(index in 0 until typeSize) {
+                        val childSize = inp.readInt()
+                        val byteStrings = ByteArray(childSize)
                         inp.read(byteStrings)
                         val decodedBytes = BinaryUtils.xor255(byteStrings)
-                        stringArray[index] = String(decodedBytes)
+                        stringList.add(String(decodedBytes))
                     }
-                    record.data = stringArray
+
+                    record.data = StringMatrix(stringList)
                 }
                 TYPE_BINARY_OBJECT -> {
-                    val size = inp.readInt()
+                    val typeSize = inp.readInt()
                     val objectList = mutableListOf<BinaryRecord>()
                     //Call the read on itself to read the complex object
                     val output = BinaryOutput()
 
-                    for(i in 0 until size) {
+                    for(i in 0 until typeSize) {
                         read(output)
                         objectList.add(output.toBinaryRecord())
                     }
@@ -188,18 +262,17 @@ class BinaryFile {
                     record.data = BinaryObject(record.id, objectList.toList())
                 }
                 TYPE_BINARY_OBJECT_ARRAY -> {
-                    val size = inp.readInt()
+                    val typeSize = inp.readInt()
                     val objectList = mutableListOf<BinaryObject>()
 
                     val output = BinaryOutput()
 
-                    for(i in 0 until size) {
+                    for(i in 0 until typeSize) {
                         read(output)
                         objectList.add(output.data as BinaryObject)
                     }
                     record.data = objectList
                 }
-
 
                 else -> throw Exception("type id not supported")
             }
@@ -211,13 +284,16 @@ class BinaryFile {
     companion object {
         const val TYPE_INT: Int =                   1
         const val TYPE_INT_ARRAY: Int =             2
-        const val TYPE_STRING: Int =                3
-        const val TYPE_STRING_ARRAY: Int =          4
+        const val TYPE_LONG: Int =                  3
+        const val TYPE_LONG_ARRAY: Int =            4
         const val TYPE_DOUBLE: Int =                5
         const val TYPE_DOUBLE_ARRAY: Int =          6
-        const val TYPE_BYTE_ARRAY: Int =            7
-        const val TYPE_BINARY_OBJECT: Int =         8
-        const val TYPE_BINARY_OBJECT_ARRAY: Int =   9
+        const val TYPE_BYTES: Int =                 7
+        const val TYPE_BYTE_MATRIX: Int =           8
+        const val TYPE_STRING: Int =                9
+        const val TYPE_STRING_MATRIX: Int =         10
+        const val TYPE_BINARY_OBJECT: Int =         11
+        const val TYPE_BINARY_OBJECT_ARRAY: Int =   12
 
         const val ID_END_OF_DATA = -1
 
@@ -262,4 +338,18 @@ class BinaryRecord(
     val id: Int,
     val data: Any
 )
+
+class ByteMatrix(private val matrix: List<ByteArray>) {
+    val size: Int get() = matrix.size
+    operator fun get(index: Int): ByteArray {
+        return matrix[index]
+    }
+}
+
+class StringMatrix(private val matrix: List<String>) {
+    val size: Int get() = matrix.size
+    operator fun get(index: Int): String {
+        return matrix[index]
+    }
+}
 
