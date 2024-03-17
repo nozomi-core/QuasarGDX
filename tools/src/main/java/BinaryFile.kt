@@ -249,7 +249,6 @@ class BinaryOutput {
     var data: Any = -1
 
     fun toBinaryRecord() = BinaryRecord(id, data)
-
 }
 
 class InlineBinaryFormat(val byteData: ByteArray)
