@@ -11,7 +11,7 @@ class BinaryFile {
             validateId(id)
             out.writeInt(id)
             val bytes = BinaryUtils.xor255(data.toByteArray(Charsets.UTF_8))
-            out.write(TYPE_STRING_255_XOR)
+            out.write(TYPE_STRING)
             out.writeInt(bytes.size)
             out.write(bytes)
         }
@@ -20,7 +20,7 @@ class BinaryFile {
         fun writeStringArray(id: Int, data: Array<String>) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_STRING_255_XOR_ARRAY)
+            out.write(TYPE_STRING_ARRAY)
             out.writeInt(data.size)
             data.forEach { iString ->
                 val bytes = BinaryUtils.xor255(iString.toByteArray(Charsets.UTF_8))
@@ -68,6 +68,37 @@ class BinaryFile {
             out.write(data)
         }
 
+        @Throws(IOException::class)
+        fun writeObject(id: Int, data: BinaryObject) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_BINARY_OBJECT)
+            out.writeInt(data.records.size)
+            data.records.forEach {
+                writeRecord(it)
+            }
+        }
+
+        @Throws(IOException::class)
+        fun writeObjectArray(id: Int, data: List<BinaryObject>) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_BINARY_OBJECT_ARRAY)
+            out.writeInt(data.size)
+            data.forEach { item ->
+                writeObject(item.id, item)
+            }
+        }
+
+        private fun writeRecord(record: BinaryRecord) {
+            when(record.data) {
+                is String -> writeString(record.id, record.data)
+                else -> throw Exception("Not implemented")
+            }
+        }
+
+
+
         private fun validateId(id: Int) {
             if(id <= -1) {
                 throw Exception("Byte id cannot be negative, they are reserved ids")
@@ -108,17 +139,6 @@ class BinaryFile {
                     }
                     record.data = intArray
                 }
-                TYPE_STRING -> {
-                    record.data = inp.readUTF()
-                }
-                TYPE_STRING_ARRAY -> {
-                    val size = inp.readInt()
-                    val stringArray = Array(size){ "" }
-                    stringArray.forEachIndexed { index, _ ->
-                        stringArray[index] = inp.readUTF()
-                    }
-                    record.data = stringArray
-                }
                 TYPE_DOUBLE -> {
                     record.data = inp.readDouble()
                 }
@@ -154,6 +174,32 @@ class BinaryFile {
                     }
                     record.data = stringArray
                 }
+                TYPE_BINARY_OBJECT -> {
+                    val size = inp.readInt()
+                    val objectList = mutableListOf<BinaryRecord>()
+                    //Call the read on itself to read the complex object
+                    val output = BinaryOutput()
+
+                    for(i in 0 until size) {
+                        read(output)
+                        objectList.add(output.toBinaryRecord())
+                    }
+
+                    record.data = BinaryObject(record.id, objectList.toList())
+                }
+                TYPE_BINARY_OBJECT_ARRAY -> {
+                    val size = inp.readInt()
+                    val objectList = mutableListOf<BinaryObject>()
+
+                    val output = BinaryOutput()
+
+                    for(i in 0 until size) {
+                        read(output)
+                        objectList.add(output.data as BinaryObject)
+                    }
+                    record.data = objectList
+                }
+
 
                 else -> throw Exception("type id not supported")
             }
@@ -163,14 +209,15 @@ class BinaryFile {
     }
 
     companion object {
-        const val TYPE_INT: Int =               1
-        const val TYPE_INT_ARRAY: Int =         2
-        const val TYPE_STRING: Int =            3
-        const val TYPE_STRING_ARRAY: Int =      4
-        const val TYPE_DOUBLE: Int =            5
-        const val TYPE_DOUBLE_ARRAY: Int =      6
-        const val TYPE_BYTE_ARRAY: Int =        7
-        const val TYPE_BINARY_RECORDS: Int =    8 //TODO: Support child binary record types
+        const val TYPE_INT: Int =                   1
+        const val TYPE_INT_ARRAY: Int =             2
+        const val TYPE_STRING: Int =                3
+        const val TYPE_STRING_ARRAY: Int =          4
+        const val TYPE_DOUBLE: Int =                5
+        const val TYPE_DOUBLE_ARRAY: Int =          6
+        const val TYPE_BYTE_ARRAY: Int =            7
+        const val TYPE_BINARY_OBJECT: Int =         8
+        const val TYPE_BINARY_OBJECT_ARRAY: Int =   9
 
         const val ID_END_OF_DATA = -1
 
@@ -200,7 +247,20 @@ class BinaryOutput {
     var id = -1
     var type = -1
     var data: Any = -1
+
+    fun toBinaryRecord() = BinaryRecord(id, data)
+
 }
 
 class InlineBinaryFormat(val byteData: ByteArray)
+
+class BinaryObject(
+    val id: Int,
+    val records: List<BinaryRecord>
+)
+
+class BinaryRecord(
+    val id: Int,
+    val data: Any
+)
 

@@ -17,6 +17,8 @@ data class Customer(
     val age: Int? = null
 )
 
+data class TwoDat(val first: String, val second: String)
+
 class ExampleTest {
 
     @Before
@@ -30,9 +32,49 @@ class ExampleTest {
     }
 
     @Test
+    fun objectTest() {
+
+        val something = TwoDat("123", "again")
+        val again = TwoDat("00000", "meat")
+
+        val list = listOf(something, again)
+
+
+        val binOut = list.map { item ->
+            BinaryObject(12, listOf(BinaryRecord(89, item.first), BinaryRecord(202, item.second)))
+        }
+
+        BinaryFile.createFileOut(File("mapping.txt")) {
+            it.writeObjectArray(90, binOut)
+        }
+
+        val out = BinaryFile.createMemoryOut { file ->
+            file.writeObjectArray(100, binOut)
+        }
+
+        val readBack = BinaryFile.createMemoryIn(out)
+
+        val output = BinaryOutput()
+
+        while(readBack.read(output)) {
+
+
+            val list = output.data as List<BinaryObject>
+            list.forEach { iObject ->
+                println("object-id ${iObject.id}")
+
+                iObject.records.forEach {  record ->
+                    println(record.data)
+                }
+            }
+
+        }
+
+
+    }
+
+    @Test
     fun countingTest() {
-
-
         val out = BinaryFile.createMemoryOut { file ->
             file.writeInt(8, 2)
             file.writeInt(8, 4)
@@ -47,7 +89,7 @@ class ExampleTest {
         while(inp.read(output)) {
             val type = output.type
             when(type) {
-                BinaryFile.TYPE_STRING_255_XOR_ARRAY -> {
+                BinaryFile.TYPE_STRING -> {
                     val pop = output.data as Array<String>
                     pop.forEach {
                         println(it)
