@@ -1,6 +1,9 @@
 package app.quasar.qgl.serialize
 
 import java.io.*
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import kotlin.random.Random
 
 class QGLBinary {
 
@@ -65,6 +68,25 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
+        fun writeBoolean(id: Int, data: Boolean) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_BOOLEAN)
+            out.writeBoolean(data)
+        }
+
+        @Throws(IOException::class)
+        fun writeBooleanArray(id: Int, data: BooleanArray) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_BOOLEAN_ARRAY)
+            out.writeInt(data.size)
+            data.forEach {
+                out.writeBoolean(it)
+            }
+        }
+
+        @Throws(IOException::class)
         fun writeBytes(id: Int, data: ByteArray) {
             validateId(id)
             out.writeInt(id)
@@ -115,21 +137,28 @@ class QGLBinary {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_BINARY_OBJECT)
-            out.writeInt(data.records.size)
-            data.records.forEach {
-                writeRecord(it)
+            out.writeInt(data.size)
+            for(index in 0 until data.size) {
+                writeRecord(data[index])
             }
         }
 
         @Throws(IOException::class)
-        fun writeObjectArray(id: Int, data: List<BinaryObject>) {
+        fun writeObjectMatrix(id: Int, data: BinaryObjectMatrix) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_BINARY_OBJECT_ARRAY)
             out.writeInt(data.size)
-            data.forEach { item ->
+            for(index in 0 until data.size) {
+                val item = data[index]
                 writeObject(item.id, item)
             }
+        }
+
+        @Throws(IOException::class)
+        fun writeClientGuid(id: Int, data: ClientGuid) {
+            validateId(id)
+            writeString(id, data.guid)
         }
 
         private fun writeRecord(record: BinaryRecord) {
@@ -140,10 +169,15 @@ class QGLBinary {
                 is LongArray -> writeLongArray(record.id, record.data)
                 is Double -> writeDouble(record.id, record.data)
                 is DoubleArray -> writeDoubleArray(record.id, record.data)
+                is Boolean -> writeBoolean(record.id, record.data)
+                is BooleanArray -> writeBooleanArray(record.id, record.data)
                 is ByteArray -> writeBytes(record.id, record.data)
                 is ByteMatrix -> writeByteMatrix(record.id, record.data)
                 is String -> writeString(record.id, record.data)
-
+                is StringMatrix -> writeStringMatrix(record.id, record.data)
+                is BinaryObject,
+                is BinaryObjectMatrix -> throw Exception("for now we don't support records having objects, the idea is flat structure")
+                is ClientGuid -> writeClientGuid(record.id, record.data)
 
                 else -> throw Exception("Type in record not supported")
             }
@@ -211,6 +245,17 @@ class QGLBinary {
                     }
                     record.data = doubleArray
                 }
+                TYPE_BOOLEAN -> {
+                    record.data = inp.readBoolean()
+                }
+                TYPE_BOOLEAN_ARRAY -> {
+                    val typeSize = inp.readInt()
+                    val doubleArray = BooleanArray(typeSize)
+                    doubleArray.forEachIndexed { index, _ ->
+                        doubleArray[index] = inp.readBoolean()
+                    }
+                    record.data = doubleArray
+                }
                 TYPE_BYTES -> {
                     val typeSize = inp.readInt()
                     val byteData = ByteArray(typeSize)
@@ -259,7 +304,7 @@ class QGLBinary {
                         objectList.add(output.toBinaryRecord())
                     }
 
-                    record.data = BinaryObject(record.id, objectList.toList())
+                    record.data = BinaryObject(record.id, objectList.toTypedArray())
                 }
                 TYPE_BINARY_OBJECT_ARRAY -> {
                     val typeSize = inp.readInt()
@@ -272,6 +317,11 @@ class QGLBinary {
                         objectList.add(output.data as BinaryObject)
                     }
                     record.data = objectList
+                }
+                TYPE_CLIENT_GUID -> {
+                    val output = BinaryOutput()
+                    read(output)
+                    record.data = ClientGuid(output.data as String)
                 }
 
                 else -> throw Exception("type id not supported")
@@ -288,12 +338,15 @@ class QGLBinary {
         const val TYPE_LONG_ARRAY: Int =            4
         const val TYPE_DOUBLE: Int =                5
         const val TYPE_DOUBLE_ARRAY: Int =          6
-        const val TYPE_BYTES: Int =                 7
-        const val TYPE_BYTE_MATRIX: Int =           8
-        const val TYPE_STRING: Int =                9
-        const val TYPE_STRING_MATRIX: Int =         10
-        const val TYPE_BINARY_OBJECT: Int =         11
-        const val TYPE_BINARY_OBJECT_ARRAY: Int =   12
+        const val TYPE_BOOLEAN: Int =               7
+        const val TYPE_BOOLEAN_ARRAY: Int =         8
+        const val TYPE_BYTES: Int =                 9
+        const val TYPE_BYTE_MATRIX: Int =           10
+        const val TYPE_STRING: Int =                11
+        const val TYPE_STRING_MATRIX: Int =         12
+        const val TYPE_BINARY_OBJECT: Int =         13
+        const val TYPE_BINARY_OBJECT_ARRAY: Int =   14
+        const val TYPE_CLIENT_GUID: Int =           15
 
         const val ID_END_OF_DATA = -1
 
@@ -331,8 +384,21 @@ class InlineBinaryFormat(val byteData: ByteArray)
 
 class BinaryObject(
     val id: Int,
-    val records: List<BinaryRecord>
-)
+    private val matrix: Array<BinaryRecord>
+): FastIterator<BinaryRecord> {
+    override val size: Int get() = matrix.size
+    override operator fun get(index: Int): BinaryRecord {
+        return matrix[index]
+    }
+    fun findId(id: Int): BinaryRecord? {
+        for(index in 0 until size) {
+            if(matrix[index].id == id) {
+                return matrix[index]
+            }
+        }
+        return null
+    }
+}
 
 class BinaryRecord(
     val id: Int,
@@ -352,4 +418,71 @@ class StringMatrix(private val matrix: List<String>) {
         return matrix[index]
     }
 }
+
+class BinaryObjectMatrix(private val matrix: List<BinaryObject>) {
+    val size: Int get() = matrix.size
+    operator fun get(index: Int): BinaryObject {
+        return matrix[index]
+    }
+}
+
+class ClientGuid(val guid: String) {
+
+    companion object     {
+        private fun byteArrayToHexString(byteArray: ByteArray): String {
+            val hexChars = "0123456789abcdef"
+            val hexString = StringBuilder(2 * byteArray.size)
+            for (byte in byteArray) {
+                val intVal = byte.toInt() and 0xFF
+                hexString.append(hexChars[intVal ushr 4])
+                hexString.append(hexChars[intVal and 0x0F])
+            }
+            return hexString.toString()
+        }
+
+        fun create(): Triple<ClientGuid, Long, Long> {
+            val random = Random(System.currentTimeMillis())
+
+            val timeNow = System.currentTimeMillis()
+            val longRandom = random.nextLong()
+
+            val timeBytes = ByteBuffer.allocate(java.lang.Long.BYTES).apply {
+                order(ByteOrder.BIG_ENDIAN)
+                putLong(timeNow)
+            }.array()
+
+            val randomBytes = ByteBuffer.allocate(java.lang.Long.BYTES).apply {
+                order(ByteOrder.BIG_ENDIAN)
+                putLong(longRandom)
+            }.array()
+
+
+            val scrambledTime = BinaryUtils.xorUsing(timeBytes, randomBytes)
+
+            val guidBytes = ByteBuffer.allocate(java.lang.Long.BYTES * 2).apply {
+                order(ByteOrder.BIG_ENDIAN)
+                put(randomBytes)
+                put(scrambledTime)
+            }.array()
+
+            val guid = ClientGuid(byteArrayToHexString(guidBytes))
+
+            return Triple(guid, longRandom, timeNow)
+        }
+    }
+}
+
+
+interface FastIterator<T> {
+    val size: Int
+    operator fun get(index: Int): T
+
+    fun forEach(callback: (item: T) -> Unit) {
+        for(index in 0 until size) {
+            callback(this[index])
+        }
+    }
+}
+
+
 

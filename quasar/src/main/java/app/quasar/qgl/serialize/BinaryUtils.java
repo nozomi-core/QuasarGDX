@@ -9,4 +9,12 @@ public class BinaryUtils {
         }
         return input;
     }
+
+    public static byte[] xorUsing(byte[] input, byte[] vector) {
+        for(int i=0; i < input.length; i++) {
+            int xorResult = input[i] ^ vector[i];
+            input[i] = (byte) xorResult;
+        }
+        return input;
+    }
 }
