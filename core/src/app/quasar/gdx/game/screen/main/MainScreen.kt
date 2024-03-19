@@ -1,5 +1,6 @@
 package app.quasar.gdx.game.screen.main
 
+import app.quasar.gdx.localisation.LocalString
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
@@ -22,6 +23,8 @@ class MainScreen(
     override fun show() {
         camera = OrthographicCamera()
         viewport = ExtendViewport(320f, 180f, camera)
+
+        val prop =  LocalString.entry_level_naming
 
     }
 
