@@ -1,5 +1,6 @@
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+eclipse.project.name = appName + "-core"
 
 sourceSets {
     main {
@@ -11,4 +12,6 @@ sourceSets {
     }
 }
 
-eclipse.project.name = appName + "-core"
+tasks.test {
+    workingDir = new File("../assets")
+}
