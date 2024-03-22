@@ -30,7 +30,7 @@ class LocalStringTest {
     }
 
     @Test
-    fun testThrowException() {
+    fun testThrowExceptionWhenUnableToFindId() {
         val json = qglDecodeJson("{\"no_key\":\"debug\"}").getOrNull()!!
 
         val didThrow = try {
