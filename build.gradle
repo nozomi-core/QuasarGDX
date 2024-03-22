@@ -59,6 +59,7 @@ project(":core") {
     apply plugin: "org.jetbrains.kotlin.jvm"
 
     dependencies {
+        implementation project(":quasar")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
     }
 }
