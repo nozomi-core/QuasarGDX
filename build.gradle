@@ -14,6 +14,7 @@ buildscript {
 
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.6.0"
+    id "org.jetbrains.kotlin.plugin.serialization" version '1.6.0'
 }
 
 allprojects {
@@ -77,4 +78,8 @@ project(":tools") {
 project(":quasar") {
     apply plugin: "java-library"
     apply plugin: "org.jetbrains.kotlin.jvm"
+
+    dependencies {
+        implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+    }
 }

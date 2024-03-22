@@ -1,0 +1,8 @@
+{
+  "name": "Hello world",
+  "world" : {
+    "city": "Melbourne"
+  },
+  "isActive": true,
+  "age": 56
+}
