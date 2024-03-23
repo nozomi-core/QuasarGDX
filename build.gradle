@@ -72,6 +72,8 @@ project(":tools") {
 
     dependencies {
         implementation project(":core")
+        implementation project(":quasar")
+
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -83,6 +85,8 @@ project(":quasar") {
     apply plugin: "org.jetbrains.kotlin.jvm"
 
     dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
         implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
     }
 }
