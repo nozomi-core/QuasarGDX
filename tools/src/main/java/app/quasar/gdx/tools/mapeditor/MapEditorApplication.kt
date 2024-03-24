@@ -1,87 +1,91 @@
 package app.quasar.gdx.tools.mapeditor
 
+import app.quasar.gdx.AssetFiles
 import app.quasar.gdx.tiles.QuasarTileset
+import app.quasar.qgl.engine.Quasar2DConfig
 import app.quasar.qgl.engine.QuasarCallbacks
 import app.quasar.qgl.engine.QuasarEngine2D
-import app.quasar.qgl.tiles.GameTileset
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
-
 
 class MapEditorApplication: ApplicationAdapter() {
 
-    private val texture by lazy { Texture("badlogic.jpg") }
-    private val tileTexture by lazy { Texture("sprites/tileset.png") }
-    private val spriteBatch by lazy { SpriteBatch() }
-    private val gameTileset = QuasarTileset()
+    private lateinit var worldCamera: OrthographicCamera
+    private lateinit var overlayCamera: OrthographicCamera
 
-    private lateinit var camera: OrthographicCamera
-    private lateinit var viewport: Viewport
+    private lateinit var worldViewport: Viewport
+    private lateinit var overlayViewport: Viewport
     private lateinit var engine2D: QuasarEngine2D
 
-    private val engineCallbacks = object: QuasarCallbacks {
-        override fun getTexture() = tileTexture
-        override fun getSpriteBatch() = spriteBatch
-        override fun getGameTileset() = gameTileset
-        override fun getCamera() = camera
-        override fun getTileLayout() = TileSheetLayout(
-            tileSize = 16,
-            sheetWidthPx = texture.width,
-            sheetHeightPx = texture.height
+    private val config by lazy {
+        Quasar2DConfig(
+            texture = Texture(AssetFiles.TILE_SET),
+            spriteBatch = SpriteBatch(),
+            tileset = QuasarTileset(),
+            layout = TileSheetLayout(tileSize = 16)
         )
+    }
+
+    private val engineCallbacks = object : QuasarCallbacks {
+        override fun useWorldCamera() = worldCamera
+        override fun useWorldViewport() = worldViewport
+        override fun useOverlayCamera() = overlayCamera
+        override fun useOverlayViewport() = overlayViewport
     }
 
     override fun create() {
         super.create()
-        engine2D = QuasarEngine2D(engineCallbacks).apply {
-            setWorld(EditMap())
+        engine2D = QuasarEngine2D(config, engineCallbacks).apply {
+            createWorld(EditMap::class)
+            createOverlay(EditOverlay::class)
         }
-        camera = OrthographicCamera()
-        viewport = ExtendViewport(400f, 400f, camera)
+        worldCamera = OrthographicCamera()
+        overlayCamera = OrthographicCamera()
+        worldViewport = ExtendViewport(320f, 180f, worldCamera)
+        overlayViewport = FitViewport(400f, 400f, overlayCamera)
+        overlayCamera.translate(200f, 200f)
     }
 
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
-        viewport.update(width, height)
+        worldViewport.update(width, height)
+        overlayViewport.update(width, height)
     }
 
     override fun render() {
         super.render()
         handleInput()
         ScreenUtils.clear(1f, 1f, 1f, 1f)
-        viewport.apply()
-        camera.update()
         engine2D.render()
     }
 
     private fun handleInput() {
         // Move the camera based on input events
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            camera.translate(-1f, 0f, 0f)
+            worldCamera.translate(-1f, 0f, 0f)
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            camera.translate(1f, 0f, 0f)
+            worldCamera.translate(1f, 0f, 0f)
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            camera.translate(0f, 1f, 0f)
+            worldCamera.translate(0f, 1f, 0f)
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            camera.translate(0f, -1f, 0f)
+            worldCamera.translate(0f, -1f, 0f)
         }
     }
 
     override fun dispose() {
         super.dispose()
-        texture.dispose()
+        engine2D.dispose()
     }
 }
