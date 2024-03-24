@@ -5,7 +5,7 @@ import app.quasar.qgl.tiles.TileSheetLayout
 import app.quasar.qgl.tiles.TileTextures
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-class DrawableApiImp(
+class DrawableApiQuasar(
     private val layout: TileSheetLayout,
     private val textures: TileTextures,
     private val spriteBatch: SpriteBatch

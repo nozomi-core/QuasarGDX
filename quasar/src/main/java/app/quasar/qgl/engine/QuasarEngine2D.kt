@@ -1,7 +1,7 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.render.DrawableApi
-import app.quasar.qgl.render.DrawableApiImp
+import app.quasar.qgl.render.DrawableApiQuasar
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
@@ -10,17 +10,20 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngine2D(
-    private val config: Quasar2DConfig,
-    private val callbacks: QuasarCallbacks,
+    private val config: QuasarEngine2DConfig,
+    private val callbacks: EngineCallbacks,
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
     private var world: GameWorld? = null
     private var overlay: GameOverlay? = null
 
-    fun <T :GameWorld> createWorld(kClass: KClass<T>) {
+    private val engineApi = QuasarEngineApi(drawableApi)
+
+    fun <T: GameWorld> createWorld(kClass: KClass<T>) {
        this.world = kClass.createInstance().apply {
-           onCreate()
+           onCreateRoot(engineApi)
+           onCreate(engineApi)
        }
     }
 
@@ -38,8 +41,8 @@ class QuasarEngine2D(
         callbacks.useWorldCamera().update()
         spriteBatch.projectionMatrix = callbacks.useWorldCamera().combined
         spriteBatch.begin()
-        world?.onSimulate(Gdx.graphics.deltaTime)
-        world?.onDraw(drawableApi)
+        engineApi.simulate(Gdx.graphics.deltaTime)
+        engineApi.draw()
         spriteBatch.end()
 
         //DrawUI
@@ -63,8 +66,8 @@ class QuasarEngine2D(
     }
 
 
-    private fun Quasar2DConfig.createDrawApi(): DrawableApi {
-        return DrawableApiImp(
+    private fun QuasarEngine2DConfig.createDrawApi(): DrawableApi {
+        return DrawableApiQuasar(
             layout,
             createTileTextures(
                 tileset,

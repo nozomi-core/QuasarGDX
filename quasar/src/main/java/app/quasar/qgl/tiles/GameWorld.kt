@@ -1,9 +1,8 @@
 package app.quasar.qgl.tiles
 
-import app.quasar.qgl.render.DrawableApi
+import app.quasar.qgl.engine.EngineApi
 
 interface GameWorld {
-    fun onCreate()
-    fun onSimulate(delta: Float)
-    fun onDraw(draw: DrawableApi)
+    fun onCreateRoot(engine: EngineApi)
+    fun onCreate(engine: EngineApi)
 }

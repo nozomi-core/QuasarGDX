@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.Viewport
 
-data class Quasar2DConfig(
+data class QuasarEngine2DConfig(
     val texture: Texture,
     val spriteBatch: SpriteBatch,
     val tileset: GameTileset,
     val layout: TileSheetLayout
 )
 
-interface QuasarCallbacks {
+interface EngineCallbacks {
     fun useWorldCamera(): Camera
     fun useOverlayCamera(): Camera
     fun useWorldViewport(): Viewport

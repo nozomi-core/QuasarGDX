@@ -2,8 +2,8 @@ package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.AssetFiles
 import app.quasar.gdx.tiles.QuasarTileset
-import app.quasar.qgl.engine.Quasar2DConfig
-import app.quasar.qgl.engine.QuasarCallbacks
+import app.quasar.qgl.engine.QuasarEngine2DConfig
+import app.quasar.qgl.engine.EngineCallbacks
 import app.quasar.qgl.engine.QuasarEngine2D
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.ApplicationAdapter
@@ -27,7 +27,7 @@ class MapEditorApplication: ApplicationAdapter() {
     private lateinit var engine2D: QuasarEngine2D
 
     private val config by lazy {
-        Quasar2DConfig(
+        QuasarEngine2DConfig(
             texture = Texture(AssetFiles.TILE_SET),
             spriteBatch = SpriteBatch(),
             tileset = QuasarTileset(),
@@ -35,7 +35,7 @@ class MapEditorApplication: ApplicationAdapter() {
         )
     }
 
-    private val engineCallbacks = object : QuasarCallbacks {
+    private val engineCallbacks = object : EngineCallbacks {
         override fun useWorldCamera() = worldCamera
         override fun useWorldViewport() = worldViewport
         override fun useOverlayCamera() = overlayCamera
@@ -45,7 +45,7 @@ class MapEditorApplication: ApplicationAdapter() {
     override fun create() {
         super.create()
         engine2D = QuasarEngine2D(config, engineCallbacks).apply {
-            createWorld(EditMap::class)
+            createWorld(EditWorld::class)
             createOverlay(EditOverlay::class)
         }
         worldCamera = OrthographicCamera()

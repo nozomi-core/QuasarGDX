@@ -1,17 +1,20 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.QuasarTiles
+import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.entity.GameNode
 import app.quasar.qgl.render.DrawableApi
-import app.quasar.qgl.tiles.GameWorld
 
-class EditMap: GameWorld {
+interface PublicEditMap {
+    fun printMessage(msg: String)
+}
+
+class EditMap: GameNode(), PublicEditMap {
 
     private var positionX = 0f
     private val speedMs = 4f
 
-    override fun onCreate() {
-        //TODO("Not yet implemented")
-    }
+    override fun onCreate(engineApi: EngineApi) {}
 
     override fun onSimulate(delta: Float) {
         positionX += speedMs * delta
@@ -33,5 +36,9 @@ class EditMap: GameWorld {
         }
 
         draw.tilePx(QuasarTiles.RED_DARK, positionX, 0f)
+    }
+
+    override fun printMessage(msg: String) {
+        print("Using public message interface: $msg")
     }
 }
