@@ -10,4 +10,9 @@ interface EngineApi {
 
     fun <T: Any> requireFindByInterface(node: KClass<T>): T
     fun <T: Any> findById(id: Long, type: KClass<T>): T?
+
+    //Finds the nearest node after this one (Create stack like architecture)
+    /*
+    fun <T: Any> findNearestAfter(node: GameNode, lookFor: KClass<T>): T?
+    fun <T: Any> findNearestBefore(node: GameNode, lookFor: KClass<T>): T?*/
 }

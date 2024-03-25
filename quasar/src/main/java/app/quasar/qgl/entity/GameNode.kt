@@ -30,6 +30,13 @@ abstract class GameNode {
     protected open fun onDraw(drawableApi: DrawableApi){}
     protected open fun onDestroy() {}
 
+    /*
+    * TODO:: Should we have these, can be used to query nearby nodes
+    *   var x: Float
+    *   var y: Float
+    *   var geoHash = ....
+    * */
+
     internal fun create(argument: Any?) {
         runtimeId = engineApi.generateId() ?: -1L
         onCreate(engineApi, argument)
