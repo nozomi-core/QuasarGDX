@@ -23,7 +23,6 @@ class MapTool: GameNode() {
     }
 
     override fun onDraw(drawableApi: DrawableApi) {
-        drawChildren(drawableApi)
         with(drawableApi) {
             tilePx(QuasarTiles.GREEN_LIGHT, xPosition, -32f)
         }

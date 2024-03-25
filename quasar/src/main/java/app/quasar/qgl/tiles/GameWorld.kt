@@ -1,8 +1,9 @@
 package app.quasar.qgl.tiles
 
 import app.quasar.qgl.engine.EngineApi
+import kotlin.reflect.KClass
 
 interface GameWorld {
-    fun onCreateRoot(engine: EngineApi)
+    fun useRootScripts(): List<KClass<*>>
     fun onCreate(engine: EngineApi)
 }

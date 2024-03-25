@@ -8,6 +8,7 @@ import kotlin.reflect.full.createInstance
 
 private var currentRuntimeId = 0L
 
+//TODO: PAUSE ALL ENGINE API UNTIL WE TEST THE EXISTING FRAMEWORK
 abstract class GameNode {
     val runtimeId: Long = currentRuntimeId++
     val isAlive get() = !isDestroyed
@@ -28,7 +29,7 @@ abstract class GameNode {
     open fun onDestroy() {}
 
     internal fun simulate(deltaTime: Float) {
-        onSimulate(deltaTime)
+        doSimulationStep(deltaTime)
         checkObjectIsBeingDestroyed()
         doCreationStep()
     }
@@ -39,6 +40,27 @@ abstract class GameNode {
 
     internal fun attachToEngine(engineApi: EngineApiAdmin) {
         this.engineApiAdmin = engineApi
+    }
+
+    private fun destroy() {
+        onDestroy()
+        childNodes.forEach {
+            it.destroy()
+        }
+        //The engine only needs to remove the root node, child nodes will auto remove with parent dies
+        if(parentNode == null) {
+            engineApiAdmin?.destroyNode(this)
+        }
+        isDestroyed = true
+    }
+
+    private fun doSimulationStep(deltaTime: Float) {
+        onSimulate(deltaTime)
+        if(!isObjectedMarkedForDestruction) {
+            childNodes.forEach {
+                it.simulate(deltaTime)
+            }
+        }
     }
 
     private fun doCreationStep() {
@@ -55,9 +77,7 @@ abstract class GameNode {
 
     private fun checkObjectIsBeingDestroyed() {
         if(isObjectedMarkedForDestruction && !isDestroyed) {
-            onDestroy()
-            engineApiAdmin?.destroyNode(this)
-            isDestroyed = true
+           destroy()
         }
     }
 
@@ -65,11 +85,7 @@ abstract class GameNode {
         creationQueue.add(Pair(node, argument))
     }
 
-    protected fun drawChildren(drawableApi: DrawableApi) {
-        childNodes.forEach {
-            it.onDraw(drawableApi)
-        }
-    }
+
 
     protected fun destroyNode() {
         isObjectedMarkedForDestruction = true
