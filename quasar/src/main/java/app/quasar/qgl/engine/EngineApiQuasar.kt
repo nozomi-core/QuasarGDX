@@ -6,11 +6,13 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
-
+    private var currentRuntimeId = 0L
     private val engineNodeGraph = mutableListOf<GameNode>()
 
     private val destructionQueue = mutableListOf<GameNode>()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
+
+    override fun generateId() = currentRuntimeId++
 
     fun simulate(deltaTime: Float) {
         doDestructionStep()
@@ -37,7 +39,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
 
             val newEntity = kClass.createInstance()
             newEntity.attachToEngine(this)
-            newEntity.onCreate(this, argument)
+            newEntity.create(argument)
             engineNodeGraph.add(newEntity)
         }
         creationQueue.clear()
