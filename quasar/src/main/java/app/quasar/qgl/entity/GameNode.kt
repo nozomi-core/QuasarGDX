@@ -85,8 +85,6 @@ abstract class GameNode {
         creationQueue.add(Pair(node, argument))
     }
 
-
-
     protected fun destroyNode() {
         isObjectedMarkedForDestruction = true
     }
