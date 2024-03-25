@@ -16,7 +16,7 @@ class MainScreen(
     private lateinit var camera: OrthographicCamera
     private lateinit var viewport: Viewport
 
-    private val img by lazy { Texture("benchmark.png") }
+    private val img by lazy { Texture("sprites/tileset.png") }
 
     override fun show() {
         camera = OrthographicCamera()

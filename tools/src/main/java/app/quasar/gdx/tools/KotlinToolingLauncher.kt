@@ -13,6 +13,7 @@ fun runKotlinTooling(args: Array<String>) {
     val config = Lwjgl3ApplicationConfiguration()
     config.setForegroundFPS(60)
     config.setTitle("Quasar Tools")
+    config.setWindowedMode(1920, 1080)
 
     val toolArgument = args.find {
         it.contains("-tool=")
