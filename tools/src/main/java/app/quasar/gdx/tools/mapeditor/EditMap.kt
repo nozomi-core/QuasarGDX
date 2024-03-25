@@ -12,9 +12,10 @@ interface PublicEditMap {
 class EditMap: GameNode(), PublicEditMap {
 
     private var positionX = 0f
+
     private val speedMs = 4f
 
-    override fun onCreate(engineApi: EngineApi) {}
+    override fun onCreate(engineApi: EngineApi, arg: Any?) {}
 
     override fun onSimulate(delta: Float) {
         positionX += speedMs * delta

@@ -5,12 +5,13 @@ import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.GameNode
 import app.quasar.qgl.render.DrawableApi
 
+data class MapToolArg(val startX: Float, val startY: Float)
+
 class MapTool: GameNode() {
 
     private var timer: Float = 0f
 
     private var xPosition: Float = 0f
-
 
     override fun onSimulate(deltaTime: Float) {
         timer += deltaTime
@@ -28,22 +29,20 @@ class MapTool: GameNode() {
         }
     }
 
-    override fun onCreate(engineApi: EngineApi) {
+    override fun onCreate(engineApi: EngineApi, argument: Any?) {
         val parent = engineApi.requireFindByInterface(PublicEditMap::class)
         parent.printMessage("Hey there")
 
-        createChild(ToolRender::class)
+        createChild(ToolRender::class, null)
     }
 
     override fun onDestroy() {
-       engineApi?.createGameNode(GreenTile::class)?.apply {
-           setPosition(xPosition)
-       }
+       engineApi?.createGameNode(GreenTile::class, MapToolArg(xPosition, -10f))
     }
 }
 
 class ToolRender: GameNode() {
-    override fun onCreate(engineApi: EngineApi) {
+    override fun onCreate(engineApi: EngineApi, argument: Any?) {
         //TODO("Not yet implemented")
     }
 

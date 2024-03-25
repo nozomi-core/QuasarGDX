@@ -9,12 +9,14 @@ class GreenTile: GameNode() {
 
     private var xPos = 0f
 
-    fun setPosition(x: Float) {
-        xPos = x
+    override fun onCreate(engineApi: EngineApi, argument: Any?) {
+        when(argument) {
+            is MapToolArg -> {
+                xPos = argument.startX
+            }
+        }
+
     }
-
-
-    override fun onCreate(engineApi: EngineApi) {}
     override fun onSimulate(deltaTime: Float) {}
 
     override fun onDraw(drawableApi: DrawableApi) {
