@@ -19,7 +19,8 @@ abstract class GameNode {
     private var isObjectedMarkedForDestruction = false
     private var isDestroyed = false
 
-    private var parentNode: GameNode? = null
+    var parentNode: GameNode? = null
+        private set
     private var engineApiAdmin: EngineApiAdmin? = null
 
     private val childNodes = mutableListOf<GameNode>()
@@ -82,6 +83,7 @@ abstract class GameNode {
             val (kClass, argument) = createNode
 
             val newEntity = kClass.createInstance()
+            newEntity.parentNode = this
             newEntity.attachToEngine(engineApiAdmin!!)
             newEntity.onCreate(engineApi!!, argument)
             childNodes.add(newEntity)
