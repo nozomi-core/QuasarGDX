@@ -6,8 +6,6 @@ import app.quasar.qgl.render.DrawableApi
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-
-
 //TODO: PAUSE ALL ENGINE API UNTIL WE TEST THE EXISTING FRAMEWORK
 abstract class GameNode {
     var runtimeId: Long = -1L
@@ -38,8 +36,9 @@ abstract class GameNode {
     *   var geoHash = ....
     * */
 
-    internal fun create(argument: Any?) {
-        runtimeId = engineApi.generateId() ?: -1L
+    internal fun create(engineApiAdmin: EngineApiAdmin, argument: Any?) {
+        this.engineApiAdmin = engineApiAdmin
+        this.runtimeId = engineApiAdmin.generateId()
         onCreate(engineApi, argument)
     }
 
@@ -51,10 +50,6 @@ abstract class GameNode {
 
     internal fun draw(drawableApi: DrawableApi) {
         onDraw(drawableApi)
-    }
-
-    internal fun attachToEngine(engineApi: EngineApiAdmin) {
-        this.engineApiAdmin = engineApi
     }
 
     private fun destroy() {
@@ -84,8 +79,7 @@ abstract class GameNode {
 
             val newEntity = kClass.createInstance()
             newEntity.parentNode = this
-            newEntity.attachToEngine(engineApiAdmin!!)
-            newEntity.onCreate(engineApi!!, argument)
+            newEntity.create(engineApiAdmin!!, argument)
             childNodes.add(newEntity)
         }
         creationQueue.clear()

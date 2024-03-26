@@ -38,8 +38,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
             val (kClass, argument) = createNode
 
             val newEntity = kClass.createInstance()
-            newEntity.attachToEngine(this)
-            newEntity.create(argument)
+            newEntity.create(this, argument)
             engineNodeGraph.add(newEntity)
         }
         creationQueue.clear()
