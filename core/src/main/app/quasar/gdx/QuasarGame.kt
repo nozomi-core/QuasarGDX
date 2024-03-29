@@ -1,6 +1,7 @@
 package app.quasar.gdx
 
 import app.quasar.gdx.game.screen.main.MainScreen
+import app.quasar.gdx.lumber.Lumber
 import app.quasar.gdx.lumber.setupLumber
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -18,6 +19,7 @@ class QuasarGame(
 
         //set starting screen for launcher
         startMainMenu()
+        Lumber.debug("QusarGame :${Thread.currentThread().name}")
     }
 
     private fun useLumber() = setupLumber {
