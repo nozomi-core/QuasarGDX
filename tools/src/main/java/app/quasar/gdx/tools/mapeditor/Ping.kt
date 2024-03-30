@@ -1,7 +1,10 @@
 package app.quasar.gdx.tools.mapeditor
 
+import app.quasar.qgl.entity.GameNode
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
+import app.quasar.qgl.scripts.QuasarEngineLogger
+import kotlin.reflect.KClass
 
 typealias PingCallback = (message: String) -> Unit
 
@@ -30,6 +33,10 @@ class Ping: RootNode(), Pingable {
             }
             totalTime = 0.0
         }
+    }
+
+    override fun shouldRunBefore(): List<KClass<*>> {
+        return listOf(QuasarEngineLogger::class)
     }
 
     override fun onRootCreated() {

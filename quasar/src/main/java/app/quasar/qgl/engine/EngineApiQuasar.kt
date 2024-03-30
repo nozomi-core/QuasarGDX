@@ -75,8 +75,8 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     override fun <T : GameNode> createRootScripts(gameScripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
         val mergeAllScripts = mutableListOf<KClass<*>>().apply {
-            addAll(gameScripts)
             addAll(QuasarRootScripts.scripts)
+            addAll(gameScripts)
         }.toList()
 
         checkUniqueRootScripts(mergeAllScripts)
@@ -84,6 +84,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
             createGameNode(it)
         }
         doCreationStep()
+        checkScriptOrderIntegrity()
         rootScripts = mutableListOf()
         rootScripts.addAll(mergeAllScripts)
 
@@ -98,6 +99,21 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     override fun destroyNode(node: GameNode) {
         checkNodeIsRootScriptThenThrow(node)
         destructionQueue.add(node)
+    }
+
+    private fun checkScriptOrderIntegrity() {
+        engineNodeGraph.forEach { currentNode ->
+            if(currentNode is RootNode) {
+                val shouldBeBefore = currentNode.shouldRunBefore()
+                val thisNodeIndex = engineNodeGraph.indexOf(currentNode)
+                shouldBeBefore.forEach { dependClass ->
+                    val dependIndex = engineNodeGraph.indexOf(engineNodeGraph.first { it::class == dependClass })
+                    if(dependIndex > thisNodeIndex) {
+                        throw SecurityException("${dependClass.simpleName} should be spawned before ${currentNode::class.simpleName}")
+                    }
+                }
+            }
+        }
     }
 
     private fun checkNodeIsRootScriptThenThrow(node: GameNode) {
