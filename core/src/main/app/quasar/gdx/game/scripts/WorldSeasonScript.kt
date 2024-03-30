@@ -8,7 +8,11 @@ import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.scripts.EngineLogger
 import kotlin.reflect.KClass
 
-class SeasonScript: RootNode() {
+interface WorldSeason {
+    val seasonProvider: ProviderStack<SeasonAlgorithm>
+}
+
+class WorldSeasonScript: RootNode(), WorldSeason {
     private lateinit var logger: EngineLogger
     private lateinit var worldTime: WorldTime
 
@@ -25,7 +29,7 @@ class SeasonScript: RootNode() {
         }
     }
 
-    private val seasonProvider = ProviderStack<SeasonAlgorithm>(defaultSeason)
+    override val seasonProvider = ProviderStack<SeasonAlgorithm>(defaultSeason)
 
     override fun onCreate(engine: EngineApi, argument: Any?) {
         super.onCreate(engine, argument)
