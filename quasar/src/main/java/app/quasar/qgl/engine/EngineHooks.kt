@@ -14,7 +14,7 @@ data class QuasarEngine2DConfig(
     val layout: TileSheetLayout
 )
 
-interface EngineCallbacks {
+interface EngineHooks {
     fun useWorldCamera(): Camera
     fun useOverlayCamera(): Camera
     fun useWorldViewport(): Viewport

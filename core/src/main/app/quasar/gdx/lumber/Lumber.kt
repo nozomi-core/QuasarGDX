@@ -19,7 +19,7 @@ object Lumber {
 
     fun debug(message: String) {
         if(config?.isDebug == true) {
-            print(message)
+            println(message)
         }
     }
 

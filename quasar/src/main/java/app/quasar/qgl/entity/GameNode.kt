@@ -6,7 +6,6 @@ import app.quasar.qgl.render.DrawableApi
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-//TODO: PAUSE ALL ENGINE API UNTIL WE TEST THE EXISTING FRAMEWORK
 abstract class GameNode {
     var runtimeId: Long = -1L
         private set

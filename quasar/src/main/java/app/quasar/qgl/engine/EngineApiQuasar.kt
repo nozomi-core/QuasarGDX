@@ -67,6 +67,13 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     }
 
     //Admin Functions
+    override fun <T : GameNode> createRootScripts(scripts: List<KClass<T>>) {
+        scripts.forEach {
+            createGameNode(it)
+        }
+        doCreationStep()
+    }
+
     override fun destroyNode(node: GameNode) {
         destructionQueue.add(node)
     }
