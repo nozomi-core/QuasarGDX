@@ -12,6 +12,8 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     private val destructionQueue = mutableListOf<GameNode>()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
 
+    private var rootScripts = mutableListOf<KClass<*>>()
+
     override fun generateId() = currentRuntimeId++
 
     fun simulate(deltaTime: Float) {
@@ -50,8 +52,9 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
         }
     }
 
-    override fun <T : GameNode> createGameNode(node: KClass<T>, argument: Any?) {
-        creationQueue.add(Pair(node, argument))
+    override fun <T : GameNode> createGameNode(nodeScript: KClass<T>, argument: Any?) {
+        checkNodeIsRootScriptThenThrow(nodeScript)
+        creationQueue.add(Pair(nodeScript, argument))
     }
 
     override fun <T: Any> requireFindByInterface(typeInterface: KClass<T>): T {
@@ -73,10 +76,23 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
             createGameNode(it)
         }
         doCreationStep()
+        rootScripts = mutableListOf()
+        rootScripts.addAll(scripts)
     }
 
     override fun destroyNode(node: GameNode) {
+        checkNodeIsRootScriptThenThrow(node)
         destructionQueue.add(node)
+    }
+
+    private fun checkNodeIsRootScriptThenThrow(node: GameNode) {
+        checkNodeIsRootScriptThenThrow(node::class)
+    }
+
+    private fun checkNodeIsRootScriptThenThrow(script: KClass<*>) {
+        if(rootScripts.contains(script)) {
+            throw SecurityException("Root scripts are immutable, you can not add or remove them")
+        }
     }
 }
 
