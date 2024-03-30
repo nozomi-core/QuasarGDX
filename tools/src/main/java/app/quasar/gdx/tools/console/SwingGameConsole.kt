@@ -3,11 +3,12 @@ package app.quasar.gdx.tools.console
 import app.quasar.gdx.lumber.Lumber
 import app.quasar.gdx.tools.mapeditor.Pingable
 import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.scripts.EngineLogger
 import javax.swing.JButton
 import javax.swing.JFrame
 
-class GameLogger(private val engineApi: EngineApi) {
-    val ping: Pingable = engineApi.requireFindByInterface(Pingable::class)
+class SwingGameConsole(private val engineApi: EngineApi) {
+    private val console: EngineLogger = engineApi.requireFindByInterface(EngineLogger::class)
 
     init {
         setupEditor()
@@ -32,8 +33,8 @@ class GameLogger(private val engineApi: EngineApi) {
         // Create a JLabel to display text
         val button = JButton("Click Me")
 
-        ping.addCallback {
-            button.text = it
+        console.addOnLogMessage {
+            button.text = it.message
         }
 
         button.addActionListener {

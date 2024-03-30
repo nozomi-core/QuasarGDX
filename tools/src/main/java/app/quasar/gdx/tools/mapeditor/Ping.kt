@@ -23,10 +23,10 @@ class Ping: RootNode(), Pingable {
         super.onSimulate(deltaTime)
         totalTime += deltaTime
         if(totalTime >= 10) {
+            val message = "ping: ${System.currentTimeMillis()}"
+            logger.message(this, message)
             callbacks.forEach {
-                val message = "ping: ${System.currentTimeMillis()}"
                 it(message)
-                logger.sendMessage(message)
             }
             totalTime = 0.0
         }
