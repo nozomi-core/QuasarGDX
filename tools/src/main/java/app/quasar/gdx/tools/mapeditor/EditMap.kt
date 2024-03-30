@@ -40,6 +40,6 @@ class EditMap: GameNode(), PublicEditMap {
     }
 
     override fun printMessage(msg: String) {
-        print("Using public message interface: $msg")
+        println("Using public message interface: $msg")
     }
 }

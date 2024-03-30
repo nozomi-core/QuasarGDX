@@ -1,7 +1,9 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.entity.GameNode
+import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.render.DrawableApi
+import app.quasar.qgl.scripts.QuasarRootScripts
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -70,14 +72,27 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     }
 
     //Admin Functions
-    override fun <T : GameNode> createRootScripts(scripts: List<KClass<T>>) {
-        checkUniqueRootScripts(scripts)
-        scripts.forEach {
+    override fun <T : GameNode> createRootScripts(gameScripts: List<KClass<T>>) {
+        //Add quasars own root scripts that will be spawned alongside the game scripts by developer
+        val mergeAllScripts = mutableListOf<KClass<*>>().apply {
+            addAll(gameScripts)
+            addAll(QuasarRootScripts.scripts)
+        }.toList()
+
+        checkUniqueRootScripts(mergeAllScripts)
+        mergeAllScripts.filterIsInstance<KClass<T>>().forEach {
             createGameNode(it)
         }
         doCreationStep()
         rootScripts = mutableListOf()
-        rootScripts.addAll(scripts)
+        rootScripts.addAll(mergeAllScripts)
+
+        //Iterate through nodes and if they are root script, call the post setup method so they can init dependancy on tree
+        engineNodeGraph.forEach {
+            if(it is RootNode) {
+                it.doRootCreated()
+            }
+        }
     }
 
     override fun destroyNode(node: GameNode) {
@@ -102,8 +117,8 @@ private fun checkCastIsInterface(kClass: KClass<*>) {
     }
 }
 
-private fun <T : GameNode> checkUniqueRootScripts(scripts: List<KClass<T>>) {
-    val checkDuplicates = HashSet<KClass<T>>()
+private fun checkUniqueRootScripts(scripts: List<KClass<*>>) {
+    val checkDuplicates = HashSet<KClass<*>>()
     scripts.forEach {
         if(checkDuplicates.contains(it)) {
             throw IllegalArgumentException("Cannot have duplicate classes in root scripts, only 1 instance shall be spawned")

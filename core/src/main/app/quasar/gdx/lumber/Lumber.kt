@@ -24,6 +24,6 @@ object Lumber {
     }
 
     fun warn(message: String) {
-        print("WARNING -----> $message")
+        println("WARNING -----> $message")
     }
 }

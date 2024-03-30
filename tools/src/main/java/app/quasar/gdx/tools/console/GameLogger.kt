@@ -1,13 +1,12 @@
 package app.quasar.gdx.tools.console
 
 import app.quasar.gdx.lumber.Lumber
-import app.quasar.gdx.tools.mapeditor.Ping
 import app.quasar.gdx.tools.mapeditor.Pingable
 import app.quasar.qgl.engine.EngineApi
 import javax.swing.JButton
 import javax.swing.JFrame
 
-class EngineConsole(private val engineApi: EngineApi) {
+class GameLogger(private val engineApi: EngineApi) {
     val ping: Pingable = engineApi.requireFindByInterface(Pingable::class)
 
     init {
@@ -16,12 +15,12 @@ class EngineConsole(private val engineApi: EngineApi) {
     private fun setupEditor() {
 
         //Swing window
-        val frame = JFrame("My Swing Window")
+        val frame = JFrame("GameLogger")
 
         // Set the size of the JFrame
 
         // Set the size of the JFrame
-        frame.setSize(400, 300)
+        frame.setSize(600, 800)
 
         // Set the default close operation to exit the application when the window is closed
 

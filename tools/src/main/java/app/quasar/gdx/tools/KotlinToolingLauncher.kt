@@ -2,10 +2,9 @@ package app.quasar.gdx.tools
 
 import app.quasar.gdx.QuasarConfig
 import app.quasar.gdx.QuasarGame
-import app.quasar.gdx.tools.console.EngineConsole
+import app.quasar.gdx.tools.console.GameLogger
 import app.quasar.gdx.tools.mapeditor.MapEditorApplication
 import app.quasar.qgl.QuasarRuntime
-import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
@@ -30,7 +29,7 @@ fun runKotlinTooling(args: Array<String>) {
     val runtime = QuasarRuntime()
 
     runtime.onWorldEngine {
-        EngineConsole(it)
+        GameLogger(it)
     }
 
     val gdxApp: ApplicationListener = when(toolName) {

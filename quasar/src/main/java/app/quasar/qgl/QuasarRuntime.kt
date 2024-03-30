@@ -9,10 +9,10 @@ class QuasarRuntime {
 
     internal fun sendWorldEngine(api: EngineApi) {
         callback?.invoke(api)
+        callback = null
     }
 
     fun onWorldEngine(callback: EngineReady) {
         this.callback = callback
-        this.callback = null
     }
 }
