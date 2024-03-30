@@ -10,6 +10,7 @@ import kotlin.reflect.KClass
 
 interface WorldSeason {
     val seasonProvider: ProviderStack<SeasonAlgorithm>
+    val hasSeasonChanged: Boolean
 }
 
 class WorldSeasonScript: RootNode(), WorldSeason {
@@ -17,6 +18,9 @@ class WorldSeasonScript: RootNode(), WorldSeason {
     private lateinit var worldTime: WorldTime
 
     private lateinit var currentSeason: Season
+
+    private var _hasSeasonChanged = false
+    override val hasSeasonChanged: Boolean get() = _hasSeasonChanged
 
     private val defaultSeason = object : SeasonAlgorithm {
         override fun onWhatSeasonNow(monthOfYear: MonthOfYear): Season {
@@ -40,6 +44,7 @@ class WorldSeasonScript: RootNode(), WorldSeason {
 
     override fun onSimulate(deltaTime: Float) {
         super.onSimulate(deltaTime)
+        _hasSeasonChanged = false
         if(worldTime.hasMonthOfYearChanged) {
             val lastSeason = currentSeason
             doCalculateSeason()
@@ -55,7 +60,7 @@ class WorldSeasonScript: RootNode(), WorldSeason {
     }
 
     private fun onSeasonChanged() {
-        logger.message(this, "onSeason: ${currentSeason.name}")
+        _hasSeasonChanged = true
     }
 
     override fun shouldRunBefore(): List<KClass<*>> {
