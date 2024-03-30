@@ -26,7 +26,7 @@ class QuasarEngine2D(
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
        this.world = kClass.createInstance().apply {
            createRootScripts(useRootScripts())
-           onCreate(engineApi)
+           create(engineApi)
            runtime.postWorldEngine(engineApi)
        }
     }
