@@ -61,6 +61,7 @@ project(":core") {
     dependencies {
         implementation project(":quasar")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        implementation "joda-time:joda-time:2.12.7"
 
         testImplementation "junit:junit:4.13"
     }

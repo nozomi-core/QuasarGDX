@@ -1,4 +1,4 @@
-package app.quasar.gdx.game.screen.main
+package app.quasar.gdx.ui.main
 
 import app.quasar.gdx.tiles.QuasarTiles
 import app.quasar.qgl.entity.GameNode

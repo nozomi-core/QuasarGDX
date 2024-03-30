@@ -34,7 +34,7 @@ fun runKotlinTooling(args: Array<String>) {
 
     val gdxApp: ApplicationListener = when(toolName) {
         CommandArgs.MAP_EDITOR -> MapEditorApplication(runtime)
-        CommandArgs.DEBUG_GAME -> QuasarGame(QuasarConfig(isDebug = true))
+        CommandArgs.DEBUG_GAME -> QuasarGame(runtime, QuasarConfig(isDebug = true))
         else -> null
     } ?: return println("tool cannot be found try a proper name")
 
