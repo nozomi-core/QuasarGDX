@@ -7,7 +7,7 @@ typealias EngineReady = (api: EngineApi) -> Unit
 class QuasarRuntime {
     private var callback: EngineReady? = null
 
-    fun postWorldEngine(api: EngineApi) {
+    internal fun sendWorldEngine(api: EngineApi) {
         callback?.invoke(api)
     }
 
