@@ -4,7 +4,7 @@ import app.quasar.gdx.AssetFiles
 import app.quasar.gdx.tiles.QuasarTileset
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.QuasarEngine2DConfig
-import app.quasar.qgl.engine.EngineCallbacks
+import app.quasar.qgl.engine.EngineHooks
 import app.quasar.qgl.engine.QuasarEngine2D
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.ApplicationAdapter
@@ -36,7 +36,7 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
         )
     }
 
-    private val engineCallbacks = object : EngineCallbacks {
+    private val engineCallbacks = object : EngineHooks {
         override fun useWorldCamera() = worldCamera
         override fun useWorldViewport() = worldViewport
         override fun useOverlayCamera() = overlayCamera

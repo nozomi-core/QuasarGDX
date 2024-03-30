@@ -13,5 +13,6 @@ class QuasarRuntime {
 
     fun onWorldEngine(callback: EngineReady) {
         this.callback = callback
+        this.callback = null
     }
 }

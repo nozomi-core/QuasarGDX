@@ -11,11 +11,10 @@ import com.badlogic.gdx.utils.Disposable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-//TODO: PAUSE ALL ENGINE API UNTIL WE TEST THE EXISTING FRAMEWORK
 class QuasarEngine2D(
     private val runtime: QuasarRuntime,
     private val config: QuasarEngine2DConfig,
-    private val callbacks: EngineCallbacks,
+    private val engineHooks: EngineHooks,
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
@@ -47,18 +46,18 @@ class QuasarEngine2D(
         val spriteBatch = config.spriteBatch
 
         //Draw world frame
-        callbacks.useWorldViewport().apply()
-        callbacks.useWorldCamera().update()
-        spriteBatch.projectionMatrix = callbacks.useWorldCamera().combined
+        engineHooks.useWorldViewport().apply()
+        engineHooks.useWorldCamera().update()
+        spriteBatch.projectionMatrix = engineHooks.useWorldCamera().combined
         spriteBatch.begin()
         engineApi.simulate(Gdx.graphics.deltaTime)
         engineApi.draw()
         spriteBatch.end()
 
         //DrawUI
-        callbacks.useOverlayViewport().apply()
-        callbacks.useOverlayCamera().update()
-        spriteBatch.projectionMatrix = callbacks.useOverlayCamera().combined
+        engineHooks.useOverlayViewport().apply()
+        engineHooks.useOverlayCamera().update()
+        spriteBatch.projectionMatrix = engineHooks.useOverlayCamera().combined
         spriteBatch.begin()
         overlay?.onDraw(drawableApi)
         spriteBatch.end()
@@ -74,7 +73,6 @@ class QuasarEngine2D(
             tileset.onCreateTiles(builder)
         }.build()
     }
-
 
     private fun QuasarEngine2DConfig.createDrawApi(): DrawableApi {
         return DrawableApiQuasar(

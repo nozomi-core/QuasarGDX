@@ -73,7 +73,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
         }
         doCreationStep()
     }
-    
+
     override fun destroyNode(node: GameNode) {
         destructionQueue.add(node)
     }
