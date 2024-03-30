@@ -49,3 +49,18 @@ tasks.register('run-tooling', JavaExec) {
         jvmArgs += "-XstartOnFirstThread"
     }
 }
+
+tasks.register('run-debug_game', JavaExec) {
+    dependsOn classes
+    mainClass = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    workingDir = project.assetsDir
+    standardInput = System.in
+    ignoreExitValue = true
+    args = ["-tool=debug_game"]
+
+    if (org.gradle.internal.os.OperatingSystem.current() == org.gradle.internal.os.OperatingSystem.MAC_OS) {
+        // Required to run on macOS
+        jvmArgs += "-XstartOnFirstThread"
+    }
+}
