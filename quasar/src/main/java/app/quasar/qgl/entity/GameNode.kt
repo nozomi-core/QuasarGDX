@@ -23,9 +23,9 @@ abstract class GameNode {
     private val childNodes = mutableListOf<GameNode>()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
 
-    protected open fun onCreate(engineApi: EngineApi, argument: Any?) {}
+    protected open fun onCreate(engine: EngineApi, argument: Any?) {}
     protected open fun onSimulate(deltaTime: Float) {}
-    protected open fun onDraw(drawableApi: DrawableApi){}
+    protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
     /*
