@@ -1,10 +1,10 @@
 package app.quasar.qgl.engine
 
+import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.entity.GameNode
 import app.quasar.qgl.render.DrawableApi
 import app.quasar.qgl.render.DrawableApiQuasar
 import app.quasar.qgl.tiles.*
-import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.utils.Disposable
@@ -13,6 +13,7 @@ import kotlin.reflect.full.createInstance
 
 //TODO: PAUSE ALL ENGINE API UNTIL WE TEST THE EXISTING FRAMEWORK
 class QuasarEngine2D(
+    private val runtime: QuasarRuntime,
     private val config: QuasarEngine2DConfig,
     private val callbacks: EngineCallbacks,
 ): Disposable {
@@ -27,15 +28,13 @@ class QuasarEngine2D(
        this.world = kClass.createInstance().apply {
            createRootScripts(useRootScripts())
            onCreate(engineApi)
+           runtime.postWorldEngine(engineApi)
        }
     }
 
     private fun createRootScripts(scripts: List<KClass<*>>) {
-        scripts.forEach { rootScript ->
-            if(GameNode::class.java.isAssignableFrom(rootScript.java)) {
-                engineApi.createGameNode(rootScript as KClass<GameNode>, null)
-            }
-        }
+        val rootScripts = scripts.filterIsInstance<KClass<GameNode>>()
+        engineApi.createRootScripts(rootScripts)
     }
 
     fun <T: GameOverlay> createOverlay(overlay: KClass<T>) {

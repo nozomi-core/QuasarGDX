@@ -2,6 +2,7 @@ package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.AssetFiles
 import app.quasar.gdx.tiles.QuasarTileset
+import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.QuasarEngine2DConfig
 import app.quasar.qgl.engine.EngineCallbacks
 import app.quasar.qgl.engine.QuasarEngine2D
@@ -17,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 
-class MapEditorApplication: ApplicationAdapter() {
+class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapter() {
 
     private lateinit var worldCamera: OrthographicCamera
     private lateinit var overlayCamera: OrthographicCamera
@@ -44,7 +45,7 @@ class MapEditorApplication: ApplicationAdapter() {
 
     override fun create() {
         super.create()
-        engine2D = QuasarEngine2D(config, engineCallbacks).apply {
+        engine2D = QuasarEngine2D(runtime, config, engineCallbacks).apply {
             createWorld(EditWorld::class)
             createOverlay(EditOverlay::class)
         }
