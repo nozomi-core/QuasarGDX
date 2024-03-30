@@ -97,4 +97,15 @@ abstract class GameNode {
     protected fun destroyNode() {
         isObjectedMarkedForDestruction = true
     }
+
+    override fun equals(other: Any?): Boolean {
+        return when(other is GameNode) {
+            true -> other.runtimeId == this.runtimeId
+            false -> false
+        }
+    }
+
+    override fun toString(): String {
+        return "GameNode@$runtimeId"
+    }
 }

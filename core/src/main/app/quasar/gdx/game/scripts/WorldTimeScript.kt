@@ -2,6 +2,7 @@ package app.quasar.gdx.game.scripts
 
 import app.quasar.gdx.game.model.GameTime
 import app.quasar.gdx.game.model.GameTimeAdmin
+import app.quasar.gdx.game.model.MonthOfYear
 import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
@@ -13,6 +14,7 @@ interface WorldTime {
     val hasDayOfMonthChange: Boolean
     val hasMonthOfYearChanged: Boolean
     val hasYearChange: Boolean
+    val whatMonth: MonthOfYear
 }
 
 class WorldTimeScript: RootNode(), WorldTime {
@@ -30,6 +32,8 @@ class WorldTimeScript: RootNode(), WorldTime {
     override val hasDayOfMonthChange: Boolean       get() = timeChanges.day
     override val hasMonthOfYearChanged: Boolean     get() = timeChanges.month
     override val hasYearChange: Boolean             get() = timeChanges.year
+
+    override val whatMonth: MonthOfYear            get() = MonthOfYear.findFromValue(gameTime.monthOfYear)
 
     override fun onCreate(engine: EngineApi, argument: Any?) {
         super.onCreate(engine, argument)
@@ -97,7 +101,7 @@ class WorldTimeScript: RootNode(), WorldTime {
     }
 
     companion object {
-        const val DEFAULT_SPEED = 500000f
+        const val DEFAULT_SPEED = 1000000f
     }
 }
 
