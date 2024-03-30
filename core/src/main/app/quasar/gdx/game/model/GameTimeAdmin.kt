@@ -13,11 +13,11 @@ interface GameTime {
 class GameTimeAdmin(instant: Long = System.currentTimeMillis()): GameTime {
     private val date = MutableDateTime(instant)
 
-    override val dayOfMonth: Int    get() = date.dayOfMonth
-    override val year: Int          get() = date.year
-    override val monthOfYear: Int   get() = date.monthOfYear
-    override val hourOfDay: Int     get() = date.hourOfDay
     override val minuteOfHour       get() = date.minuteOfHour
+    override val hourOfDay: Int     get() = date.hourOfDay
+    override val dayOfMonth: Int    get() = date.dayOfMonth
+    override val monthOfYear: Int   get() = date.monthOfYear
+    override val year: Int          get() = date.year
 
     fun addSeconds(seconds: Float) {
         val millis = (seconds * 1000).toInt()

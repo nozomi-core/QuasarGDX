@@ -34,7 +34,7 @@ class DayClockScript: RootNode(), DayClock {
     }
 
     private fun onTimeOfDayChanged() {
-        logger.message(this, "time_changed: ${_timeOfDay.name}")
+        //logger.message(this, "time_changed: ${_timeOfDay.name}")
     }
 
     override fun shouldRunBefore() = listOf(WorldTimeScript::class)

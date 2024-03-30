@@ -10,22 +10,24 @@ interface WorldTime {
     val gameTime: GameTime
     val hasMinuteOfHourChanged: Boolean
     val hasHourOfDayChanged: Boolean
+    val hasDayOfMonthChange: Boolean
     val hasMonthOfYearChanged: Boolean
     val hasYearChange: Boolean
 }
 
 class WorldTimeScript: RootNode(), WorldTime {
+    private lateinit var logger: EngineLogger
+
     private val _gameTime = GameTimeAdmin()
 
     override val gameTime: GameTime get() = _gameTime
-
-    private lateinit var logger: EngineLogger
 
     private var gameSpeed: Float = DEFAULT_SPEED
     private val timeChanges = TimeChanges()
 
     override val hasMinuteOfHourChanged: Boolean    get() = timeChanges.minute
     override val hasHourOfDayChanged: Boolean       get() = timeChanges.hour
+    override val hasDayOfMonthChange: Boolean       get() = timeChanges.day
     override val hasMonthOfYearChanged: Boolean     get() = timeChanges.month
     override val hasYearChange: Boolean             get() = timeChanges.year
 
@@ -47,6 +49,7 @@ class WorldTimeScript: RootNode(), WorldTime {
         val lastMinuteOfHour = gameTime.minuteOfHour
         val lastHourOfDay = gameTime.hourOfDay
         val lastDayOfMonth = gameTime.dayOfMonth
+        val lastMonthOfYear = gameTime.monthOfYear
         val lastYear = gameTime.year
 
         _gameTime.addSeconds(deltaTime * gameSpeed)
@@ -63,6 +66,10 @@ class WorldTimeScript: RootNode(), WorldTime {
             onDayOfMonthChanged()
         }
 
+        if(lastMonthOfYear != gameTime.monthOfYear) {
+            onMonthOfTheYearChanged()
+        }
+
         if(lastYear != gameTime.year) {
             onYearChanged()
         }
@@ -74,6 +81,10 @@ class WorldTimeScript: RootNode(), WorldTime {
 
     private fun onHourOfDayChanged() {
         timeChanges.hour = true
+    }
+
+    private fun onMonthOfTheYearChanged() {
+        timeChanges.month = true
         logger.message(this, _gameTime.toString())
     }
 
@@ -86,7 +97,7 @@ class WorldTimeScript: RootNode(), WorldTime {
     }
 
     companion object {
-        const val DEFAULT_SPEED = 5000f
+        const val DEFAULT_SPEED = 500000f
     }
 }
 
