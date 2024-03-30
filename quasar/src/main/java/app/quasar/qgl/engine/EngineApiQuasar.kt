@@ -68,6 +68,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
 
     //Admin Functions
     override fun <T : GameNode> createRootScripts(scripts: List<KClass<T>>) {
+        checkUniqueRootScripts(scripts)
         scripts.forEach {
             createGameNode(it)
         }
@@ -82,5 +83,15 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
 private fun checkCastIsInterface(kClass: KClass<*>) {
     if(!kClass.java.isInterface) {
         throw SecurityException("Can only search for interfaces when finding a node in the engine")
+    }
+}
+
+private fun <T : GameNode> checkUniqueRootScripts(scripts: List<KClass<T>>) {
+    val checkDuplicates = HashSet<KClass<T>>()
+    scripts.forEach {
+        if(checkDuplicates.contains(it)) {
+            throw IllegalArgumentException("Cannot have duplicate classes in root scripts, only 1 instance shall be spawned")
+        }
+        checkDuplicates.add(it)
     }
 }
