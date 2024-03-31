@@ -6,6 +6,9 @@ class ProviderStack<T>(private val startValue: T) {
 
     private val additions = mutableListOf<Pair<GameNode, T>>()
 
+    val size: Int
+        get() = 1 + additions.size
+
     fun get(): T {
         return if(additions.isEmpty())
             return startValue
@@ -22,6 +25,11 @@ class ProviderStack<T>(private val startValue: T) {
             additions.add(Pair(node, value))
             node.providesInto(this, value)
         }
+    }
+
+    fun forEach(callback: (T) -> Unit) {
+        callback(startValue)
+        additions.forEach { callback(it.second) }
     }
 
     internal fun remove(gameNode: GameNode) {
