@@ -4,7 +4,7 @@ import app.quasar.qgl.entity.GameNode
 
 class ProviderStack<T>(private val startValue: T) {
 
-    private val additions = mutableListOf<Pair<GameNode, T>>()
+    private val additions = mutableListOf<Pair<Long, T>>()
 
     val size: Int
         get() = 1 + additions.size
@@ -18,11 +18,11 @@ class ProviderStack<T>(private val startValue: T) {
 
     fun push(node: GameNode, value: T) {
         val existingNode = additions.find { pair ->
-            pair.first == pair
+            pair.first  == node.runtimeId
         }
 
         if(existingNode == null) {
-            additions.add(Pair(node, value))
+            additions.add(Pair(node.runtimeId, value))
             node.providesInto(this, value)
         }
     }
@@ -34,7 +34,7 @@ class ProviderStack<T>(private val startValue: T) {
 
     internal fun remove(gameNode: GameNode) {
         additions.removeIf {
-            it.first == gameNode
+            it.first == gameNode.runtimeId
         }
     }
 }
