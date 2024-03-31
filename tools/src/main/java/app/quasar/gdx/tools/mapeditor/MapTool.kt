@@ -28,20 +28,20 @@ class MapTool: GameNode() {
         }
     }
 
-    override fun onCreate(engineApi: EngineApi, argument: Any?) {
-        val parent = engineApi.requireFindByInterface(PublicEditMap::class)
-        parent.printMessage("Hey there")
+    override fun onCreate(argument: Any?) {
+        //val parent = engineApi.requireFindByInterface(PublicEditMap::class)
+       // parent.printMessage("Hey there")
 
         createChild(ToolRender::class, null)
     }
 
     override fun onDestroy() {
-       engineApi?.createGameNode(GreenTile::class, MapToolArg(xPosition, -10f))
+       //engineApi?.createGameNode(GreenTile::class, MapToolArg(xPosition, -10f))
     }
 }
 
 class ToolRender: GameNode() {
-    override fun onCreate(engineApi: EngineApi, argument: Any?) {
+    override fun onCreate(argument: Any?) {
         //TODO("Not yet implemented")
     }
 

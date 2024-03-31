@@ -29,20 +29,21 @@ class WorldSeasonScript: RootNode(), WorldSeason {
     private lateinit var seasonProvider: ProviderStack<SeasonAlgorithm>
     override fun getSeasonProvider() = seasonProvider
 
-    override fun onCreate(engine: EngineApi, argument: Any?) {
-        super.onCreate(engine, argument)
+    override fun onSetup(engine: EngineApi) {
+        super.onSetup(engine)
         worldTime = engine.requireFindByInterface(WorldTime::class)
         logger = engine.requireFindByInterface(EngineLogger::class)
 
         val defaultSeason = DefaultSeasonAlgorithm(engine)
         seasonProvider = ProviderStack(defaultSeason)
-        data = WorldSeasonData(defaultSeason.onWhatSeasonNow(worldTime.getMonthOfYear), false)
+        data = WorldSeasonData(defaultSeason.onWhatSeasonNow(worldTime.getMonthOfYear()), false)
+
     }
 
     override fun onSimulate(deltaTime: Float) {
         super.onSimulate(deltaTime)
         data.hasSeasonChanged = false
-        if(worldTime.hasMonthOfYearChanged) {
+        if(worldTime.hasMonthOfYearChanged()) {
             val lastSeason = data.currentSeason
             doCalculateSeason()
             if(lastSeason != data.currentSeason) {
@@ -53,7 +54,7 @@ class WorldSeasonScript: RootNode(), WorldSeason {
 
     private fun doCalculateSeason() {
         val seasonAlgorithm = seasonProvider.get()
-        data.currentSeason = seasonAlgorithm.onWhatSeasonNow(worldTime.getMonthOfYear)
+        data.currentSeason = seasonAlgorithm.onWhatSeasonNow(worldTime.getMonthOfYear())
     }
 
     private fun onSeasonChanged() {

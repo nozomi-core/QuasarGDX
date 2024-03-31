@@ -41,6 +41,6 @@ class Ping: RootNode(), Pingable {
 
     override fun onRootCreated() {
         super.onRootCreated()
-        logger = engineApi.requireFindByInterface(EngineLogger::class)
+        //logger = engineApi.requireFindByInterface(EngineLogger::class)
     }
 }

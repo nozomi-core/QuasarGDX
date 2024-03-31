@@ -15,7 +15,7 @@ class EditMap: GameNode(), PublicEditMap {
 
     private val speedMs = 4f
 
-    override fun onCreate(engineApi: EngineApi, arg: Any?) {}
+    override fun onCreate(arg: Any?) {}
 
     override fun onSimulate(delta: Float) {
         positionX += speedMs * delta

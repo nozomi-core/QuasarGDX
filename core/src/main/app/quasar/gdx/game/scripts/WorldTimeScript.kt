@@ -22,7 +22,7 @@ class WorldTimeScript: RootNode(), WorldTime {
     private lateinit var logger: EngineLogger
 
     //Data
-    private val time = GameTimeAdmin()
+    private val time = GameTimeAdmin(System.currentTimeMillis())
     private val data = WorldTimeData()
 
     //Delegates
@@ -34,15 +34,18 @@ class WorldTimeScript: RootNode(), WorldTime {
     override fun hasYearChange() = data.year
     override fun getMonthOfYear() = MonthOfYear.findFromValue(getGameTime().monthOfYear)
 
-    override fun onCreate(engine: EngineApi, argument: Any?) {
-        super.onCreate(engine, argument)
+    override fun onCreate(argument: Any?) {
+        super.onCreate(argument)
         data.gameSpeed = when(argument) {
             is Double -> argument.toFloat()
             is Float -> argument
             else -> DEFAULT_SPEED
         }
+    }
 
-        logger = engineApi.requireFindByInterface(EngineLogger::class)
+    override fun onSetup(engine: EngineApi) {
+        super.onSetup(engine)
+        logger = engine.requireFindByInterface(EngineLogger::class)
     }
 
     override fun onSimulate(deltaTime: Float) {

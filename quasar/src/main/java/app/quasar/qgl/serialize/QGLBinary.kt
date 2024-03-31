@@ -398,6 +398,9 @@ class BinaryObject(
         }
         return null
     }
+    fun <T> value(id: Int): T {
+        return findId(id)!!.data as T
+    }
 }
 
 class BinaryRecord(

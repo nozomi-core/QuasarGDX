@@ -15,24 +15,28 @@ class DayClockScript: RootNode(), DayClock {
     private lateinit var worldTime: WorldTime
 
     //Data
-    private lateinit var _timeOfDay: TimeOfDay
+    private lateinit var data: DayClockData
 
     //Delegates
-    override val timeOfDay: TimeOfDay get() = _timeOfDay
+    override val timeOfDay: TimeOfDay get() = data.timeOfDay
 
-    override fun onCreate(engine: EngineApi, argument: Any?) {
-        super.onCreate(engine, argument)
+    override fun onCreate(argument: Any?) {
+        super.onCreate(argument)
+        data = DayClockData(TimeOfDay.findTimeOfDay(worldTime.getGameTime().hourOfDay))
+        onTimeOfDayChanged()
+    }
+
+    override fun onSetup(engine: EngineApi) {
+        super.onSetup(engine)
         worldTime = engine.requireFindByInterface(WorldTime::class)
         logger = engine.requireFindByInterface(EngineLogger::class)
-        _timeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime.hourOfDay)
-        onTimeOfDayChanged()
     }
 
     override fun onSimulate(deltaTime: Float) {
         super.onSimulate(deltaTime)
-        val findTimeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime.hourOfDay)
-        if(_timeOfDay != findTimeOfDay) {
-            _timeOfDay = findTimeOfDay
+        val findTimeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime().hourOfDay)
+        if(data.timeOfDay != findTimeOfDay) {
+            data.timeOfDay = findTimeOfDay
             onTimeOfDayChanged()
         }
     }
@@ -43,3 +47,5 @@ class DayClockScript: RootNode(), DayClock {
 
     override fun shouldRunBefore() = listOf(WorldTimeScript::class)
 }
+
+data class DayClockData(var timeOfDay: TimeOfDay)

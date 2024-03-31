@@ -9,7 +9,7 @@ class GreenTile: GameNode() {
 
     private var xPos = 0f
 
-    override fun onCreate(engineApi: EngineApi, argument: Any?) {
+    override fun onCreate(argument: Any?) {
         when(argument) {
             is MapToolArg -> {
                 xPos = argument.startX

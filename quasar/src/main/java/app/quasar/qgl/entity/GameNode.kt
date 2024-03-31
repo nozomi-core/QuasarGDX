@@ -17,7 +17,7 @@ abstract class GameNode: NodeSearchable {
         private set
 
     val isAlive get() = !isDestroyed
-    val engineApi: EngineApi get() = engineApiAdmin!!
+    private val engineApi: EngineApi get() = engineApiAdmin!!
 
     private var isObjectedMarkedForDestruction = false
     private var isDestroyed = false
@@ -29,7 +29,8 @@ abstract class GameNode: NodeSearchable {
 
     private val providerList = mutableListOf<ProviderStack<*>>()
 
-    protected open fun onCreate(engine: EngineApi, argument: Any?) {}
+    protected open fun onCreate(argument: Any?) {}
+    protected open fun onSetup(engine: EngineApi) {}
     protected open fun onSimulate(deltaTime: Float) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
@@ -37,7 +38,8 @@ abstract class GameNode: NodeSearchable {
     internal fun create(engineApiAdmin: EngineApiAdmin, argument: Any?) {
         this.engineApiAdmin = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
-        onCreate(engineApi, argument)
+        onSetup(engineApi)
+        onCreate(argument)
     }
 
     internal fun simulate(deltaTime: Float) {
