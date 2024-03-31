@@ -3,12 +3,6 @@ package app.quasar.qgl.language
 import app.quasar.qgl.entity.GameNode
 
 class ProviderStack<out T: Providable>(private val startValue: T) {
-    
-    init {
-        if(startValue::class.java.isAssignableFrom(GameNode::class.java)) {
-            throw IllegalArgumentException("ProviderStack can not supply GameNode values from the engine, we do not support this, in general they should be plain data classes")
-        }
-    }
 
     private val additions = mutableListOf<Pair<GameNode, T>>()
 
