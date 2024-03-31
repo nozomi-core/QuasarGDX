@@ -1,15 +1,14 @@
 package app.quasar.qgl.engine
 
-import app.quasar.qgl.entity.GameNode
-import app.quasar.qgl.entity.RootNode
+import app.quasar.qgl.entity.*
 import app.quasar.qgl.render.DrawableApi
 import app.quasar.qgl.scripts.QuasarRootScripts
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
+class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, NodeSearchable {
     private var currentRuntimeId = 0L
-    private val engineNodeGraph = mutableListOf<GameNode>()
+    private val graph = NodeGraph()
 
     private val destructionQueue = mutableListOf<GameNode>()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
@@ -25,14 +24,14 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     }
 
     fun draw() {
-        engineNodeGraph.forEach {
+        graph.gameNodes.forEach {
             it.draw(drawableApi)
         }
     }
 
     private fun doDestructionStep() {
         destructionQueue.forEach {
-            engineNodeGraph.remove(it)
+            graph.gameNodes.remove(it)
         }
         destructionQueue.clear()
     }
@@ -43,13 +42,13 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
 
             val newEntity = kClass.createInstance()
             newEntity.create(this, argument)
-            engineNodeGraph.add(newEntity)
+            graph.gameNodes.add(newEntity)
         }
         creationQueue.clear()
     }
 
     private fun doSimulationStep(deltaTime: Float) {
-        engineNodeGraph.forEach {
+        graph.gameNodes.forEach {
             it.simulate(deltaTime)
         }
     }
@@ -57,18 +56,6 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     override fun <T : GameNode> createGameNode(nodeScript: KClass<T>, argument: Any?) {
         checkNodeIsRootScriptThenThrow(nodeScript)
         creationQueue.add(Pair(nodeScript, argument))
-    }
-
-    override fun <T: Any> requireFindByInterface(typeInterface: KClass<T>): T {
-        checkCastIsInterface(typeInterface)
-        val first = engineNodeGraph.firstOrNull { typeInterface.java.isAssignableFrom(it.javaClass)}
-        return first as T!!
-    }
-
-    override fun <T : Any> findById(id: Long, typeInterface: KClass<T>): T? {
-        checkCastIsInterface(typeInterface)
-        val first = engineNodeGraph.first { it.runtimeId == id && it.isAlive }
-        return first as T?
     }
 
     //Admin Functions
@@ -89,7 +76,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
         rootScripts.addAll(mergeAllScripts)
 
         //Iterate through nodes and if they are root script, call the post setup method so they can init dependancy on tree
-        engineNodeGraph.forEach {
+        graph.gameNodes.forEach {
             if(it is RootNode) {
                 it.doRootCreated()
             }
@@ -102,12 +89,12 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
     }
 
     private fun checkScriptOrderIntegrity() {
-        engineNodeGraph.forEach { currentNode ->
+        graph.gameNodes.forEach { currentNode ->
             if(currentNode is RootNode) {
                 val shouldBeBefore = currentNode.shouldRunBefore()
-                val thisNodeIndex = engineNodeGraph.indexOf(currentNode)
+                val thisNodeIndex = graph.gameNodes.indexOf(currentNode)
                 shouldBeBefore.forEach { dependClass ->
-                    val dependIndex = engineNodeGraph.indexOf(engineNodeGraph.first { it::class == dependClass })
+                    val dependIndex = graph.gameNodes.indexOf(graph.gameNodes.first { it::class == dependClass })
                     if(dependIndex > thisNodeIndex) {
                         throw SecurityException("${dependClass.simpleName} should be spawned before ${currentNode::class.simpleName}")
                     }
@@ -125,11 +112,15 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin {
             throw SecurityException("Root scripts are immutable, you can not add or remove them")
         }
     }
-}
 
-private fun checkCastIsInterface(kClass: KClass<*>) {
-    if(!kClass.java.isInterface) {
-        throw SecurityException("Can only search for interfaces when finding a node in the engine")
+    //Node Searchable API
+
+    override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
+        return graph.requireFindByInterface(nodeInterface)
+    }
+
+    override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
+        return graph.findById(id, nodeInterface)
     }
 }
 

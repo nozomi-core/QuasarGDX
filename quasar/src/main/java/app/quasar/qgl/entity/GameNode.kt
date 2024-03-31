@@ -7,8 +7,11 @@ import app.quasar.qgl.render.DrawableApi
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-abstract class GameNode {
+abstract class GameNode: NodeSearchable {
     var runtimeId: Long = -1L
+        private set
+
+    var parentNode: GameNode? = null
         private set
 
     val isAlive get() = !isDestroyed
@@ -17,11 +20,9 @@ abstract class GameNode {
     private var isObjectedMarkedForDestruction = false
     private var isDestroyed = false
 
-    var parentNode: GameNode? = null
-        private set
     private var engineApiAdmin: EngineApiAdmin? = null
 
-    private val childNodes = mutableListOf<GameNode>()
+    private val childGraph = NodeGraph()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
 
     private val providerList = mutableListOf<ProviderStack<*>>()
@@ -30,13 +31,6 @@ abstract class GameNode {
     protected open fun onSimulate(deltaTime: Float) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
-
-    /*
-    * TODO:: Should we have these, can be used to query nearby nodes
-    *   var x: Float
-    *   var y: Float
-    *   var geoHash = ....
-    * */
 
     internal fun create(engineApiAdmin: EngineApiAdmin, argument: Any?) {
         this.engineApiAdmin = engineApiAdmin
@@ -56,7 +50,7 @@ abstract class GameNode {
 
     private fun destroy() {
         onDestroy()
-        childNodes.forEach {
+        childGraph.gameNodes.forEach {
             it.destroy()
         }
         providerList.forEach {
@@ -73,7 +67,7 @@ abstract class GameNode {
     private fun doSimulationStep(deltaTime: Float) {
         onSimulate(deltaTime)
         if(!isObjectedMarkedForDestruction) {
-            childNodes.forEach {
+            childGraph.gameNodes.forEach {
                 it.simulate(deltaTime)
             }
         }
@@ -86,7 +80,7 @@ abstract class GameNode {
             val newEntity = kClass.createInstance()
             newEntity.parentNode = this
             newEntity.create(engineApiAdmin!!, argument)
-            childNodes.add(newEntity)
+            childGraph.gameNodes.add(newEntity)
         }
         creationQueue.clear()
     }
@@ -112,6 +106,16 @@ abstract class GameNode {
         isObjectedMarkedForDestruction = true
     }
 
+    //Searchable Interface
+    override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
+        return childGraph.requireFindByInterface(nodeInterface)
+    }
+
+    override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
+        return childGraph.findById(id, nodeInterface)
+    }
+
+    //Java Interface
     override fun equals(other: Any?): Boolean {
         return when(other is GameNode) {
             true -> other.runtimeId == this.runtimeId
