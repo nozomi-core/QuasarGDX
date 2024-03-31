@@ -2,7 +2,7 @@ package app.quasar.qgl.language
 
 import app.quasar.qgl.entity.GameNode
 
-class ProviderStack<out T: Providable>(private val startValue: T) {
+class ProviderStack<out T: GameData>(private val startValue: T) {
 
     private val additions = mutableListOf<Pair<GameNode, T>>()
 

@@ -1,5 +1,8 @@
 package app.quasar.gdx.game.model
 
+import app.quasar.qgl.entity.EntitySerialize
+import app.quasar.qgl.serialize.BinaryObject
+import app.quasar.qgl.serialize.BinaryRecord
 import org.joda.time.MutableDateTime
 
 interface GameTime {
@@ -10,18 +13,18 @@ interface GameTime {
     val minuteOfHour: Int
 }
 
-class GameTimeAdmin(instant: Long = System.currentTimeMillis()): GameTime {
-    private val date = MutableDateTime(instant)
+class GameTimeAdmin(instant: Long): GameTime {
+    val gameDate = MutableDateTime(instant)
 
-    override val minuteOfHour       get() = date.minuteOfHour
-    override val hourOfDay: Int     get() = date.hourOfDay
-    override val dayOfMonth: Int    get() = date.dayOfMonth
-    override val monthOfYear: Int   get() = date.monthOfYear
-    override val year: Int          get() = date.year
+    override val minuteOfHour       get() = gameDate.minuteOfHour
+    override val hourOfDay: Int     get() = gameDate.hourOfDay
+    override val dayOfMonth: Int    get() = gameDate.dayOfMonth
+    override val monthOfYear: Int   get() = gameDate.monthOfYear
+    override val year: Int          get() = gameDate.year
 
     fun addSeconds(seconds: Float) {
         val millis = (seconds * 1000).toInt()
-        date.addMillis(millis)
+        gameDate.addMillis(millis)
     }
 
     override fun toString(): String {

@@ -8,36 +8,35 @@ import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
 
 interface WorldTime {
-    val gameTime: GameTime
-    val hasMinuteOfHourChanged: Boolean
-    val hasHourOfDayChanged: Boolean
-    val hasDayOfMonthChange: Boolean
-    val hasMonthOfYearChanged: Boolean
-    val hasYearChange: Boolean
-    val whatMonth: MonthOfYear
+    fun getGameTime(): GameTime
+    fun getMonthOfYear(): MonthOfYear
+    fun hasMinuteOfHourChanged(): Boolean
+    fun hasHourOfDayChanged(): Boolean
+    fun hasDayOfMonthChange(): Boolean
+    fun hasMonthOfYearChanged(): Boolean
+    fun hasYearChange(): Boolean
 }
 
 class WorldTimeScript: RootNode(), WorldTime {
+    //Nodes
     private lateinit var logger: EngineLogger
 
-    private val _gameTime = GameTimeAdmin()
+    //Data
+    private val time = GameTimeAdmin()
+    private val data = WorldTimeData()
 
-    override val gameTime: GameTime get() = _gameTime
-
-    private var gameSpeed: Float = DEFAULT_SPEED
-    private val timeChanges = TimeChanges()
-
-    override val hasMinuteOfHourChanged: Boolean    get() = timeChanges.minute
-    override val hasHourOfDayChanged: Boolean       get() = timeChanges.hour
-    override val hasDayOfMonthChange: Boolean       get() = timeChanges.day
-    override val hasMonthOfYearChanged: Boolean     get() = timeChanges.month
-    override val hasYearChange: Boolean             get() = timeChanges.year
-
-    override val whatMonth: MonthOfYear            get() = MonthOfYear.findFromValue(gameTime.monthOfYear)
+    //Delegates
+    override fun getGameTime() = time
+    override fun hasMinuteOfHourChanged() = data.minute
+    override fun hasHourOfDayChanged() = data.hour
+    override fun hasDayOfMonthChange() = data.day
+    override fun hasMonthOfYearChanged() = data.month
+    override fun hasYearChange() = data.year
+    override fun getMonthOfYear() = MonthOfYear.findFromValue(getGameTime().monthOfYear)
 
     override fun onCreate(engine: EngineApi, argument: Any?) {
         super.onCreate(engine, argument)
-        gameSpeed = when(argument) {
+        data.gameSpeed = when(argument) {
             is Double -> argument.toFloat()
             is Float -> argument
             else -> DEFAULT_SPEED
@@ -48,7 +47,9 @@ class WorldTimeScript: RootNode(), WorldTime {
 
     override fun onSimulate(deltaTime: Float) {
         super.onSimulate(deltaTime)
-        timeChanges.clear()
+        data.clear()
+        val gameTime = getGameTime()
+
 
         val lastMinuteOfHour = gameTime.minuteOfHour
         val lastHourOfDay = gameTime.hourOfDay
@@ -56,7 +57,7 @@ class WorldTimeScript: RootNode(), WorldTime {
         val lastMonthOfYear = gameTime.monthOfYear
         val lastYear = gameTime.year
 
-        _gameTime.addSeconds(deltaTime * gameSpeed)
+        time.addSeconds(deltaTime * data.gameSpeed)
 
         if(lastMinuteOfHour != gameTime.minuteOfHour) {
             onMinuteOfHourChanged()
@@ -80,24 +81,24 @@ class WorldTimeScript: RootNode(), WorldTime {
     }
 
     private fun onMinuteOfHourChanged() {
-        timeChanges.minute = true
+        data.minute = true
     }
 
     private fun onHourOfDayChanged() {
-        timeChanges.hour = true
+        data.hour = true
     }
 
     private fun onMonthOfTheYearChanged() {
-        timeChanges.month = true
-        logger.message(this, _gameTime.toString())
+        data.month = true
+        logger.message(this, time.toString())
     }
 
     private fun onDayOfMonthChanged() {
-        timeChanges.day = true
+        data.day = true
     }
 
     private fun onYearChanged() {
-        timeChanges.year = true
+        data.year = true
     }
 
     companion object {
@@ -105,13 +106,14 @@ class WorldTimeScript: RootNode(), WorldTime {
     }
 }
 
-data class TimeChanges(
+data class WorldTimeData(
+    var gameSpeed: Float = WorldTimeScript.DEFAULT_SPEED,
     var minute: Boolean = false,
     var hour: Boolean = false,
     var day: Boolean = false,
     var month: Boolean = false,
-    var year: Boolean = false) {
-
+    var year: Boolean = false
+) {
     fun clear() {
         minute = false
         hour = false

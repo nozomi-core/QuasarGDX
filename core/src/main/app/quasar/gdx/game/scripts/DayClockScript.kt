@@ -10,23 +10,27 @@ interface DayClock {
 }
 
 class DayClockScript: RootNode(), DayClock {
+    //Nodes
     private lateinit var logger: EngineLogger
     private lateinit var worldTime: WorldTime
 
+    //Data
     private lateinit var _timeOfDay: TimeOfDay
+
+    //Delegates
     override val timeOfDay: TimeOfDay get() = _timeOfDay
 
     override fun onCreate(engine: EngineApi, argument: Any?) {
         super.onCreate(engine, argument)
         worldTime = engine.requireFindByInterface(WorldTime::class)
         logger = engine.requireFindByInterface(EngineLogger::class)
-        _timeOfDay = TimeOfDay.findTimeOfDay(worldTime.gameTime.hourOfDay)
+        _timeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime.hourOfDay)
         onTimeOfDayChanged()
     }
 
     override fun onSimulate(deltaTime: Float) {
         super.onSimulate(deltaTime)
-        val findTimeOfDay = TimeOfDay.findTimeOfDay(worldTime.gameTime.hourOfDay)
+        val findTimeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime.hourOfDay)
         if(_timeOfDay != findTimeOfDay) {
             _timeOfDay = findTimeOfDay
             onTimeOfDayChanged()

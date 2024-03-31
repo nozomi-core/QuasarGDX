@@ -4,52 +4,48 @@ import app.quasar.gdx.game.model.MonthOfYear
 import app.quasar.gdx.game.model.Season
 import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.RootNode
-import app.quasar.qgl.language.Providable
+import app.quasar.qgl.language.GameData
 import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.scripts.EngineLogger
 import kotlin.reflect.KClass
 
 interface WorldSeason {
-    val seasonProvider: ProviderStack<SeasonAlgorithm>
     val hasSeasonChanged: Boolean
+    fun getSeasonProvider(): ProviderStack<SeasonAlgorithm>
 }
 
 class WorldSeasonScript: RootNode(), WorldSeason {
+    //Node refs
     private lateinit var logger: EngineLogger
     private lateinit var worldTime: WorldTime
-    private lateinit var currentSeason: Season
-    private lateinit var defaultSeason: SeasonAlgorithm
 
-    private var _hasSeasonChanged = false
-    override val hasSeasonChanged: Boolean get() = _hasSeasonChanged
+    //Data
+    private lateinit var data: WorldSeasonData
 
-    override val seasonProvider = ProviderStack(defaultSeason)
+    //Delegate
+    override val hasSeasonChanged: Boolean get() = data.hasSeasonChanged
+
+    //Providers
+    private lateinit var seasonProvider: ProviderStack<SeasonAlgorithm>
+    override fun getSeasonProvider() = seasonProvider
 
     override fun onCreate(engine: EngineApi, argument: Any?) {
         super.onCreate(engine, argument)
-        defaultSeason = object: SeasonAlgorithm(engine) {
-            override fun onWhatSeasonNow(monthOfYear: MonthOfYear): Season {
-                return when(monthOfYear) {
-                    MonthOfYear.DECEMBER, MonthOfYear.JANUARY, MonthOfYear.FEBUARY -> Season.SUMMER
-                    MonthOfYear.MARCH, MonthOfYear.APRIL, MonthOfYear.MAY -> Season.AUTUMN
-                    MonthOfYear.JUNE, MonthOfYear.JULY, MonthOfYear.AUGUST -> Season.WINTER
-                    MonthOfYear.SEPTEMBER, MonthOfYear.OCTOBER, MonthOfYear.NOVEMBER -> Season.SPRING
-                }
-            }
-        }
-
         worldTime = engine.requireFindByInterface(WorldTime::class)
         logger = engine.requireFindByInterface(EngineLogger::class)
-        doCalculateSeason()
+
+        val defaultSeason = DefaultSeasonAlgorithm(engine)
+        seasonProvider = ProviderStack(defaultSeason)
+        data = WorldSeasonData(defaultSeason.onWhatSeasonNow(worldTime.getMonthOfYear), false)
     }
 
     override fun onSimulate(deltaTime: Float) {
         super.onSimulate(deltaTime)
-        _hasSeasonChanged = false
+        data.hasSeasonChanged = false
         if(worldTime.hasMonthOfYearChanged) {
-            val lastSeason = currentSeason
+            val lastSeason = data.currentSeason
             doCalculateSeason()
-            if(lastSeason != currentSeason) {
+            if(lastSeason != data.currentSeason) {
                 onSeasonChanged()
             }
         }
@@ -57,11 +53,11 @@ class WorldSeasonScript: RootNode(), WorldSeason {
 
     private fun doCalculateSeason() {
         val seasonAlgorithm = seasonProvider.get()
-        currentSeason = seasonAlgorithm.onWhatSeasonNow(worldTime.whatMonth)
+        data.currentSeason = seasonAlgorithm.onWhatSeasonNow(worldTime.getMonthOfYear)
     }
 
     private fun onSeasonChanged() {
-        _hasSeasonChanged = true
+        data.hasSeasonChanged = true
     }
 
     override fun shouldRunBefore(): List<KClass<*>> {
@@ -69,6 +65,22 @@ class WorldSeasonScript: RootNode(), WorldSeason {
     }
 }
 
-abstract class SeasonAlgorithm(engine: EngineApi): Providable(engine) {
+data class WorldSeasonData(
+    var currentSeason: Season,
+    var hasSeasonChanged: Boolean
+)
+
+abstract class SeasonAlgorithm(engine: EngineApi): GameData(engine) {
     abstract fun onWhatSeasonNow(monthOfYear: MonthOfYear): Season
+}
+
+class DefaultSeasonAlgorithm(engine: EngineApi): SeasonAlgorithm(engine) {
+    override fun onWhatSeasonNow(monthOfYear: MonthOfYear): Season {
+        return when(monthOfYear) {
+            MonthOfYear.DECEMBER, MonthOfYear.JANUARY, MonthOfYear.FEBUARY -> Season.SUMMER
+            MonthOfYear.MARCH, MonthOfYear.APRIL, MonthOfYear.MAY -> Season.AUTUMN
+            MonthOfYear.JUNE, MonthOfYear.JULY, MonthOfYear.AUGUST -> Season.WINTER
+            MonthOfYear.SEPTEMBER, MonthOfYear.OCTOBER, MonthOfYear.NOVEMBER -> Season.SPRING
+        }
+    }
 }

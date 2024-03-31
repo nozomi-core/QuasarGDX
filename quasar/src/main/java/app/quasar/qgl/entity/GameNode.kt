@@ -2,8 +2,10 @@ package app.quasar.qgl.entity
 
 import app.quasar.qgl.engine.EngineApiAdmin
 import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.language.GameData
 import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.render.DrawableApi
+import com.badlogic.gdx.Game
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -91,7 +93,7 @@ abstract class GameNode: NodeSearchable {
         }
     }
 
-    internal fun <T> providesInto(provider: ProviderStack<T>, value: T) {
+    internal fun <T: GameData> providesInto(provider: ProviderStack<T>, value: T) {
         if(!providerList.contains(provider)) {
             providerList.add(provider)
             provider.push(this, value)
