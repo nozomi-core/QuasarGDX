@@ -10,30 +10,34 @@ abstract class GameNode<D, A> {
     var runtimeId: Long = -1L
         private set
 
+    private var parentNode: GameNode<*, *>? = null
+
+    //Data
     private var _data: D? = null
     val requireDataForInterface: D get() {
-        engineApiAdmin?.checkNodeNotCurrentlyExecuting(this)
+        _engineApi?.checkNodeIsNotRunning(this)
         return _data!!
     }
 
-    private var parentNode: GameNode<*, *>? = null
-
-    val isAlive get() = !isDestroyed
-    private val engineApi: EngineApi get() = engineApiAdmin!!
-
+    //Meta data
     private var isObjectedMarkedForDestruction = false
     private var isDestroyed = false
+    val isAlive get() = !isDestroyed
 
-    private var engineApiAdmin: EngineApiAdmin? = null
-
+    //Node management
     private val childGraph = NodeGraph()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*, *>>, Any?>>()
 
+    //Engine
+    private val engineApi: EngineApi get() = _engineApi!!
+    private var _engineApi: EngineApiAdmin? = null
+
+    //Hooks
     protected open fun onCreateData(argument: A?): D? { return null }
-    protected open fun onCreateChildren(nodeApi: NodeApi){}
+    protected open fun onCreateChildren(node: NodeApi){}
     protected open fun onSetupEngine(engine: EngineApi) {}
     protected open fun onSetupData(data: D?) {}
-    protected open fun onSimulate(nodeApi: NodeApi, deltaTime: Float, data: D?) {}
+    protected open fun onSimulate(node: NodeApi, deltaTime: Float, data: D?) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
@@ -55,10 +59,12 @@ abstract class GameNode<D, A> {
         }
     }
 
+    /** Engine Module */
+
     internal fun create(engineApiAdmin: EngineApiAdmin, argument: Any?) {
-        this.engineApiAdmin = engineApiAdmin
+        this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
-        this.engineApiAdmin?.setCurrentNodeExecuting(this)
+        this._engineApi?.setCurrentNodeRunning(this)
         onSetupEngine(engineApi)
         _data = onCreateData(argument as A)
         onSetupData(_data)
@@ -67,33 +73,23 @@ abstract class GameNode<D, A> {
     }
 
     internal fun simulate(deltaTime: Float) {
-        this.engineApiAdmin?.setCurrentNodeExecuting(this)
+        this._engineApi?.setCurrentNodeRunning(this)
         doSimulationStep(deltaTime)
         checkObjectIsBeingDestroyed()
         doCreationStep()
     }
 
     internal fun draw(drawableApi: DrawableApi) {
-        this.engineApiAdmin?.setCurrentNodeExecuting(this)
+        this._engineApi?.setCurrentNodeRunning(this)
         onDraw(drawableApi)
     }
 
-    private fun destroy() {
-        onDestroy()
-        childGraph.gameNodes.forEach {
-            it.destroy()
-        }
-        //The engine only needs to remove the root node, child nodes will auto remove with parent dies
-        if(parentNode == null) {
-            engineApiAdmin?.destroyNode(this)
-        }
-        isDestroyed = true
-    }
+    /** Engine Steps */
 
     private fun doSimulationStep(deltaTime: Float) {
         onSimulate(nodeApi, deltaTime, _data)
         if(!isObjectedMarkedForDestruction) {
-            childGraph.gameNodes.forEach {
+            childGraph.nodes.forEach {
                 it.simulate(deltaTime)
             }
         }
@@ -105,11 +101,25 @@ abstract class GameNode<D, A> {
 
             val newEntity = kClass.createInstance()
             newEntity.parentNode = this
-            newEntity.create(engineApiAdmin!!, argument)
-            childGraph.gameNodes.add(newEntity)
+            newEntity.create(_engineApi!!, argument)
+            childGraph.nodes.add(newEntity)
         }
         creationQueue.clear()
     }
+
+    private fun destroy() {
+        onDestroy()
+        childGraph.nodes.forEach {
+            it.destroy()
+        }
+        //The engine only needs to remove the root node, child nodes will auto remove with parent dies
+        if(parentNode == null) {
+            _engineApi?.destroyNode(this)
+        }
+        isDestroyed = true
+    }
+
+    /** Utility and Helper Methods */
 
     private fun checkObjectIsBeingDestroyed() {
         if(isObjectedMarkedForDestruction && !isDestroyed) {

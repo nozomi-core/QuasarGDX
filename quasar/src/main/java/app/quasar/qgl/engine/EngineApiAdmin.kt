@@ -7,6 +7,6 @@ import kotlin.reflect.KClass
 interface EngineApiAdmin: EngineApi {
     fun <T: GameNode<*,*>> createRootScripts(scripts: List<KClass<T>>)
     fun destroyNode(node: GameNode<*,*>)
-    fun setCurrentNodeExecuting(node: GameNode<*,*>)
-    fun checkNodeNotCurrentlyExecuting(node: GameNode<*,*>)
+    fun setCurrentNodeRunning(node: GameNode<*,*>)
+    fun checkNodeIsNotRunning(node: GameNode<*,*>)
 }
