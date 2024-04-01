@@ -1,6 +1,7 @@
 package app.quasar.gdx.game.scripts
 
 import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.entity.NodeApi
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
 import org.joda.time.MutableDateTime
@@ -17,8 +18,6 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
     //Interface
     override fun getGameMillis() = requireDataForInterface.gameTime.millis
     override fun getTimeStamp() = requireDataForInterface.getTimeStamp()
-
-    private var counter: Float = 0.0f
 
     override fun onCreateData(argument: WorldTimeArg?): WorldTimeData {
         super.onCreateData(argument)
@@ -37,15 +36,15 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
         logger = engine.requireFindByInterface(EngineLogger::class)
     }
 
-    override fun onSimulate(deltaTime: Float, data: WorldTimeData?) {
+    override fun onSimulate(nodeApi: NodeApi, deltaTime: Float, data: WorldTimeData?) {
         if(data == null) return
 
         data.gameTime.addSeconds((deltaTime * data.gameSpeed).toInt())
 
-        counter += deltaTime
-        if(counter > 5) {
+        data.counter += deltaTime
+        if(data.counter > 5) {
             logger.message(this, "onTime: ${data.getTimeStamp()}")
-            counter = 0.0f
+            data.counter = 0.0f
         }
     }
 
@@ -57,10 +56,12 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
 data class WorldTimeData(
     val gameTime: MutableDateTime,
     var gameSpeed: Float = WorldTimeScript.DEFAULT_SPEED,
+    var counter: Float = 0.0f
 ) {
     fun getTimeStamp() = "${gameTime.year}-${gameTime.monthOfYear}-${gameTime.dayOfMonth}"
 }
 
+//TODO: remove counter, only test
 data class WorldTimeArg(
     val gameSpeed: Float,
     val startTime: Long

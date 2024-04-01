@@ -2,8 +2,6 @@ package app.quasar.qgl.entity
 
 import app.quasar.qgl.engine.EngineApiAdmin
 import app.quasar.qgl.engine.EngineApi
-import app.quasar.qgl.language.GameData
-import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.render.DrawableApi
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -35,7 +33,7 @@ abstract class GameNode<D, A> {
     protected open fun onCreateChildren(nodeApi: NodeApi){}
     protected open fun onSetupEngine(engine: EngineApi) {}
     protected open fun onSetupData(data: D?) {}
-    protected open fun onSimulate(deltaTime: Float, data: D?) {}
+    protected open fun onSimulate(nodeApi: NodeApi, deltaTime: Float, data: D?) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
@@ -93,7 +91,7 @@ abstract class GameNode<D, A> {
     }
 
     private fun doSimulationStep(deltaTime: Float) {
-        onSimulate(deltaTime, _data)
+        onSimulate(nodeApi, deltaTime, _data)
         if(!isObjectedMarkedForDestruction) {
             childGraph.gameNodes.forEach {
                 it.simulate(deltaTime)
