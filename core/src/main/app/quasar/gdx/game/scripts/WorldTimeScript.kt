@@ -52,6 +52,11 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
         const val DEFAULT_SPEED = 1000000f
     }
 }
+//TODO: remove counter, only test
+data class WorldTimeArg(
+    val gameSpeed: Float,
+    val startTime: Long
+)
 
 data class WorldTimeData(
     val gameTime: MutableDateTime,
@@ -61,10 +66,6 @@ data class WorldTimeData(
     fun getTimeStamp() = "${gameTime.year}-${gameTime.monthOfYear}-${gameTime.dayOfMonth}"
 }
 
-//TODO: remove counter, only test
-data class WorldTimeArg(
-    val gameSpeed: Float,
-    val startTime: Long
-)
+
 
 
