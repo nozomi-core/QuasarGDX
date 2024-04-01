@@ -9,12 +9,13 @@ import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.scripts.EngineLogger
 import kotlin.reflect.KClass
 
+/*
 interface WorldSeason {
     val hasSeasonChanged: Boolean
     fun getSeasonProvider(): ProviderStack<SeasonAlgorithm>
 }
 
-class WorldSeasonScript: RootNode(), WorldSeason {
+class WorldSeasonScript: RootNode<String>(), WorldSeason {
     //Node refs
     private lateinit var logger: EngineLogger
     private lateinit var worldTime: WorldTime
@@ -84,4 +85,4 @@ class DefaultSeasonAlgorithm(engine: EngineApi): SeasonAlgorithm(engine) {
             MonthOfYear.SEPTEMBER, MonthOfYear.OCTOBER, MonthOfYear.NOVEMBER -> Season.SPRING
         }
     }
-}
+}*/

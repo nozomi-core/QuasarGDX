@@ -5,15 +5,20 @@ import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.language.GameData
 import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.render.DrawableApi
-import com.badlogic.gdx.Game
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-abstract class GameNode: NodeSearchable {
+abstract class GameNode<D, A>: NodeSearchable {
     var runtimeId: Long = -1L
         private set
 
-    var parentNode: GameNode? = null
+    private var _data: D? = null
+    val requireDataForInterface: D get() {
+        engineApiAdmin?.checkNodeNotCurrentlyExecuting(this)
+        return _data!!
+    }
+
+    var parentNode: GameNode<*, *>? = null
         private set
 
     val isAlive get() = !isDestroyed
@@ -25,30 +30,35 @@ abstract class GameNode: NodeSearchable {
     private var engineApiAdmin: EngineApiAdmin? = null
 
     private val childGraph = NodeGraph()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*, *>>, Any?>>()
 
     private val providerList = mutableListOf<ProviderStack<*>>()
 
-    protected open fun onCreate(argument: Any?) {}
-    protected open fun onSetup(engine: EngineApi) {}
-    protected open fun onSimulate(deltaTime: Float) {}
+    protected open fun onCreate(argument: A?): D? { return null }
+    protected open fun onSetupEngine(engine: EngineApi) {}
+    protected open fun onSetupData(data: D?) {}
+    protected open fun onSimulate(deltaTime: Float, data: D?) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
     internal fun create(engineApiAdmin: EngineApiAdmin, argument: Any?) {
         this.engineApiAdmin = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
-        onSetup(engineApi)
-        onCreate(argument)
+        this.engineApiAdmin?.setCurrentNodeExecuting(this)
+        onSetupEngine(engineApi)
+        _data = onCreate(argument as A)
+        onSetupData(_data)
     }
 
     internal fun simulate(deltaTime: Float) {
+        this.engineApiAdmin?.setCurrentNodeExecuting(this)
         doSimulationStep(deltaTime)
         checkObjectIsBeingDestroyed()
         doCreationStep()
     }
 
     internal fun draw(drawableApi: DrawableApi) {
+        this.engineApiAdmin?.setCurrentNodeExecuting(this)
         onDraw(drawableApi)
     }
 
@@ -69,7 +79,7 @@ abstract class GameNode: NodeSearchable {
     }
 
     private fun doSimulationStep(deltaTime: Float) {
-        onSimulate(deltaTime)
+        onSimulate(deltaTime, _data)
         if(!isObjectedMarkedForDestruction) {
             childGraph.gameNodes.forEach {
                 it.simulate(deltaTime)
@@ -102,7 +112,7 @@ abstract class GameNode: NodeSearchable {
         }
     }
 
-    protected fun <T: GameNode> createChild(node: KClass<T>, argument: Any?) {
+    protected fun <T: GameNode<*, *>> createChild(node: KClass<T>, argument: Any?) {
         creationQueue.add(Pair(node, argument))
     }
 
@@ -121,7 +131,7 @@ abstract class GameNode: NodeSearchable {
 
     //Java Interface
     override fun equals(other: Any?): Boolean {
-        return when(other is GameNode) {
+        return when(other is GameNode<*, *>) {
             true -> other.runtimeId == this.runtimeId
             false -> false
         }

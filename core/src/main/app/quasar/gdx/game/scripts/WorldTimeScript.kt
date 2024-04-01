@@ -1,107 +1,52 @@
 package app.quasar.gdx.game.scripts
 
-import app.quasar.gdx.game.model.GameTime
-import app.quasar.gdx.game.model.GameTimeAdmin
-import app.quasar.gdx.game.model.MonthOfYear
 import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
+import org.joda.time.MutableDateTime
 
 interface WorldTime {
-    fun getGameTime(): GameTime
-    fun getMonthOfYear(): MonthOfYear
-    fun hasMinuteOfHourChanged(): Boolean
-    fun hasHourOfDayChanged(): Boolean
-    fun hasDayOfMonthChange(): Boolean
-    fun hasMonthOfYearChanged(): Boolean
-    fun hasYearChange(): Boolean
+    fun getGameMillis(): Long
+    fun getTimeStamp(): String
 }
 
-class WorldTimeScript: RootNode(), WorldTime {
+class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
     //Nodes
     private lateinit var logger: EngineLogger
 
-    //Data
-    private val time = GameTimeAdmin(System.currentTimeMillis())
-    private val data = WorldTimeData()
+    //Interface
+    override fun getGameMillis() = requireDataForInterface.gameTime.millis
+    override fun getTimeStamp() = requireDataForInterface.getTimeStamp()
 
-    //Delegates
-    override fun getGameTime() = time
-    override fun hasMinuteOfHourChanged() = data.minute
-    override fun hasHourOfDayChanged() = data.hour
-    override fun hasDayOfMonthChange() = data.day
-    override fun hasMonthOfYearChanged() = data.month
-    override fun hasYearChange() = data.year
-    override fun getMonthOfYear() = MonthOfYear.findFromValue(getGameTime().monthOfYear)
+    private var counter: Float = 0.0f
 
-    override fun onCreate(argument: Any?) {
+    override fun onCreate(argument: WorldTimeArg?): WorldTimeData {
         super.onCreate(argument)
-        data.gameSpeed = when(argument) {
-            is Double -> argument.toFloat()
-            is Float -> argument
-            else -> DEFAULT_SPEED
-        }
+
+        return WorldTimeData(
+            gameSpeed = argument?.gameSpeed ?: DEFAULT_SPEED,
+            gameTime = if(argument?.startTime != null) {
+                MutableDateTime(argument.startTime)
+            } else {
+                MutableDateTime.now()
+            }
+        )
     }
 
-    override fun onSetup(engine: EngineApi) {
-        super.onSetup(engine)
+    override fun onSetupEngine(engine: EngineApi) {
         logger = engine.requireFindByInterface(EngineLogger::class)
     }
 
-    override fun onSimulate(deltaTime: Float) {
-        super.onSimulate(deltaTime)
-        data.clear()
-        val gameTime = getGameTime()
+    override fun onSimulate(deltaTime: Float, data: WorldTimeData?) {
+        if(data == null) return
 
+        data.gameTime.addSeconds((deltaTime * data.gameSpeed).toInt())
 
-        val lastMinuteOfHour = gameTime.minuteOfHour
-        val lastHourOfDay = gameTime.hourOfDay
-        val lastDayOfMonth = gameTime.dayOfMonth
-        val lastMonthOfYear = gameTime.monthOfYear
-        val lastYear = gameTime.year
-
-        time.addSeconds(deltaTime * data.gameSpeed)
-
-        if(lastMinuteOfHour != gameTime.minuteOfHour) {
-            onMinuteOfHourChanged()
+        counter += deltaTime
+        if(counter > 5) {
+            logger.message(this, "onTime: ${data.getTimeStamp()}")
+            counter = 0.0f
         }
-
-        if(lastHourOfDay != gameTime.hourOfDay) {
-            onHourOfDayChanged()
-        }
-
-        if(lastDayOfMonth != gameTime.dayOfMonth) {
-            onDayOfMonthChanged()
-        }
-
-        if(lastMonthOfYear != gameTime.monthOfYear) {
-            onMonthOfTheYearChanged()
-        }
-
-        if(lastYear != gameTime.year) {
-            onYearChanged()
-        }
-    }
-
-    private fun onMinuteOfHourChanged() {
-        data.minute = true
-    }
-
-    private fun onHourOfDayChanged() {
-        data.hour = true
-    }
-
-    private fun onMonthOfTheYearChanged() {
-        data.month = true
-        logger.message(this, time.toString())
-    }
-
-    private fun onDayOfMonthChanged() {
-        data.day = true
-    }
-
-    private fun onYearChanged() {
-        data.year = true
     }
 
     companion object {
@@ -110,20 +55,15 @@ class WorldTimeScript: RootNode(), WorldTime {
 }
 
 data class WorldTimeData(
+    val gameTime: MutableDateTime,
     var gameSpeed: Float = WorldTimeScript.DEFAULT_SPEED,
-    var minute: Boolean = false,
-    var hour: Boolean = false,
-    var day: Boolean = false,
-    var month: Boolean = false,
-    var year: Boolean = false
 ) {
-    fun clear() {
-        minute = false
-        hour = false
-        day = false
-        month = false
-        year = false
-    }
+    fun getTimeStamp() = "${gameTime.year}-${gameTime.monthOfYear}-${gameTime.dayOfMonth}"
 }
+
+data class WorldTimeArg(
+    val gameSpeed: Float,
+    val startTime: Long
+)
 
 

@@ -5,35 +5,39 @@ import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
 
+/*
+interface GetDayClock {
+    val dayClock: DayClock
+}
+
 interface DayClock {
     val timeOfDay: TimeOfDay
 }
 
-class DayClockScript: RootNode(), DayClock {
+class DayClockScript: RootNode<DayClockData>(), GetDayClock {
     //Nodes
     private lateinit var logger: EngineLogger
     private lateinit var worldTime: WorldTime
 
-    //Data
-    private lateinit var data: DayClockData
+    private lateinit var _dayClock: DayClock
+    override val dayClock get() = _dayClock
 
-    //Delegates
-    override val timeOfDay: TimeOfDay get() = data.timeOfDay
-
-    override fun onCreate(argument: Any?) {
-        super.onCreate(argument)
-        data = DayClockData(TimeOfDay.findTimeOfDay(worldTime.getGameTime().hourOfDay))
-        onTimeOfDayChanged()
+    override fun onCreate(argument: Any?): DayClockData {
+        return DayClockData(TimeOfDay.findTimeOfDay(worldTime.getGameTime().hourOfDay))
     }
 
-    override fun onSetup(engine: EngineApi) {
-        super.onSetup(engine)
+    override fun onSetupData(data: DayClockData) {
+        _dayClock = object: DayClock{
+            override val timeOfDay: TimeOfDay = data.timeOfDay
+        }
+    }
+
+    override fun onSetupEngine(engine: EngineApi) {
         worldTime = engine.requireFindByInterface(WorldTime::class)
         logger = engine.requireFindByInterface(EngineLogger::class)
     }
 
     override fun onSimulate(deltaTime: Float) {
-        super.onSimulate(deltaTime)
         val findTimeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime().hourOfDay)
         if(data.timeOfDay != findTimeOfDay) {
             data.timeOfDay = findTimeOfDay
@@ -49,3 +53,4 @@ class DayClockScript: RootNode(), DayClock {
 }
 
 data class DayClockData(var timeOfDay: TimeOfDay)
+*/

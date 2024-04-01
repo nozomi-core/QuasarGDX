@@ -5,6 +5,8 @@ import kotlin.reflect.KClass
 
 //The full engine api, ADMIN api is for functions that should not be exposes to the public
 interface EngineApiAdmin: EngineApi {
-    fun <T: GameNode> createRootScripts(scripts: List<KClass<T>>)
-    fun destroyNode(node: GameNode)
+    fun <T: GameNode<*,*>> createRootScripts(scripts: List<KClass<T>>)
+    fun destroyNode(node: GameNode<*,*>)
+    fun setCurrentNodeExecuting(node: GameNode<*,*>)
+    fun checkNodeNotCurrentlyExecuting(node: GameNode<*,*>)
 }

@@ -10,10 +10,12 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
     private var currentRuntimeId = 0L
     private val graph = NodeGraph()
 
-    private val destructionQueue = mutableListOf<GameNode>()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
+    private val destructionQueue = mutableListOf<GameNode<*,*>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*,*>>, Any?>>()
 
     private var rootScripts = mutableListOf<KClass<*>>()
+
+    private var currentNodeExecuting = -1L
 
     override fun generateId() = currentRuntimeId++
 
@@ -26,6 +28,16 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
     fun draw() {
         graph.gameNodes.forEach {
             it.draw(drawableApi)
+        }
+    }
+
+    override fun setCurrentNodeExecuting(node: GameNode<*, *>) {
+        this.currentNodeExecuting = node.runtimeId
+    }
+
+    override fun checkNodeNotCurrentlyExecuting(node: GameNode<*, *>) {
+        if(currentNodeExecuting == node.runtimeId) {
+            throw IllegalAccessException("Can not perform this operation while current node executing")
         }
     }
 
@@ -53,13 +65,13 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
         }
     }
 
-    override fun <T : GameNode> createGameNode(nodeScript: KClass<T>, argument: Any?) {
+    override fun <T : GameNode<*,*>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
         checkNodeIsRootScriptThenThrow(nodeScript)
         creationQueue.add(Pair(nodeScript, argument))
     }
 
     //Admin Functions
-    override fun <T : GameNode> createRootScripts(gameScripts: List<KClass<T>>) {
+    override fun <T : GameNode<*,*>> createRootScripts(gameScripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
         val mergeAllScripts = mutableListOf<KClass<*>>().apply {
             addAll(QuasarRootScripts.scripts)
@@ -83,7 +95,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
         }
     }
 
-    override fun destroyNode(node: GameNode) {
+    override fun destroyNode(node: GameNode<*,*>) {
         checkNodeIsRootScriptThenThrow(node)
         destructionQueue.add(node)
     }
@@ -103,7 +115,7 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
         }
     }
 
-    private fun checkNodeIsRootScriptThenThrow(node: GameNode) {
+    private fun checkNodeIsRootScriptThenThrow(node: GameNode<*,*>) {
         checkNodeIsRootScriptThenThrow(node::class)
     }
 

@@ -9,16 +9,14 @@ interface PublicEditMap {
     fun printMessage(msg: String)
 }
 
-class EditMap: GameNode(), PublicEditMap {
+class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     private var positionX = 0f
 
     private val speedMs = 4f
 
-    override fun onCreate(arg: Any?) {}
-
-    override fun onSimulate(delta: Float) {
-        positionX += speedMs * delta
+    override fun onCreate(argument: Unit?): Unit? {
+        return super.onCreate(argument)
     }
 
     override fun onDraw(draw: DrawableApi) {
