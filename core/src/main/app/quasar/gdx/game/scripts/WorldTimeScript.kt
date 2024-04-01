@@ -20,8 +20,8 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
 
     private var counter: Float = 0.0f
 
-    override fun onCreate(argument: WorldTimeArg?): WorldTimeData {
-        super.onCreate(argument)
+    override fun onCreateData(argument: WorldTimeArg?): WorldTimeData {
+        super.onCreateData(argument)
 
         return WorldTimeData(
             gameSpeed = argument?.gameSpeed ?: DEFAULT_SPEED,

@@ -1,7 +1,6 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.QuasarTiles
-import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.GameNode
 import app.quasar.qgl.render.DrawableApi
 
@@ -15,8 +14,8 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     private val speedMs = 4f
 
-    override fun onCreate(argument: Unit?): Unit? {
-        return super.onCreate(argument)
+    override fun onCreateData(argument: Unit?): Unit? {
+        return super.onCreateData(argument)
     }
 
     override fun onDraw(draw: DrawableApi) {

@@ -24,7 +24,7 @@ class ProviderStack<out T: GameData>(private val startValue: T) {
 
         if(existingNode == null) {
             additions.add(Pair(node, value))
-            node.providesInto(this, value)
+            //TODO: find solution node.providesInto(this, value)
         }
     }
 
