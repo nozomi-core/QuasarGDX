@@ -19,10 +19,15 @@ class QuasarEngineLogger: GameNode<Unit, Unit>(), EngineLogger {
     override fun message(source: Any, message: String) {
         send(EngineLog(source = source::class, message = message, level = EngineLogLevel.MESSAGE))
     }
+
+    override fun warn(source: Any, message: String) {
+        send(EngineLog(source = source::class, message = message, level = EngineLogLevel.WARN))
+    }
 }
 
 interface EngineLogger {
     fun message(source: Any, message: String)
+    fun warn(source: Any, message: String)
     fun send(log: EngineLog)
     fun addOnLogMessage(callback: LogCallback)
 }
