@@ -26,6 +26,6 @@ enum class StringName {
 class LocalisationTest {
     @Test
     fun testEnumStyle() {
-        Assert.assertEquals("hey", StringName.welcome_home)
+        Assert.assertEquals("This is a welcome to home text", StringName.welcome_home)
     }
 }

@@ -42,6 +42,8 @@ abstract class GameNode<D, A> {
     protected open fun onDestroy() {}
 
     private val nodeApi = object: NodeApi {
+        override fun getParent(): GameNode<*, *> = this@GameNode
+
         override fun destroyNode() {
             isObjectedMarkedForDestruction = true
         }
