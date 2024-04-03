@@ -13,7 +13,6 @@ class QGLBinarySerializeClassTest {
 
         val tim = MyCustomer("Timmy", 26, true)
 
-
         val qglSerialize = QGLSerialize(define)
 
         val bin = qglSerialize.write(tim)
