@@ -10,12 +10,14 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
     private var currentRuntimeId = 0L
     private val graph = NodeGraph()
 
-    private val destructionQueue = mutableListOf<GameNode>()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
+    private val destructionQueue = mutableListOf<GameNode<*,*>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*,*>>, Any?>>()
 
     private var rootScripts = mutableListOf<KClass<*>>()
 
-    override fun generateId() = currentRuntimeId++
+    private var currentNodeIdRunning = -1L
+
+    /** Core Methods */
 
     fun simulate(deltaTime: Float) {
         doDestructionStep()
@@ -24,14 +26,15 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
     }
 
     fun draw() {
-        graph.gameNodes.forEach {
+        graph.nodes.forEach {
             it.draw(drawableApi)
         }
     }
 
+    //:: Engine steps
     private fun doDestructionStep() {
         destructionQueue.forEach {
-            graph.gameNodes.remove(it)
+            graph.nodes.remove(it)
         }
         destructionQueue.clear()
     }
@@ -42,24 +45,29 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
 
             val newEntity = kClass.createInstance()
             newEntity.create(this, argument)
-            graph.gameNodes.add(newEntity)
+            graph.nodes.add(newEntity)
         }
         creationQueue.clear()
     }
 
     private fun doSimulationStep(deltaTime: Float) {
-        graph.gameNodes.forEach {
+        graph.nodes.forEach {
             it.simulate(deltaTime)
         }
     }
 
-    override fun <T : GameNode> createGameNode(nodeScript: KClass<T>, argument: Any?) {
+    /** Interfaces */
+
+    //Interface :: (EngineApiAdmin)
+    override fun generateId() = currentRuntimeId++
+
+    override fun <T : GameNode<*,*>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
         checkNodeIsRootScriptThenThrow(nodeScript)
         creationQueue.add(Pair(nodeScript, argument))
     }
 
-    //Admin Functions
-    override fun <T : GameNode> createRootScripts(gameScripts: List<KClass<T>>) {
+
+    override fun <T : GameNode<*,*>> createRootScripts(gameScripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
         val mergeAllScripts = mutableListOf<KClass<*>>().apply {
             addAll(QuasarRootScripts.scripts)
@@ -72,48 +80,34 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
         }
         doCreationStep()
         checkScriptOrderIntegrity()
+
         rootScripts = mutableListOf()
         rootScripts.addAll(mergeAllScripts)
 
-        //Iterate through nodes and if they are root script, call the post setup method so they can init dependancy on tree
-        graph.gameNodes.forEach {
+        //Check if the script is a root class and call rootCreated in ca
+        graph.nodes.forEach {
             if(it is RootNode) {
                 it.doRootCreated()
             }
         }
     }
 
-    override fun destroyNode(node: GameNode) {
+    override fun setCurrentNodeRunning(node: GameNode<*, *>) {
+        this.currentNodeIdRunning = node.runtimeId
+    }
+
+    override fun checkNodeIsNotRunning(node: GameNode<*, *>) {
+        if(currentNodeIdRunning == node.runtimeId) {
+            throw IllegalAccessException("Can not perform this operation while current node running")
+        }
+    }
+
+    override fun destroyNode(node: GameNode<*,*>) {
         checkNodeIsRootScriptThenThrow(node)
         destructionQueue.add(node)
     }
 
-    private fun checkScriptOrderIntegrity() {
-        graph.gameNodes.forEach { currentNode ->
-            if(currentNode is RootNode) {
-                val shouldBeBefore = currentNode.shouldRunBefore()
-                val thisNodeIndex = graph.gameNodes.indexOf(currentNode)
-                shouldBeBefore.forEach { dependClass ->
-                    val dependIndex = graph.gameNodes.indexOf(graph.gameNodes.first { it::class == dependClass })
-                    if(dependIndex > thisNodeIndex) {
-                        throw SecurityException("${dependClass.simpleName} should be spawned before ${currentNode::class.simpleName}")
-                    }
-                }
-            }
-        }
-    }
-
-    private fun checkNodeIsRootScriptThenThrow(node: GameNode) {
-        checkNodeIsRootScriptThenThrow(node::class)
-    }
-
-    private fun checkNodeIsRootScriptThenThrow(script: KClass<*>) {
-        if(rootScripts.contains(script)) {
-            throw SecurityException("Root scripts are immutable, you can not add or remove them")
-        }
-    }
-
-    //Node Searchable API
+    //:: Interface (NodeSearchable)
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
         return graph.requireFindByInterface(nodeInterface)
@@ -122,13 +116,43 @@ class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, Nod
     override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
         return graph.findById(id, nodeInterface)
     }
+
+    /** Utility and Helper Methods */
+
+    private fun checkScriptOrderIntegrity() {
+        graph.nodes.forEach { currentNode ->
+            if(currentNode is RootNode) {
+                val shouldBeBefore = currentNode.shouldRunBefore()
+                val thisNodeIndex = graph.nodes.indexOf(currentNode)
+                shouldBeBefore.forEach { dependClass ->
+                    val dependIndex = graph.nodes.indexOf(graph.nodes.first { it::class == dependClass })
+                    if(dependIndex > thisNodeIndex) {
+                        throw SecurityException("${dependClass.simpleName} should be spawned before ${currentNode::class.simpleName}")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkNodeIsRootScriptThenThrow(node: GameNode<*,*>) {
+        checkNodeIsRootScriptThenThrow(node::class)
+    }
+
+    private fun checkNodeIsRootScriptThenThrow(script: KClass<*>) {
+        if(rootScripts.contains(script)) {
+            throw SecurityException("Root scripts are immutable, you can not add or remove them")
+        }
+    }
 }
+
+
+/** Utils that don't require class members */
 
 private fun checkUniqueRootScripts(scripts: List<KClass<*>>) {
     val checkDuplicates = HashSet<KClass<*>>()
     scripts.forEach {
         if(checkDuplicates.contains(it)) {
-            throw IllegalArgumentException("Cannot have duplicate classes in root scripts, only 1 instance shall be spawned")
+            throw IllegalArgumentException("Can not have duplicate classes in root scripts, only 1 instance shall be spawned")
         }
         checkDuplicates.add(it)
     }

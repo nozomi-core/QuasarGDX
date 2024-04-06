@@ -216,6 +216,30 @@ class QGLBinaryTest {
     }
 
     @Test
+    fun testObjectClassAndId() {
+        val inMemory = QGLBinary.createMemoryOut { out ->
+            val binOb = BinaryObject(569,
+                arrayOf(
+                    BinaryRecord(2, "Hello Object"),
+                    BinaryRecord(9, false)
+                )
+            )
+
+            out.writeObject(777, binOb)
+        }
+
+        val output = BinaryOutput()
+        val streamIn = QGLBinary.createMemoryIn(inMemory)
+        streamIn.read(output)
+        assertEquals(output.id, 777)
+        assertTrue(output.data is BinaryObject)
+
+        val binObject = output.data as BinaryObject
+
+        assertEquals(569, binObject.classId)
+    }
+
+    @Test
     fun testGuid() {
         val customerGuid = ClientGuid.create()
         //assertEquals("", customerGuid.first.guid)

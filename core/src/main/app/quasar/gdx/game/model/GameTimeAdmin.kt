@@ -1,8 +1,5 @@
 package app.quasar.gdx.game.model
 
-import app.quasar.qgl.entity.EntitySerialize
-import app.quasar.qgl.serialize.BinaryObject
-import app.quasar.qgl.serialize.BinaryRecord
 import org.joda.time.MutableDateTime
 
 interface GameTime {

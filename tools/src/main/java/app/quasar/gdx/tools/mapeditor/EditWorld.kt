@@ -8,12 +8,11 @@ class EditWorld: GameWorld() {
 
     override fun useRootScripts(): List<KClass<*>> {
         return listOf(
-            Ping::class,
             EditMap::class
         )
     }
 
      override fun onCreate(engine: EngineApi) {
-        engine.createGameNode(MapTool::class)
+
     }
 }

@@ -3,17 +3,17 @@ package app.quasar.qgl.entity
 import kotlin.reflect.KClass
 
 class NodeGraph: NodeSearchable {
-    val gameNodes = mutableListOf<GameNode>()
+    val nodes = mutableListOf<GameNode<*, *>>()
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
         checkCastIsInterface(nodeInterface)
-        val first =  gameNodes.firstOrNull { nodeInterface.java.isAssignableFrom(it.javaClass)}
+        val first =  nodes.firstOrNull { nodeInterface.java.isAssignableFrom(it.javaClass)}
         return first as T!!
     }
 
     override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
         checkCastIsInterface(nodeInterface)
-        val first = gameNodes.first { it.runtimeId == id && it.isAlive }
+        val first = nodes.first { it.runtimeId == id && it.isAlive }
         return first as T?
     }
 }

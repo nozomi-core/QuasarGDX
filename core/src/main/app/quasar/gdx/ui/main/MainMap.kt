@@ -4,7 +4,7 @@ import app.quasar.gdx.tiles.QuasarTiles
 import app.quasar.qgl.entity.GameNode
 import app.quasar.qgl.render.DrawableApi
 
-class MainMap: GameNode() {
+class MainMap: GameNode<Unit, Unit>() {
 
     override fun onDraw(draw: DrawableApi) {
         super.onDraw(draw)

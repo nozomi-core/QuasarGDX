@@ -5,7 +5,7 @@ import app.quasar.qgl.test.fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test
 
-class Duplicate: GameNode() {}
+class Duplicate: GameNode<Unit, Unit>() {}
 
 class EngineApiTestDuplicateRootScripts {
 

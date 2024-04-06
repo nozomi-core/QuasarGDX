@@ -2,74 +2,96 @@ package app.quasar.qgl.entity
 
 import app.quasar.qgl.engine.EngineApiAdmin
 import app.quasar.qgl.engine.EngineApi
-import app.quasar.qgl.language.GameData
-import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.render.DrawableApi
-import com.badlogic.gdx.Game
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-abstract class GameNode: NodeSearchable {
+abstract class GameNode<D, A> {
     var runtimeId: Long = -1L
         private set
 
-    var parentNode: GameNode? = null
-        private set
+    private var parentNode: GameNode<*, *>? = null
 
-    val isAlive get() = !isDestroyed
-    val engineApi: EngineApi get() = engineApiAdmin!!
+    //Data
+    private var _data: D? = null
+    val requireDataForInterface: D get() {
+        _engineApi?.checkNodeIsNotRunning(this)
+        return _data!!
+    }
 
+    //Meta data
     private var isObjectedMarkedForDestruction = false
     private var isDestroyed = false
+    val isAlive get() = !isDestroyed
 
-    private var engineApiAdmin: EngineApiAdmin? = null
-
+    //Node management
     private val childGraph = NodeGraph()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode>, Any?>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*, *>>, Any?>>()
 
-    private val providerList = mutableListOf<ProviderStack<*>>()
+    //Engine
+    private val engineApi: EngineApi get() = _engineApi!!
+    private var _engineApi: EngineApiAdmin? = null
 
-    protected open fun onCreate(engine: EngineApi, argument: Any?) {}
-    protected open fun onSimulate(deltaTime: Float) {}
+    //Hooks
+    protected open fun onCreateData(argument: A?): D? { return null }
+    protected open fun onCreateChildren(node: NodeApi){}
+    protected open fun onSetupEngine(engine: EngineApi) {}
+    protected open fun onSetupData(data: D?) {}
+    protected open fun onSimulate(node: NodeApi, deltaTime: Float, data: D?) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
+    private val nodeApi = object: NodeApi {
+        override fun getParent(): GameNode<*, *> = this@GameNode
+
+        override fun destroyNode() {
+            isObjectedMarkedForDestruction = true
+        }
+
+        override fun <T : GameNode<*, *>> createChild(node: KClass<T>, argument: Any?) {
+            creationQueue.add(Pair(node, argument))
+        }
+
+        override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
+            return childGraph.requireFindByInterface(nodeInterface)
+        }
+
+        override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
+            return childGraph.findById(id, nodeInterface)
+        }
+    }
+
+    /** Engine Module */
+
     internal fun create(engineApiAdmin: EngineApiAdmin, argument: Any?) {
-        this.engineApiAdmin = engineApiAdmin
+        this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
-        onCreate(engineApi, argument)
+        this._engineApi?.setCurrentNodeRunning(this)
+        onSetupEngine(engineApi)
+        _data = onCreateData(argument as A)
+        onSetupData(_data)
+        onCreateChildren(nodeApi)
+        doCreationStep()
     }
 
     internal fun simulate(deltaTime: Float) {
+        this._engineApi?.setCurrentNodeRunning(this)
         doSimulationStep(deltaTime)
         checkObjectIsBeingDestroyed()
         doCreationStep()
     }
 
     internal fun draw(drawableApi: DrawableApi) {
+        this._engineApi?.setCurrentNodeRunning(this)
         onDraw(drawableApi)
     }
 
-    private fun destroy() {
-        onDestroy()
-        childGraph.gameNodes.forEach {
-            it.destroy()
-        }
-        providerList.forEach {
-            it.remove(this)
-        }
-        providerList.clear()
-        //The engine only needs to remove the root node, child nodes will auto remove with parent dies
-        if(parentNode == null) {
-            engineApiAdmin?.destroyNode(this)
-        }
-        isDestroyed = true
-    }
+    /** Engine Steps */
 
     private fun doSimulationStep(deltaTime: Float) {
-        onSimulate(deltaTime)
+        onSimulate(nodeApi, deltaTime, _data)
         if(!isObjectedMarkedForDestruction) {
-            childGraph.gameNodes.forEach {
+            childGraph.nodes.forEach {
                 it.simulate(deltaTime)
             }
         }
@@ -81,11 +103,25 @@ abstract class GameNode: NodeSearchable {
 
             val newEntity = kClass.createInstance()
             newEntity.parentNode = this
-            newEntity.create(engineApiAdmin!!, argument)
-            childGraph.gameNodes.add(newEntity)
+            newEntity.create(_engineApi!!, argument)
+            childGraph.nodes.add(newEntity)
         }
         creationQueue.clear()
     }
+
+    private fun destroy() {
+        onDestroy()
+        childGraph.nodes.forEach {
+            it.destroy()
+        }
+        //The engine only needs to remove the root node, child nodes will auto remove with parent dies
+        if(parentNode == null) {
+            _engineApi?.destroyNode(this)
+        }
+        isDestroyed = true
+    }
+
+    /** Utility and Helper Methods */
 
     private fun checkObjectIsBeingDestroyed() {
         if(isObjectedMarkedForDestruction && !isDestroyed) {
@@ -93,33 +129,9 @@ abstract class GameNode: NodeSearchable {
         }
     }
 
-    internal fun <T: GameData> providesInto(provider: ProviderStack<T>, value: T) {
-        if(!providerList.contains(provider)) {
-            providerList.add(provider)
-            provider.push(this, value)
-        }
-    }
-
-    protected fun <T: GameNode> createChild(node: KClass<T>, argument: Any?) {
-        creationQueue.add(Pair(node, argument))
-    }
-
-    protected fun destroyNode() {
-        isObjectedMarkedForDestruction = true
-    }
-
-    //Searchable Interface
-    override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
-        return childGraph.requireFindByInterface(nodeInterface)
-    }
-
-    override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
-        return childGraph.findById(id, nodeInterface)
-    }
-
     //Java Interface
     override fun equals(other: Any?): Boolean {
-        return when(other is GameNode) {
+        return when(other is GameNode<*, *>) {
             true -> other.runtimeId == this.runtimeId
             false -> false
         }

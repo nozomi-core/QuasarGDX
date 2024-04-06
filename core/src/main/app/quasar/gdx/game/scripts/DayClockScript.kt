@@ -1,38 +1,48 @@
 package app.quasar.gdx.game.scripts
 
+//TODO: redo clock strict with new API
+
 import app.quasar.gdx.game.model.TimeOfDay
 import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
 
+/*
+interface GetDayClock {
+    val dayClock: DayClock
+}
+
 interface DayClock {
     val timeOfDay: TimeOfDay
 }
 
-class DayClockScript: RootNode(), DayClock {
+class DayClockScript: RootNode<DayClockData>(), GetDayClock {
     //Nodes
     private lateinit var logger: EngineLogger
     private lateinit var worldTime: WorldTime
 
-    //Data
-    private lateinit var _timeOfDay: TimeOfDay
+    private lateinit var _dayClock: DayClock
+    override val dayClock get() = _dayClock
 
-    //Delegates
-    override val timeOfDay: TimeOfDay get() = _timeOfDay
+    override fun onCreate(argument: Any?): DayClockData {
+        return DayClockData(TimeOfDay.findTimeOfDay(worldTime.getGameTime().hourOfDay))
+    }
 
-    override fun onCreate(engine: EngineApi, argument: Any?) {
-        super.onCreate(engine, argument)
+    override fun onSetupData(data: DayClockData) {
+        _dayClock = object: DayClock{
+            override val timeOfDay: TimeOfDay = data.timeOfDay
+        }
+    }
+
+    override fun onSetupEngine(engine: EngineApi) {
         worldTime = engine.requireFindByInterface(WorldTime::class)
         logger = engine.requireFindByInterface(EngineLogger::class)
-        _timeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime.hourOfDay)
-        onTimeOfDayChanged()
     }
 
     override fun onSimulate(deltaTime: Float) {
-        super.onSimulate(deltaTime)
-        val findTimeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime.hourOfDay)
-        if(_timeOfDay != findTimeOfDay) {
-            _timeOfDay = findTimeOfDay
+        val findTimeOfDay = TimeOfDay.findTimeOfDay(worldTime.getGameTime().hourOfDay)
+        if(data.timeOfDay != findTimeOfDay) {
+            data.timeOfDay = findTimeOfDay
             onTimeOfDayChanged()
         }
     }
@@ -43,3 +53,6 @@ class DayClockScript: RootNode(), DayClock {
 
     override fun shouldRunBefore() = listOf(WorldTimeScript::class)
 }
+
+data class DayClockData(var timeOfDay: TimeOfDay)
+*/

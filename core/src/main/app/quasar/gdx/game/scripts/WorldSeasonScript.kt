@@ -8,13 +8,14 @@ import app.quasar.qgl.language.GameData
 import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.scripts.EngineLogger
 import kotlin.reflect.KClass
-
+//TODO: redo season script with new API
+/*
 interface WorldSeason {
     val hasSeasonChanged: Boolean
     fun getSeasonProvider(): ProviderStack<SeasonAlgorithm>
 }
 
-class WorldSeasonScript: RootNode(), WorldSeason {
+class WorldSeasonScript: RootNode<String>(), WorldSeason {
     //Node refs
     private lateinit var logger: EngineLogger
     private lateinit var worldTime: WorldTime
@@ -29,20 +30,21 @@ class WorldSeasonScript: RootNode(), WorldSeason {
     private lateinit var seasonProvider: ProviderStack<SeasonAlgorithm>
     override fun getSeasonProvider() = seasonProvider
 
-    override fun onCreate(engine: EngineApi, argument: Any?) {
-        super.onCreate(engine, argument)
+    override fun onSetup(engine: EngineApi) {
+        super.onSetup(engine)
         worldTime = engine.requireFindByInterface(WorldTime::class)
         logger = engine.requireFindByInterface(EngineLogger::class)
 
         val defaultSeason = DefaultSeasonAlgorithm(engine)
         seasonProvider = ProviderStack(defaultSeason)
-        data = WorldSeasonData(defaultSeason.onWhatSeasonNow(worldTime.getMonthOfYear), false)
+        data = WorldSeasonData(defaultSeason.onWhatSeasonNow(worldTime.getMonthOfYear()), false)
+
     }
 
     override fun onSimulate(deltaTime: Float) {
         super.onSimulate(deltaTime)
         data.hasSeasonChanged = false
-        if(worldTime.hasMonthOfYearChanged) {
+        if(worldTime.hasMonthOfYearChanged()) {
             val lastSeason = data.currentSeason
             doCalculateSeason()
             if(lastSeason != data.currentSeason) {
@@ -53,7 +55,7 @@ class WorldSeasonScript: RootNode(), WorldSeason {
 
     private fun doCalculateSeason() {
         val seasonAlgorithm = seasonProvider.get()
-        data.currentSeason = seasonAlgorithm.onWhatSeasonNow(worldTime.getMonthOfYear)
+        data.currentSeason = seasonAlgorithm.onWhatSeasonNow(worldTime.getMonthOfYear())
     }
 
     private fun onSeasonChanged() {
@@ -83,4 +85,4 @@ class DefaultSeasonAlgorithm(engine: EngineApi): SeasonAlgorithm(engine) {
             MonthOfYear.SEPTEMBER, MonthOfYear.OCTOBER, MonthOfYear.NOVEMBER -> Season.SPRING
         }
     }
-}
+}*/

@@ -32,7 +32,7 @@ class QuasarEngine2D(
     }
 
     private fun createRootScripts(scripts: List<KClass<*>>) {
-        val rootScripts = scripts.filterIsInstance<KClass<GameNode>>()
+        val rootScripts = scripts.filterIsInstance<KClass<GameNode<*,*>>>()
         engineApi.createRootScripts(rootScripts)
     }
 
