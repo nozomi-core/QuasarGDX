@@ -18,13 +18,13 @@ class QuasarEngine2D(
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
-    private var world: GameWorld? = null
-    private var overlay: GameOverlay? = null
-
-    private val engineApi = QuasarEngineApi(drawableApi)
+    private val engineApi = QuasarEngineApi(
+        drawableApi = drawableApi,
+        onExit = this::onExit
+    )
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
-       this.world = kClass.createInstance().apply {
+       kClass.createInstance().apply {
            createRootScripts(useRootScripts())
            create(engineApi)
            runtime.sendWorldEngine(engineApi)
@@ -37,9 +37,13 @@ class QuasarEngine2D(
     }
 
     fun <T: GameOverlay> createOverlay(overlay: KClass<T>) {
-        this.overlay = overlay.createInstance().apply {
+        overlay.createInstance().apply {
             onCreate()
         }
+    }
+
+    private fun onExit(engine: EngineDeserialized) {
+
     }
 
     fun render() {

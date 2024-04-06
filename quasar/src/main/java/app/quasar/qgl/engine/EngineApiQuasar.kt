@@ -6,29 +6,66 @@ import app.quasar.qgl.scripts.QuasarRootScripts
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class QuasarEngineApi(private val drawableApi: DrawableApi): EngineApiAdmin, NodeSearchable {
+class QuasarEngineApi(
+    private val drawableApi: DrawableApi,
+    private val onExit: (EngineDeserialized) -> Unit,
+): EngineApiAdmin, NodeSearchable {
+    //Engine serialized members
     private var currentRuntimeId = 0L
-    private val graph = NodeGraph()
-
-    private val destructionQueue = mutableListOf<GameNode<*,*>>()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*,*>>, Any?>>()
-
+    private var graph = NodeGraph()
     private var rootScripts = mutableListOf<KClass<*>>()
 
+    //Queues and Engine metadata
+    private val destructionQueue = mutableListOf<GameNode<*,*>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*,*>>, Any?>>()
     private var currentNodeIdRunning = -1L
 
-    /** Core Methods */
+    private var _isRunning = true
+    val isRunning: Boolean get() = _isRunning
+    private var engineMarkedToExit = false
 
+    fun setEngineData(deserialized: EngineDeserialized?) {
+        deserialized?.let { data ->
+            this.currentRuntimeId = data.currentRuntimeId
+            this.graph = data.graph
+            this.rootScripts = mutableListOf<KClass<*>>().apply {
+                addAll(data.rootScripts)
+            }
+        }
+    }
+
+    /** Core Methods */
     fun simulate(deltaTime: Float) {
-        doDestructionStep()
-        doCreationStep()
-        doSimulationStep(deltaTime)
+        if(isRunning) {
+            doDestructionStep()
+            doCreationStep()
+            doSimulationStep(deltaTime)
+
+            if(engineMarkedToExit && isRunning) {
+                doExit()
+            }
+        }
     }
 
     fun draw() {
         graph.nodes.forEach {
             it.draw(drawableApi)
         }
+    }
+
+    fun exit() {
+        engineMarkedToExit = true
+    }
+
+    fun doExit() {
+        _isRunning = false
+        onExit(
+            EngineDeserialized(
+                currentRuntimeId = currentRuntimeId,
+                graph = graph,
+                rootScripts = rootScripts
+            )
+        )
     }
 
     //:: Engine steps
