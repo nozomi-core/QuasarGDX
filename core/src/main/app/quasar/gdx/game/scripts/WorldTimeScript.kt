@@ -19,12 +19,13 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
     override fun getGameMillis() = requireDataForInterface.gameTime.millis
     override fun getTimeStamp() = requireDataForInterface.getTimeStamp()
 
-    override fun onSetupEngine(engine: EngineApi) {
+    override fun onSetup(engine: EngineApi, data: WorldTimeData?) {
+        super.onSetup(engine, data)
         logger = engine.requireFindByInterface(EngineLogger::class)
     }
 
-    override fun onCreateData(argument: WorldTimeArg?): WorldTimeData {
-        super.onCreateData(argument)
+    override fun onCreate(argument: WorldTimeArg?): WorldTimeData {
+        super.onCreate(argument)
 
         return WorldTimeData(
             gameSpeed = argument?.gameSpeed ?: DEFAULT_SPEED,

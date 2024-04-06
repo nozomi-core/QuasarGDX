@@ -14,8 +14,8 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     private val speedMs = 4f
 
-    override fun onCreateData(argument: Unit?): Unit? {
-        return super.onCreateData(argument)
+    override fun onCreate(argument: Unit?): Unit? {
+        return super.onCreate(argument)
     }
 
     override fun onDraw(draw: DrawableApi) {

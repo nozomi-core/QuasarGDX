@@ -33,10 +33,8 @@ abstract class GameNode<D, A> {
     private var _engineApi: EngineApiAdmin? = null
 
     //Hooks
-    protected open fun onCreateData(argument: A?): D? { return null }
-    protected open fun onCreateChildren(node: NodeApi){}
-    protected open fun onSetupEngine(engine: EngineApi) {}
-    protected open fun onSetupData(data: D?) {}
+    protected open fun onCreate(argument: A?): D? { return null }
+    protected open fun onSetup(engine: EngineApi, data: D?) {}
     protected open fun onSimulate(node: NodeApi, deltaTime: Float, data: D?) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
@@ -67,10 +65,8 @@ abstract class GameNode<D, A> {
         this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
         this._engineApi?.setCurrentNodeRunning(this)
-        onSetupEngine(engineApi)
-        _data = onCreateData(argument as A)
-        onSetupData(_data)
-        onCreateChildren(nodeApi)
+        _data = onCreate(argument as A)
+        onSetup(engineApiAdmin, _data)
         doCreationStep()
     }
 
