@@ -1,6 +1,8 @@
 package app.quasar.gdx.game.scripts
 
 import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.engine.EngineRef
+import app.quasar.qgl.engine.EngineScript
 import app.quasar.qgl.entity.NodeApi
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
@@ -11,8 +13,10 @@ interface WorldTime {
     fun getTimeStamp(): String
 }
 
+@EngineScript(4)
 class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
     //Nodes
+    @EngineRef(BinTypes.ID_LOGGER)
     private lateinit var logger: EngineLogger
 
     //Interface
@@ -25,8 +29,6 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
     }
 
     override fun onCreate(argument: WorldTimeArg?): WorldTimeData {
-        super.onCreate(argument)
-
         return WorldTimeData(
             gameSpeed = argument?.gameSpeed ?: DEFAULT_SPEED,
             gameTime = if(argument?.startTime != null) {
@@ -37,23 +39,19 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
         )
     }
 
-    override fun onSimulate(node: NodeApi, deltaTime: Float, data: WorldTimeData?) {
-        if(data == null) return
-
+    override fun onSimulate(node: NodeApi, deltaTime: Float, data: WorldTimeData) {
         data.gameTime.addSeconds((deltaTime * data.gameSpeed).toInt())
-
-        data.counter += deltaTime
-        if(data.counter > 5) {
-            logger.message(this, "onTime: ${data.getTimeStamp()}")
-            data.counter = 0.0f
-        }
     }
 
     companion object {
         const val DEFAULT_SPEED = 1000000f
     }
+
+    private object BinTypes {
+        const val ID_LOGGER = 1
+    }
 }
-//TODO: remove counter, only test
+
 data class WorldTimeArg(
     val gameSpeed: Float,
     val startTime: Long
@@ -61,8 +59,7 @@ data class WorldTimeArg(
 
 data class WorldTimeData(
     val gameTime: MutableDateTime,
-    var gameSpeed: Float = WorldTimeScript.DEFAULT_SPEED,
-    var counter: Float = 0.0f
+    var gameSpeed: Float = WorldTimeScript.DEFAULT_SPEED
 ) {
     fun getTimeStamp() = "${gameTime.year}-${gameTime.monthOfYear}-${gameTime.dayOfMonth}"
 }
