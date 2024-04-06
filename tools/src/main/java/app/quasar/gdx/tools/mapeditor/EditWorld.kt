@@ -13,6 +13,6 @@ class EditWorld: GameWorld() {
     }
 
      override fun onCreate(engine: EngineApi) {
-        //engine.createGameNode(MapTool::class)
+
     }
 }

@@ -44,7 +44,6 @@ class QGLBinarySerializeClassTest {
         val serialize = QGLSerialize(
             definitions = define
         )
-
         val objects = listOf(tim, dog)
 
         val out = QGLBinary.createMemoryOut { binStream ->
@@ -61,7 +60,6 @@ class QGLBinarySerializeClassTest {
         readSerial.read(output)
 
         val size = output.data as Int
-
         val readableObjects = mutableListOf<Any>()
 
         for(i in 0 until size) {
@@ -69,13 +67,11 @@ class QGLBinarySerializeClassTest {
             val binObject = output.data as BinaryObject
             readableObjects.add(serialize.read(binObject))
         }
-
         Assert.assertEquals(2, readableObjects.size)
         Assert.assertEquals(MyCustomer::class, readableObjects[0]::class)
         Assert.assertEquals(MyDog::class, readableObjects[1]::class)
     }
 }
-
 
 @QGLClass(classId = 1)
 data class MyCustomer(
@@ -90,7 +86,6 @@ data class MyDog(
     val age: Int,
     val isRunning: Boolean
 )
-
 
 class MyCustomerMapper: QGLMapper<MyCustomer> {
 

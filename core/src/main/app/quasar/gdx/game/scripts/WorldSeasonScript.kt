@@ -8,7 +8,7 @@ import app.quasar.qgl.language.GameData
 import app.quasar.qgl.language.ProviderStack
 import app.quasar.qgl.scripts.EngineLogger
 import kotlin.reflect.KClass
-
+//TODO: redo season script with new API
 /*
 interface WorldSeason {
     val hasSeasonChanged: Boolean

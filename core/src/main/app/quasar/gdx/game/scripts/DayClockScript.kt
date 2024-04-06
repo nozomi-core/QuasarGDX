@@ -1,5 +1,7 @@
 package app.quasar.gdx.game.scripts
 
+//TODO: redo clock strict with new API
+
 import app.quasar.gdx.game.model.TimeOfDay
 import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.entity.RootNode
