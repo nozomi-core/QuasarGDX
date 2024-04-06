@@ -11,14 +11,6 @@ class QGLBinary {
         private var isFinished = false
 
         @Throws(IOException::class)
-        fun writeSection(id: Int) {
-            validateId(id)
-            out.writeInt(id)
-            out.write(TYPE_SECTION_BREAK)
-        }
-
-
-        @Throws(IOException::class)
         fun writeInt(id: Int, data: Int) {
             validateId(id)
             out.writeInt(id)
@@ -53,6 +45,25 @@ class QGLBinary {
             out.writeInt(data.size)
             data.forEach {
                 out.writeLong(it)
+            }
+        }
+
+        @Throws(IOException::class)
+        fun writeFloat(id: Int, data: Float) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_FLOAT)
+            out.writeFloat(data)
+        }
+
+        @Throws(IOException::class)
+        fun writeFloatArray(id: Int, data: FloatArray) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_FLOAT_ARRAY)
+            out.writeInt(data.size)
+            data.forEach {
+                out.writeFloat(it)
             }
         }
 
@@ -95,6 +106,22 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
+        fun writeChar(id: Int, data: Char) {
+            writeStringType(id = id, type = TYPE_CHAR, data = "$data")
+        }
+
+        @Throws(IOException::class)
+        fun writeCharArray(id: Int, data: CharArray) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_CHAR_ARRAY)
+            out.writeInt(data.size)
+            data.forEach {
+                writeStringType(0, TYPE_CHAR, "$it")
+            }
+        }
+
+        @Throws(IOException::class)
         fun writeBytes(id: Int, data: ByteArray) {
             validateId(id)
             out.writeInt(id)
@@ -117,13 +144,18 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeString(id: Int, data: String) {
+        private fun writeStringType(id: Int, type: Int, data: String) {
             validateId(id)
             out.writeInt(id)
             val bytes = BinaryUtils.xor255(data.toByteArray(Charsets.UTF_8))
-            out.write(TYPE_STRING)
+            out.write(type)
             out.writeInt(bytes.size)
             out.write(bytes)
+        }
+
+        @Throws(IOException::class)
+        fun writeString(id: Int, data: String) {
+            writeStringType(id = id, type = TYPE_STRING, data = data)
         }
 
         @Throws(IOException::class)
@@ -170,16 +202,27 @@ class QGLBinary {
             writeString(id, data.guid)
         }
 
+        @Throws(IOException::class)
+        fun writeSection(id: Int) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_SECTION_BREAK)
+        }
+
         private fun writeRecord(record: BinaryRecord) {
             when(record.data) {
                 is Int -> writeInt(record.id, record.data)
                 is IntArray -> writeIntArray(record.id, record.data)
                 is Long -> writeLong(record.id, record.data)
                 is LongArray -> writeLongArray(record.id, record.data)
+                is Float -> writeFloat(record.id, record.data)
+                is FloatArray -> writeFloatArray(record.id, record.data)
                 is Double -> writeDouble(record.id, record.data)
                 is DoubleArray -> writeDoubleArray(record.id, record.data)
                 is Boolean -> writeBoolean(record.id, record.data)
                 is BooleanArray -> writeBooleanArray(record.id, record.data)
+                is Char -> writeChar(record.id, record.data)
+                is CharArray -> writeCharArray(record.id, record.data)
                 is ByteArray -> writeBytes(record.id, record.data)
                 is ByteMatrix -> writeByteMatrix(record.id, record.data)
                 is String -> writeString(record.id, record.data)
@@ -243,6 +286,17 @@ class QGLBinary {
                     }
                     record.data = longArray
                 }
+                TYPE_FLOAT -> {
+                    record.data = inp.readFloat()
+                }
+                TYPE_FLOAT_ARRAY -> {
+                    val typeSize = inp.readInt()
+                    val floatArray = FloatArray(typeSize)
+                    floatArray.forEachIndexed { index, _ ->
+                        floatArray[index] = inp.readFloat()
+                    }
+                    record.data = floatArray
+                }
                 TYPE_DOUBLE -> {
                     record.data = inp.readDouble()
                 }
@@ -265,6 +319,20 @@ class QGLBinary {
                     }
                     record.data = doubleArray
                 }
+                TYPE_CHAR -> {
+                    val charString = readStringType()
+                    record.data = charString[0]
+                }
+                TYPE_CHAR_ARRAY -> {
+                    val typeSize = inp.readInt()
+                    val charArray = CharArray(typeSize)
+                    charArray.forEachIndexed { index, _ ->
+                        val str = readStringType()
+                        charArray[index] = str[0]
+                    }
+                    record.data = charArray
+                }
+
                 TYPE_BYTES -> {
                     val typeSize = inp.readInt()
                     val byteData = ByteArray(typeSize)
@@ -282,11 +350,7 @@ class QGLBinary {
                     record.data = ByteMatrix(bytesArray)
                 }
                 TYPE_STRING -> {
-                    //Decode the XOR operation to get the original string in plain text
-                    val typeSize = inp.readInt()
-                    val byteData = ByteArray(typeSize)
-                    inp.read(byteData)
-                    record.data = String(BinaryUtils.xor255(byteData))
+                    record.data = readStringType()
                 }
                 TYPE_STRING_MATRIX -> {
                     val typeSize = inp.readInt()
@@ -343,6 +407,13 @@ class QGLBinary {
 
             return true
         }
+
+        private fun readStringType(): String {
+            val typeSize = inp.readInt()
+            val byteData = ByteArray(typeSize)
+            inp.read(byteData)
+            return String(BinaryUtils.xor255(byteData))
+        }
     }
 
     companion object {
@@ -350,18 +421,22 @@ class QGLBinary {
         const val TYPE_INT_ARRAY: Int =             2
         const val TYPE_LONG: Int =                  3
         const val TYPE_LONG_ARRAY: Int =            4
-        const val TYPE_DOUBLE: Int =                5
-        const val TYPE_DOUBLE_ARRAY: Int =          6
-        const val TYPE_BOOLEAN: Int =               7
-        const val TYPE_BOOLEAN_ARRAY: Int =         8
-        const val TYPE_BYTES: Int =                 9
-        const val TYPE_BYTE_MATRIX: Int =           10
-        const val TYPE_STRING: Int =                11
-        const val TYPE_STRING_MATRIX: Int =         12
-        const val TYPE_BINARY_OBJECT: Int =         13
-        const val TYPE_BINARY_OBJECT_ARRAY: Int =   14
-        const val TYPE_CLIENT_GUID: Int =           15
-        const val TYPE_SECTION_BREAK: Int =         16
+        const val TYPE_FLOAT: Int =                 5
+        const val TYPE_FLOAT_ARRAY =                6
+        const val TYPE_DOUBLE: Int =                7
+        const val TYPE_DOUBLE_ARRAY: Int =          8
+        const val TYPE_BOOLEAN: Int =               9
+        const val TYPE_BOOLEAN_ARRAY: Int =         10
+        const val TYPE_CHAR: Int =                  11
+        const val TYPE_CHAR_ARRAY: Int =            12
+        const val TYPE_BYTES: Int =                 13
+        const val TYPE_BYTE_MATRIX: Int =           14
+        const val TYPE_STRING: Int =                15
+        const val TYPE_STRING_MATRIX: Int =         16
+        const val TYPE_BINARY_OBJECT: Int =         17
+        const val TYPE_BINARY_OBJECT_ARRAY: Int =   18
+        const val TYPE_CLIENT_GUID: Int =           19
+        const val TYPE_SECTION_BREAK: Int =         20
 
         const val ID_END_OF_DATA = -1
 

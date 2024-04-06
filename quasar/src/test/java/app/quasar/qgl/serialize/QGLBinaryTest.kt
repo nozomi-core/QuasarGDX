@@ -18,14 +18,13 @@ class QGLBinaryTest {
         const val INT_ARRAY = 2
         const val LONG = 3
         const val LONG_ARRAY = 4
-        const val DOUBLE = 5
-        const val DOUBLE_ARRAY = 6
-        const val BOOLEAN = 7
-        const val BOOLEAN_ARRAY = 8
-        const val STRING = 11
-        const val STRING_MATRIX = 12
-        const val OBJECT = 13
-        const val OBJECT_MATRIX = 14
+        const val DOUBLE = 7
+        const val DOUBLE_ARRAY = 8
+        const val BOOLEAN = 9
+        const val BOOLEAN_ARRAY = 10
+        const val STRING = 15
+        const val STRING_MATRIX = 16
+        const val OBJECT = 17
     }
 
     @Test
