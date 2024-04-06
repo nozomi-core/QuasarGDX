@@ -11,6 +11,14 @@ class QGLBinary {
         private var isFinished = false
 
         @Throws(IOException::class)
+        fun writeSection(id: Int) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_SECTION_BREAK)
+        }
+
+
+        @Throws(IOException::class)
         fun writeInt(id: Int, data: Int) {
             validateId(id)
             out.writeInt(id)
@@ -137,6 +145,7 @@ class QGLBinary {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_BINARY_OBJECT)
+            out.writeInt(data.classId)
             out.writeInt(data.size)
             for(index in 0 until data.size) {
                 writeRecord(data[index])
@@ -151,7 +160,7 @@ class QGLBinary {
             out.writeInt(data.size)
             for(index in 0 until data.size) {
                 val item = data[index]
-                writeObject(item.id, item)
+                writeObject(item.classId, item)
             }
         }
 
@@ -294,6 +303,8 @@ class QGLBinary {
                     record.data = StringMatrix(stringList)
                 }
                 TYPE_BINARY_OBJECT -> {
+                    val classId = inp.readInt()
+
                     val typeSize = inp.readInt()
                     val objectList = mutableListOf<BinaryRecord>()
                     //Call the read on itself to read the complex object
@@ -304,7 +315,7 @@ class QGLBinary {
                         objectList.add(output.toBinaryRecord())
                     }
 
-                    record.data = BinaryObject(record.id, objectList.toTypedArray())
+                    record.data = BinaryObject(classId, objectList.toTypedArray())
                 }
                 TYPE_BINARY_OBJECT_ARRAY -> {
                     val typeSize = inp.readInt()
@@ -322,6 +333,9 @@ class QGLBinary {
                     val output = BinaryOutput()
                     read(output)
                     record.data = ClientGuid(output.data as String)
+                }
+                TYPE_SECTION_BREAK -> {
+                    record.data = ""
                 }
 
                 else -> throw Exception("type id not supported")
@@ -347,6 +361,7 @@ class QGLBinary {
         const val TYPE_BINARY_OBJECT: Int =         13
         const val TYPE_BINARY_OBJECT_ARRAY: Int =   14
         const val TYPE_CLIENT_GUID: Int =           15
+        const val TYPE_SECTION_BREAK: Int =         16
 
         const val ID_END_OF_DATA = -1
 
@@ -378,12 +393,13 @@ class BinaryOutput {
     var data: Any = -1
 
     fun toBinaryRecord() = BinaryRecord(id, data)
+    fun isObject() = type == QGLBinary.TYPE_BINARY_OBJECT
 }
 
 class InlineBinaryFormat(val byteData: ByteArray)
 
 class BinaryObject(
-    val id: Int,
+    val classId: Int,
     private val matrix: Array<BinaryRecord>
 ): FastIterator<BinaryRecord> {
     override val size: Int get() = matrix.size

@@ -5,18 +5,20 @@ import kotlin.reflect.KClass
 class QGLSerialize(
     private val definitions: QGLDefinitions
 ) {
-
     fun write(kObject: Any): BinaryObject {
         checkObjectIsSerializable(kObject)
 
         val classId = kObject::class.java.getAnnotation(QGLClass::class.java).classId
         val serialMapper = definitions.serialMap[classId]!!.second as QGLMapper<Any>
 
-        return BinaryObject(classId, serialMapper.toBinary(kObject))
+        return BinaryObject(
+            classId = classId,
+            matrix = serialMapper.toBinary(kObject)
+        )
     }
 
     fun read(binObject: BinaryObject): Any {
-        val serialMapper = definitions.serialMap[binObject.id]!!.second
+        val serialMapper = definitions.serialMap[binObject.classId]!!.second
         return serialMapper.toEntity(binObject)!!
     }
 }
