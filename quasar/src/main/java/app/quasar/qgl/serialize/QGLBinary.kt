@@ -203,10 +203,10 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeSection(id: Int) {
+        fun writeFrame(id: Int) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_SECTION_BREAK)
+            out.write(TYPE_FRAME)
         }
 
         private fun writeRecord(record: BinaryRecord) {
@@ -398,8 +398,8 @@ class QGLBinary {
                     read(output)
                     record.data = ClientGuid(output.data as String)
                 }
-                TYPE_SECTION_BREAK -> {
-                    record.data = ""
+                TYPE_FRAME -> {
+                    record.data = Unit
                 }
 
                 else -> throw Exception("type id not supported")
@@ -436,9 +436,10 @@ class QGLBinary {
         const val TYPE_BINARY_OBJECT: Int =         17
         const val TYPE_BINARY_OBJECT_ARRAY: Int =   18
         const val TYPE_CLIENT_GUID: Int =           19
-        const val TYPE_SECTION_BREAK: Int =         20
+        const val TYPE_FRAME: Int =         20
 
-        const val ID_END_OF_DATA = -1
+        const val ID_NO_DATA_READ = -50
+        const val ID_END_OF_DATA = -100
 
         fun createFileOut(file: File, writeCallback: (out: Out) -> Unit) {
             val stream = Out(DataOutputStream(FileOutputStream(file)))
@@ -463,12 +464,14 @@ class QGLBinary {
 }
 
 class BinaryOutput {
-    var id = -1
+    var id = QGLBinary.ID_NO_DATA_READ
     var type = -1
     var data: Any = -1
 
+    fun hasData() = id != QGLBinary.ID_END_OF_DATA
     fun toBinaryRecord() = BinaryRecord(id, data)
     fun isObject() = type == QGLBinary.TYPE_BINARY_OBJECT
+    fun isFrame() = type == QGLBinary.TYPE_FRAME
 }
 
 class InlineBinaryFormat(val byteData: ByteArray)

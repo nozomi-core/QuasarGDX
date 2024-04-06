@@ -63,7 +63,7 @@ class QuasarEngine2D(
         engineHooks.useOverlayCamera().update()
         spriteBatch.projectionMatrix = engineHooks.useOverlayCamera().combined
         spriteBatch.begin()
-        overlay?.onDraw(drawableApi)
+        //overlay?.onDraw(drawableApi)
         spriteBatch.end()
     }
 
