@@ -1,13 +1,5 @@
 package app.quasar.gdx.game.scripts
 
-import app.quasar.gdx.game.model.MonthOfYear
-import app.quasar.gdx.game.model.Season
-import app.quasar.qgl.engine.EngineApi
-import app.quasar.qgl.entity.RootNode
-import app.quasar.qgl.language.GameData
-import app.quasar.qgl.language.ProviderStack
-import app.quasar.qgl.scripts.EngineLogger
-import kotlin.reflect.KClass
 //TODO: redo season script with new API
 /*
 interface WorldSeason {

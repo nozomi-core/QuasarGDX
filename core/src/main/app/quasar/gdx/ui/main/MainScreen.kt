@@ -1,6 +1,7 @@
 package app.quasar.gdx.ui.main
 
 import app.quasar.gdx.AssetFiles
+import app.quasar.gdx.MainWorld
 import app.quasar.gdx.tiles.QuasarTileset
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.EngineHooks
