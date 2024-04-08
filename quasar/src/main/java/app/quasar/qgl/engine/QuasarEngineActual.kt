@@ -1,3 +1,5 @@
+@file:JvmName("QuasarEngineKt")
+
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.entity.*
@@ -6,10 +8,10 @@ import app.quasar.qgl.scripts.QuasarRootScripts
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class QuasarEngineApi(
+class QuasarEngineActual(
     private val drawableApi: DrawableApi,
     private val onExit: (EngineDeserialized) -> Unit,
-): EngineApiAdmin, NodeSearchable {
+): QuasarEngine, NodeSearchable {
     //Engine serialized members
     private var currentRuntimeId = 0L
     private var graph = NodeGraph()
@@ -35,7 +37,7 @@ class QuasarEngineApi(
     }
 
     /** Core Methods */
-    fun simulate(deltaTime: Float) {
+     override fun simulate(deltaTime: Float) {
         if(isRunning) {
             doDestructionStep()
             doCreationStep()
@@ -47,7 +49,7 @@ class QuasarEngineApi(
         }
     }
 
-    fun draw() {
+     override fun draw() {
         graph.nodes.forEach {
             it.draw(drawableApi)
         }
@@ -57,7 +59,7 @@ class QuasarEngineApi(
         engineMarkedToExit = true
     }
 
-    fun doExit() {
+    private fun doExit() {
         _isRunning = false
         onExit(
             EngineDeserialized(

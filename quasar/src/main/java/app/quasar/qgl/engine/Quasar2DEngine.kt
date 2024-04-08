@@ -11,14 +11,14 @@ import com.badlogic.gdx.utils.Disposable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class QuasarEngine2D(
+class Quasar2DEngine(
     private val runtime: QuasarRuntime,
     private val config: QuasarEngine2DConfig,
     private val engineHooks: EngineHooks,
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
-    private val engineApi = QuasarEngineApi(
+    private val engineApi: QuasarEngine = QuasarEngineActual(
         drawableApi = drawableApi,
         onExit = this::onExit
     )
