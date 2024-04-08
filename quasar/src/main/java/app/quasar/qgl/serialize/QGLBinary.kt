@@ -241,7 +241,7 @@ class QGLBinary {
             }
         }
 
-        fun finish() {
+        fun close() {
             //Ensure we only call isFinished once, multiple times will be ignored
             if(!isFinished) {
                 out.writeInt(ID_END_OF_DATA)
@@ -444,7 +444,7 @@ class QGLBinary {
         fun createFileOut(file: File, writeCallback: (out: Out) -> Unit) {
             val stream = Out(DataOutputStream(FileOutputStream(file)))
             writeCallback(stream)
-            stream.finish()
+            stream.close()
         }
 
         fun createFileIn(file: File): In = In(DataInputStream(FileInputStream(file)))
@@ -453,7 +453,7 @@ class QGLBinary {
             val byteOut = ByteArrayOutputStream()
             val memoryStream = Out(DataOutputStream(byteOut))
             writeCallback(memoryStream)
-            memoryStream.finish()
+            memoryStream.close()
             return InlineBinaryFormat(byteOut.toByteArray())
         }
 

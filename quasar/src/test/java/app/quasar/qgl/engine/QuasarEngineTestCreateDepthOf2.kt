@@ -1,11 +1,5 @@
 package app.quasar.qgl.engine
 
-import app.quasar.qgl.entity.GameNode
-import app.quasar.qgl.entity.NodeApi
-import app.quasar.qgl.test.fixtures.TestEmptyDrawableApi
-import org.junit.Assert
-import org.junit.Test
-
 /**
  * Test  create game node with parent and child, so only a depth of 2 objects on tree
  */

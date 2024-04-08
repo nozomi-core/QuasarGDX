@@ -9,7 +9,7 @@ class QGLSerialize(
         checkObjectIsSerializable(kObject)
 
         val classId = kObject::class.java.getAnnotation(QGLClass::class.java).classId
-        val serialMapper = definitions.serialMap[classId]!!.second as QGLMapper<Any>
+        val serialMapper = definitions.findMapperForId(classId) as QGLMapper<Any>
 
         return BinaryObject(
             classId = classId,
@@ -18,12 +18,12 @@ class QGLSerialize(
     }
 
     fun read(binObject: BinaryObject): Any {
-        val serialMapper = definitions.serialMap[binObject.classId]!!.second
+        val serialMapper = definitions.findMapperForId(binObject.classId)
         return serialMapper.toEntity(binObject)!!
     }
 }
 
-class QGLDefinitions(val serialMap: Map<Int, Pair<KClass<*>, QGLMapper<*>>>) {
+class QGLDefinitions(private val serialMap: Map<Int, Pair<KClass<*>, QGLMapper<*>>>) {
 
     class Builder {
         private val classMap = HashMap<Int, Pair<KClass<*>, QGLMapper<*>>>()
@@ -31,7 +31,7 @@ class QGLDefinitions(val serialMap: Map<Int, Pair<KClass<*>, QGLMapper<*>>>) {
         fun <T : Any> addClass(kClass: KClass<T>, mapper: QGLMapper<T>): Builder {
             checkClassIsSerializable(kClass)
 
-            val classId = kClass.java.getAnnotation(QGLClass::class.java).classId
+            val classId = qglGetBinaryClassId(kClass)
 
             if(classMap.containsKey(classId)) {
                 throw IllegalArgumentException("QGLClass ID's must be unique, please store them in single file to keep track")
@@ -42,11 +42,23 @@ class QGLDefinitions(val serialMap: Map<Int, Pair<KClass<*>, QGLMapper<*>>>) {
             return this
         }
 
+
         fun build(): QGLDefinitions {
             return QGLDefinitions(classMap)
         }
     }
+
+    fun findMapperForClass(kClass: KClass<*>): QGLMapper<*> {
+        return serialMap[qglGetBinaryClassId(kClass)]!!.second
+    }
+
+    fun findMapperForId(id: Int): QGLMapper<*> {
+        return serialMap[id]!!.second
+    }
 }
+
+fun qglGetBinaryClassId(kClass: KClass<*>) = kClass.java.getAnnotation(QGLClass::class.java).classId
+
 
 fun checkClassIsSerializable(kClass: KClass<*>) {
     val hasAnnotation = kClass.java.isAnnotationPresent(QGLClass::class.java)

@@ -13,7 +13,7 @@ class QuasarEngineActual(
     private val onExit: (EngineDeserialized) -> Unit,
 ): QuasarEngine, NodeSearchable {
     //Engine serialized members
-    private var currentRuntimeId = 0L
+    private var currentRuntimeId = 1L
     private var graph = NodeGraph()
     private var rootScripts = mutableListOf<KClass<*>>()
 
@@ -136,7 +136,7 @@ class QuasarEngineActual(
     }
 
     override fun checkNodeIsNotRunning(node: GameNode<*, *>) {
-        if(currentNodeIdRunning == node.runtimeId) {
+        if(isRunning && currentNodeIdRunning == node.runtimeId) {
             throw IllegalAccessException("Can not perform this operation while current node running")
         }
     }

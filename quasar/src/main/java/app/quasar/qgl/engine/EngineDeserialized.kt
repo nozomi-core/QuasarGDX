@@ -9,19 +9,4 @@ class EngineDeserialized(
     val currentRuntimeId: Long,
     val rootScripts: List<KClass<*>>,
     val graph: NodeGraph
-) {
-
-    private fun writeEngine(
-        definitions: QGLDefinitions,
-        out: QGLBinary.Out
-    ) {
-
-
-
-
-
-
-    }
-
-
-}
+)

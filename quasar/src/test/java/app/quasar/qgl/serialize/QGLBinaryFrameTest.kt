@@ -1,5 +1,7 @@
 package app.quasar.qgl.serialize
 
+import app.quasar.qgl.serialize.BinaryOutput
+import app.quasar.qgl.serialize.QGLBinary
 import org.junit.Assert
 import org.junit.Test
 

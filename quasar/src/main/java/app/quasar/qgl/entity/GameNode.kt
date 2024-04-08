@@ -11,6 +11,8 @@ abstract class GameNode<D, A> {
         private set
 
     private var parentNode: GameNode<*, *>? = null
+    val parentNodeId: Long?
+        get() = parentNode?.runtimeId
 
     //Data
     private var _data: D? = null
