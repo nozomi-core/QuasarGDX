@@ -65,7 +65,7 @@ abstract class GameNode<D, A> {
         this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
         this._engineApi?.setCurrentNodeRunning(this)
-        _data = onCreate(argument as A)
+        _data = onCreate(argument as? A)
         onSetup(engineApiAdmin, _data)
         doCreationStep()
     }
