@@ -23,7 +23,8 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
 
     //Nodes
     @EngineRef(NodeTypes.ENGINE_LOGGER)
-    private lateinit var logger: EngineLogger
+    lateinit var logger: EngineLogger private set
+
 
     //Interface
     override fun getGameMillis() = requireDataForInterface.gameTime.millis
@@ -47,7 +48,7 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
 
     override fun onSimulate(node: NodeApi, deltaTime: Float, data: WorldTimeData) {
         doWorldTime(
-            deltaTime, data
+            this, deltaTime, data
         )
     }
 
