@@ -1,13 +1,10 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.entity.GameNode
-import app.quasar.qgl.language.serialize.*
 import app.quasar.qgl.serialize.*
 import app.quasar.qgl.test.fixtures.TestEmptyDrawableApi
+import org.junit.Assert
 import org.junit.Test
-import java.io.DataOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
 class QuasarEngineTestSerialize {
 
@@ -31,15 +28,33 @@ class QuasarEngineTestSerialize {
             addClass(SerialData::class, SerialMapper())
         }.build()
 
-        val qglOut = QGLBinary.Out(DataOutputStream(FileOutputStream(File("quasar_binary.dat"))))
+        val inMemoryEngine = QGLBinary.createMemoryOut { memOut ->
+            EngineBinary.Out(definitions, memOut, engineData!!)
+        }
 
-        val engineOut = EngineBinary.Out(definitions, qglOut)
-        engineOut.save(engineData!!)
+        val engineIn = QGLBinary.createMemoryIn(inMemoryEngine)
+        val engineInData = EngineBinary.In(engineIn)
 
+        Assert.assertEquals(1, engineInData.engineNodes.size)
+        engineInData.engineNodes[0].let { node ->
+            Assert.assertEquals(64,  node.classId)
+            Assert.assertEquals(null, node.nodeParentRuntimeId)
+            Assert.assertEquals(1, node.nodeRuntimeId)
+            Assert.assertEquals(73, node.nodeData?.classId)
+        }
+        Assert.assertEquals(2L, engineInData.engineMetaData?.lastNodeRuntimeId)
+        Assert.assertEquals(0, engineInData.engineMetaData?.rootScriptsClassIds?.size)
+
+        val serialData = engineInData.engineNodes[0].nodeData!!
+        val mapper = definitions.findMapperForId(serialData.classId)
+        val convertData = mapper.toEntity(serialData) as SerialData
+
+        Assert.assertEquals("BinaryData", convertData.title)
+        Assert.assertEquals(88, convertData.count)
     }
 }
 
-@QGLClass(1)
+@QGLClass(64)
 class SerialScript: GameNode<SerialData, Unit>() {
     override fun onCreate(argument: Unit?): SerialData {
         return SerialData(
@@ -49,7 +64,7 @@ class SerialScript: GameNode<SerialData, Unit>() {
     }
 }
 
-@QGLClass(2)
+@QGLClass(73)
 data class SerialData(
     val title: String,
     val count: Int

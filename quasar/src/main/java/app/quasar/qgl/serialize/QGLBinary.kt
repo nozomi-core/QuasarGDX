@@ -203,11 +203,28 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeFrame(id: Int) {
+        fun writeFrameStart(id: Int) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_FRAME)
         }
+
+        @Throws(IOException::class)
+        fun writeFrameEnd(id: Int) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_FRAME)
+        }
+
+        @Throws(IOException::class)
+        fun writeFrame(startId: Int, endId: Int, callback: () -> Unit) {
+            validateId(startId)
+            validateId(endId)
+            writeFrameStart(startId)
+            callback()
+            writeFrameEnd(endId)
+        }
+
 
         private fun writeRecord(record: BinaryRecord) {
             when(record.data) {
@@ -252,6 +269,11 @@ class QGLBinary {
     }
 
     class In(private val inp: DataInputStream) {
+
+        fun readUntil(id: Int, output: BinaryOutput): Boolean {
+            read(output)
+            return output.id != id
+        }
 
         fun read(record: BinaryOutput): Boolean {
             record.id = inp.readInt()
@@ -436,7 +458,8 @@ class QGLBinary {
         const val TYPE_BINARY_OBJECT: Int =         17
         const val TYPE_BINARY_OBJECT_ARRAY: Int =   18
         const val TYPE_CLIENT_GUID: Int =           19
-        const val TYPE_FRAME: Int =         20
+        const val TYPE_FRAME: Int =                 20
+        const val TYPE_FRAME_END: Int =             21
 
         const val ID_NO_DATA_READ = -50
         const val ID_END_OF_DATA = -100

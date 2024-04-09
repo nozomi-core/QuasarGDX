@@ -1,6 +1,5 @@
 package app.quasar.qgl.serialize
 
-import app.quasar.qgl.language.serialize.*
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -243,7 +242,7 @@ class QGLBinaryTest {
     @Test
     fun testFrame() {
         val inMemory = QGLBinary.createMemoryOut { out ->
-            out.writeFrame(89)
+            out.writeFrameStart(89)
         }
 
         val output = BinaryOutput()

@@ -42,7 +42,6 @@ class QGLDefinitions(private val serialMap: Map<Int, Pair<KClass<*>, QGLMapper<*
             return this
         }
 
-
         fun build(): QGLDefinitions {
             return QGLDefinitions(classMap)
         }
