@@ -8,3 +8,4 @@ object CoreTiles {
     val RED_DARK =          TileId(2)
     val GREEN_LIGHT =       TileId(3)
 }
+
