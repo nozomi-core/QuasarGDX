@@ -4,10 +4,10 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngineActual(
-        private val drawableApi: DrawableApi,
-        private val rootScripts: List<KClass<*>>,
-        private val onExit: (EngineDeserialized) -> Unit,
-        data: EngineDeserialized?
+    private val drawableApi: DrawableApi,
+    private val rootScripts: List<KClass<*>>,
+    private val onExit: (EngineDeserialized) -> Unit,
+    data: EngineDeserialized?
 ): QuasarEngine, NodeSearchable {
     private val data = data?.toEngineData() ?: EngineData.createDefault()
 

@@ -1,11 +1,11 @@
-package app.quasar.qgl.engine
+package integrations.app.quasar.qgl
 
-import app.quasar.qgl.engine.core.QuasarEngineActual
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.EngineDeserialized
 import app.quasar.qgl.engine.serialize.EngineBinary
 import app.quasar.qgl.serialize.*
-import app.quasar.qgl.test.fixtures.TestEmptyDrawableApi
+import app.quasar.qgl._fixtures.TestEmptyDrawableApi
+import app.quasar.qgl.engine.core.EngineDeserialized
+import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.engine.core.QuasarEngineActual
 import org.junit.Assert
 import org.junit.Test
 

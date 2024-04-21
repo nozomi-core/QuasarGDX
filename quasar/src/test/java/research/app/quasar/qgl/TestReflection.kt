@@ -1,4 +1,4 @@
-package app.quasar.qgl._test
+package research.app.quasar.qgl
 
 import org.junit.Assert
 import org.junit.Test
