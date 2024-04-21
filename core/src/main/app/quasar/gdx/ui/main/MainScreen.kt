@@ -1,8 +1,8 @@
 package app.quasar.gdx.ui.main
 
-import app.quasar.gdx.AssetFiles
-import app.quasar.gdx.MainWorld
-import app.quasar.gdx.tiles.QuasarTileset
+import app.quasar.gdx.CoreAssets
+import app.quasar.gdx.CoreWorld
+import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.EngineHooks
 import app.quasar.qgl.engine.Quasar2DEngine
@@ -30,9 +30,9 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
 
     private val config by lazy {
         QuasarEngine2DConfig(
-            texture = Texture(AssetFiles.TILE_SET),
+            texture = Texture(CoreAssets.TILE_SET),
             spriteBatch = SpriteBatch(),
-            tileset = QuasarTileset(),
+            tileset = CoreTileset(),
             layout = TileSheetLayout(tileSize = 16)
         )
     }
@@ -47,7 +47,7 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
 
     override fun show() {
         engine2D = Quasar2DEngine(runtime, config, engineCallbacks).apply {
-            createWorld(MainWorld::class)
+            createWorld(CoreWorld::class)
         }
         worldCamera = OrthographicCamera()
         overlayCamera = OrthographicCamera()

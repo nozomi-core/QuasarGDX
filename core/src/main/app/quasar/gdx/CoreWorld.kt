@@ -6,7 +6,7 @@ import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.tiles.GameWorld
 import kotlin.reflect.KClass
 
-class MainWorld: GameWorld() {
+class CoreWorld: GameWorld() {
 
     override fun useRootScripts(): List<KClass<*>> {
         return listOf(

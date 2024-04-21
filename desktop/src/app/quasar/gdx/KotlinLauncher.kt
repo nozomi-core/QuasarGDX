@@ -24,8 +24,9 @@ fun runKotlinGame(args: Array<String>) {
     }
 
     Lwjgl3Application(
-        QuasarGame(
-            QuasarConfig(isDebug = isDebug
+        CoreGame(
+            CoreRuntime(),
+            CoreConfig(isDebug = isDebug
         )
      ), config)
 }

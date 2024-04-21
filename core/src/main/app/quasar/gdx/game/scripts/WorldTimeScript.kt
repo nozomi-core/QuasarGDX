@@ -25,7 +25,6 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
     @EngineRef(NodeTypes.ENGINE_LOGGER)
     lateinit var logger: EngineLogger private set
 
-
     //Interface
     override fun getGameMillis() = requireDataForInterface.gameTime.millis
     override fun getTimeStamp() = ""

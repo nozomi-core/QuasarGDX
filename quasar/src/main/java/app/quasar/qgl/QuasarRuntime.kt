@@ -4,7 +4,7 @@ import app.quasar.qgl.engine.QuasarEngine
 
 typealias EngineReady = (api: QuasarEngine) -> Unit
 
-class QuasarRuntime {
+open class QuasarRuntime {
     private var callback: EngineReady? = null
 
     internal fun sendWorldEngine(api: QuasarEngine) {

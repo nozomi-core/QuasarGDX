@@ -1,7 +1,7 @@
 package app.quasar.gdx.tools
 
-import app.quasar.gdx.QuasarConfig
-import app.quasar.gdx.QuasarGame
+import app.quasar.gdx.CoreConfig
+import app.quasar.gdx.CoreGame
 import app.quasar.gdx.tools.console.SwingGameConsole
 import app.quasar.gdx.tools.mapeditor.MapEditorApplication
 import app.quasar.qgl.QuasarRuntime
@@ -34,7 +34,7 @@ fun runKotlinTooling(args: Array<String>) {
 
     val gdxApp: ApplicationListener = when(toolName) {
         CommandArgs.MAP_EDITOR -> MapEditorApplication(runtime)
-        CommandArgs.DEBUG_GAME -> QuasarGame(runtime, QuasarConfig(isDebug = true))
+        CommandArgs.DEBUG_GAME -> CoreGame(runtime, CoreConfig(isDebug = true))
         else -> null
     } ?: return println("tool cannot be found try a proper name")
 

@@ -1,7 +1,7 @@
 package app.quasar.gdx.tools.mapeditor
 
-import app.quasar.gdx.AssetFiles
-import app.quasar.gdx.tiles.QuasarTileset
+import app.quasar.gdx.CoreAssets
+import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.QuasarEngine2DConfig
 import app.quasar.qgl.engine.EngineHooks
@@ -29,9 +29,9 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
 
     private val config by lazy {
         QuasarEngine2DConfig(
-            texture = Texture(AssetFiles.TILE_SET),
+            texture = Texture(CoreAssets.TILE_SET),
             spriteBatch = SpriteBatch(),
-            tileset = QuasarTileset(),
+            tileset = CoreTileset(),
             layout = TileSheetLayout(tileSize = 16)
         )
     }

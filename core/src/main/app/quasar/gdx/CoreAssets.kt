@@ -1,5 +1,5 @@
 package app.quasar.gdx
 
-object AssetFiles {
+object CoreAssets {
     const val TILE_SET = "sprites/tileset.png"
 }

@@ -1,6 +1,6 @@
 package app.quasar.gdx.tools.mapeditor
 
-import app.quasar.gdx.tiles.QuasarTiles
+import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.entity.GameNode
 import app.quasar.qgl.render.DrawableApi
 
@@ -22,14 +22,14 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
                 val evenY = y % 2 == 0
 
                 if(evenX && evenY) {
-                    draw.tileGrid(QuasarTiles.GREEN_LIGHT, x, y)
+                    draw.tileGrid(CoreTiles.GREEN_LIGHT, x, y)
                 } else {
-                    draw.tileGrid(QuasarTiles.RED_LIGHT, x, y)
+                    draw.tileGrid(CoreTiles.RED_LIGHT, x, y)
                 }
             }
         }
 
-        draw.tilePx(QuasarTiles.RED_DARK, positionX, 0f)
+        draw.tilePx(CoreTiles.RED_DARK, positionX, 0f)
     }
 
     override fun printMessage(msg: String) {
