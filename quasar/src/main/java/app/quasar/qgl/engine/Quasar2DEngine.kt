@@ -20,7 +20,8 @@ class Quasar2DEngine(
 
     private val engineApi: QuasarEngine = QuasarEngineActual(
         drawableApi = drawableApi,
-        onExit = this::onExit
+        onExit = this::onExit,
+        data = null
     )
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {

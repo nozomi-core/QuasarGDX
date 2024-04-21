@@ -6,8 +6,8 @@ import app.quasar.qgl.serialize.*
 class EngineBinary {
 
     class Out(
-        val definitions: QGLDefinitions,
-        val qglOut: QGLBinary.Out,
+        private val definitions: QGLDefinitions,
+        private val qglOut: QGLBinary.Out,
         engineData: EngineDeserialized
     ) {
         init {

@@ -16,7 +16,8 @@ class QuasarEngineExitTest {
             drawableApi = TestEmptyDrawableApi(),
             onExit = {
                 engineData = it
-            }
+            },
+            data = null
         )
 
         engine.createGameNode(BasicScript::class, Unit)
@@ -33,7 +34,8 @@ class QuasarEngineExitTest {
             drawableApi = TestEmptyDrawableApi(),
             onExit = {
                 engineData = it
-            }
+            },
+            data = null
         )
 
         engine.createGameNode(BasicScript::class, Unit)

@@ -10,7 +10,8 @@ class QuasarEngineTestFindAndCreate {
 
     private fun createEngine(): QuasarEngine = QuasarEngineActual(
         drawableApi = TestEmptyDrawableApi(),
-        onExit = {}
+        onExit = {},
+        data = null
     )
 
     @Test

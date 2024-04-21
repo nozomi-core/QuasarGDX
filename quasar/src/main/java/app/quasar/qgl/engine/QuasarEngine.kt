@@ -7,6 +7,7 @@ import kotlin.reflect.KClass
 interface QuasarEngine: EngineApi {
     fun simulate(deltaTime: Float)
     fun draw()
+    fun exit()
 
     fun <T: GameNode<*,*>> createRootScripts(scripts: List<KClass<T>>)
     fun destroyNode(node: GameNode<*,*>)

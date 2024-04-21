@@ -16,7 +16,8 @@ class QuasarEngineTestSerialize {
             drawableApi = TestEmptyDrawableApi(),
             onExit = {
                 engineData = it
-            }
+            },
+            data = null
         )
 
         quasarEngine.createGameNode(SerialScript::class)

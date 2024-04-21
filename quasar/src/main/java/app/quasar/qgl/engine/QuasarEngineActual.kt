@@ -11,56 +11,63 @@ import kotlin.reflect.full.createInstance
 class QuasarEngineActual(
     private val drawableApi: DrawableApi,
     private val onExit: (EngineDeserialized) -> Unit,
+    val data: EngineDeserialized?
 ): QuasarEngine, NodeSearchable {
     //Engine serialized members
-    private var currentRuntimeId = 1L
-    private var graph = NodeGraph()
-    private var rootScripts = mutableListOf<KClass<*>>()
+    private var currentRuntimeId = data?.currentRuntimeId ?: 1L
+    private var graph = data?.graph ?: NodeGraph()
+    private var rootScripts = data?.rootScripts?.toMutableList() ?: mutableListOf()
 
     //Queues and Engine metadata
     private val destructionQueue = mutableListOf<GameNode<*,*>>()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*,*>>, Any?>>()
     private var currentNodeIdRunning = -1L
 
-    private var _isRunning = true
-    val isRunning: Boolean get() = _isRunning
+    private var isRunning = true
     private var engineMarkedToExit = false
 
-    fun setEngineData(deserialized: EngineDeserialized?) {
-        deserialized?.let { data ->
-            this.currentRuntimeId = data.currentRuntimeId
-            this.graph = data.graph
-            this.rootScripts = mutableListOf<KClass<*>>().apply {
-                addAll(data.rootScripts)
-            }
+    /** Interface :: (QuasarEngine) */
+    override fun simulate(deltaTime: Float) {
+        if(!isRunning) {
+            return
+        }
+
+        doDestructionStep()
+        doCreationStep()
+        doSimulationStep(deltaTime)
+
+        if(engineMarkedToExit && isRunning) {
+            doExit()
         }
     }
 
-    /** Core Methods */
-     override fun simulate(deltaTime: Float) {
-        if(isRunning) {
-            doDestructionStep()
-            doCreationStep()
-            doSimulationStep(deltaTime)
-
-            if(engineMarkedToExit && isRunning) {
-                doExit()
-            }
-        }
-    }
-
-     override fun draw() {
+    override fun draw() {
         graph.nodes.forEach {
             it.draw(drawableApi)
         }
     }
 
-    fun exit() {
+    override fun exit() {
         engineMarkedToExit = true
     }
 
+    override fun destroyNode(node: GameNode<*,*>) {
+        checkNodeIsRootScriptThenThrow(node)
+        destructionQueue.add(node)
+    }
+
+    override fun setCurrentNodeRunning(node: GameNode<*, *>) {
+        this.currentNodeIdRunning = node.runtimeId
+    }
+
+    override fun checkNodeIsNotRunning(node: GameNode<*, *>) {
+        if (isRunning && currentNodeIdRunning == node.runtimeId) {
+            throw IllegalAccessException("Can not perform this operation while current node running")
+        }
+    }
+
     private fun doExit() {
-        _isRunning = false
+        isRunning = false
         onExit(
             EngineDeserialized(
                 currentRuntimeId = currentRuntimeId,
@@ -95,8 +102,6 @@ class QuasarEngineActual(
         }
     }
 
-    /** Interfaces */
-
     //Interface :: (EngineApiAdmin)
     override fun generateId() = currentRuntimeId++
 
@@ -104,7 +109,6 @@ class QuasarEngineActual(
         checkNodeIsRootScriptThenThrow(nodeScript)
         creationQueue.add(Pair(nodeScript, argument))
     }
-
 
     override fun <T : GameNode<*,*>> createRootScripts(gameScripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
@@ -125,28 +129,12 @@ class QuasarEngineActual(
 
         //Check if the script is a root class and call rootCreated in ca
         graph.nodes.forEach {
-            if(it is RootNode) {
+            if (it is RootNode) {
                 it.doRootCreated()
             }
         }
     }
-
-    override fun setCurrentNodeRunning(node: GameNode<*, *>) {
-        this.currentNodeIdRunning = node.runtimeId
-    }
-
-    override fun checkNodeIsNotRunning(node: GameNode<*, *>) {
-        if(isRunning && currentNodeIdRunning == node.runtimeId) {
-            throw IllegalAccessException("Can not perform this operation while current node running")
-        }
-    }
-
-    override fun destroyNode(node: GameNode<*,*>) {
-        checkNodeIsRootScriptThenThrow(node)
-        destructionQueue.add(node)
-    }
-
-    //:: Interface (NodeSearchable)
+    //Interface :: (NodeSearchable)
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
         return graph.requireFindByInterface(nodeInterface)
@@ -184,9 +172,7 @@ class QuasarEngineActual(
     }
 }
 
-
 /** Utils that don't require class members */
-
 private fun checkUniqueRootScripts(scripts: List<KClass<*>>) {
     val checkDuplicates = HashSet<KClass<*>>()
     scripts.forEach {
