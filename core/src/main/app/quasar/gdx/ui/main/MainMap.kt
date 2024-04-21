@@ -22,4 +22,8 @@ class MainMap: GameNode<Unit, Unit>() {
             }
         }
     }
+
+    override fun onCreate(argument: Unit?) {
+
+    }
 }

@@ -203,11 +203,28 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeSection(id: Int) {
+        fun writeFrameStart(id: Int) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_SECTION_BREAK)
+            out.write(TYPE_FRAME)
         }
+
+        @Throws(IOException::class)
+        fun writeFrameEnd(id: Int) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_FRAME)
+        }
+
+        @Throws(IOException::class)
+        fun writeFrame(startId: Int, endId: Int, callback: () -> Unit) {
+            validateId(startId)
+            validateId(endId)
+            writeFrameStart(startId)
+            callback()
+            writeFrameEnd(endId)
+        }
+
 
         private fun writeRecord(record: BinaryRecord) {
             when(record.data) {
@@ -241,7 +258,7 @@ class QGLBinary {
             }
         }
 
-        fun finish() {
+        fun close() {
             //Ensure we only call isFinished once, multiple times will be ignored
             if(!isFinished) {
                 out.writeInt(ID_END_OF_DATA)
@@ -252,6 +269,11 @@ class QGLBinary {
     }
 
     class In(private val inp: DataInputStream) {
+
+        fun readUntil(id: Int, output: BinaryOutput): Boolean {
+            read(output)
+            return output.id != id
+        }
 
         fun read(record: BinaryOutput): Boolean {
             record.id = inp.readInt()
@@ -398,8 +420,8 @@ class QGLBinary {
                     read(output)
                     record.data = ClientGuid(output.data as String)
                 }
-                TYPE_SECTION_BREAK -> {
-                    record.data = ""
+                TYPE_FRAME -> {
+                    record.data = Unit
                 }
 
                 else -> throw Exception("type id not supported")
@@ -436,14 +458,16 @@ class QGLBinary {
         const val TYPE_BINARY_OBJECT: Int =         17
         const val TYPE_BINARY_OBJECT_ARRAY: Int =   18
         const val TYPE_CLIENT_GUID: Int =           19
-        const val TYPE_SECTION_BREAK: Int =         20
+        const val TYPE_FRAME: Int =                 20
+        const val TYPE_FRAME_END: Int =             21
 
-        const val ID_END_OF_DATA = -1
+        const val ID_NO_DATA_READ = -50
+        const val ID_END_OF_DATA = -100
 
         fun createFileOut(file: File, writeCallback: (out: Out) -> Unit) {
             val stream = Out(DataOutputStream(FileOutputStream(file)))
             writeCallback(stream)
-            stream.finish()
+            stream.close()
         }
 
         fun createFileIn(file: File): In = In(DataInputStream(FileInputStream(file)))
@@ -452,7 +476,7 @@ class QGLBinary {
             val byteOut = ByteArrayOutputStream()
             val memoryStream = Out(DataOutputStream(byteOut))
             writeCallback(memoryStream)
-            memoryStream.finish()
+            memoryStream.close()
             return InlineBinaryFormat(byteOut.toByteArray())
         }
 
@@ -463,12 +487,14 @@ class QGLBinary {
 }
 
 class BinaryOutput {
-    var id = -1
+    var id = QGLBinary.ID_NO_DATA_READ
     var type = -1
     var data: Any = -1
 
+    fun hasData() = id != QGLBinary.ID_END_OF_DATA
     fun toBinaryRecord() = BinaryRecord(id, data)
     fun isObject() = type == QGLBinary.TYPE_BINARY_OBJECT
+    fun isFrame() = type == QGLBinary.TYPE_FRAME
 }
 
 class InlineBinaryFormat(val byteData: ByteArray)

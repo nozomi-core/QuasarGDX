@@ -1,9 +1,9 @@
 package app.quasar.qgl.scripts
 
-import app.quasar.qgl.entity.GameNode
+import app.quasar.qgl.entity.GameNodeUnit
 import kotlin.reflect.KClass
 
-class QuasarEngineLogger: GameNode<Unit, Unit>(), EngineLogger {
+class QuasarEngineLogger: GameNodeUnit(), EngineLogger {
     private val callbacks = mutableListOf<LogCallback>()
 
     override fun send(log: EngineLog) {

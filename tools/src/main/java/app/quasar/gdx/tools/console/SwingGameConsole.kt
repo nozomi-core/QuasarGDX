@@ -1,6 +1,7 @@
 package app.quasar.gdx.tools.console
 
 import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.engine.QuasarEngine
 import app.quasar.qgl.scripts.EngineLog
 import app.quasar.qgl.scripts.EngineLogLevel
 import app.quasar.qgl.scripts.EngineLogger
@@ -10,7 +11,7 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
-class SwingGameConsole(private val engineApi: EngineApi) {
+class SwingGameConsole(engineApi: QuasarEngine) {
     private val console: EngineLogger = engineApi.requireFindByInterface(EngineLogger::class)
 
     init {

@@ -14,10 +14,6 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     private val speedMs = 4f
 
-    override fun onCreate(argument: Unit?): Unit? {
-        return super.onCreate(argument)
-    }
-
     override fun onDraw(draw: DrawableApi) {
         //Draw map
         for(x in 0 until 20) {
@@ -38,5 +34,9 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     override fun printMessage(msg: String) {
         println("Using public message interface: $msg")
+    }
+
+    override fun onCreate(argument: Unit?) {
+
     }
 }

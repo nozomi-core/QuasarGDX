@@ -25,6 +25,7 @@ class QGLBinaryTest {
         const val STRING = 15
         const val STRING_MATRIX = 16
         const val OBJECT = 17
+        const val FRAME = 20
     }
 
     @Test
@@ -236,6 +237,21 @@ class QGLBinaryTest {
         val binObject = output.data as BinaryObject
 
         assertEquals(569, binObject.classId)
+    }
+
+    @Test
+    fun testFrame() {
+        val inMemory = QGLBinary.createMemoryOut { out ->
+            out.writeFrameStart(89)
+        }
+
+        val output = BinaryOutput()
+        val streamIn = QGLBinary.createMemoryIn(inMemory)
+
+        streamIn.read(output)
+        assertEquals(Unit, output.data)
+        assertEquals(89, output.id)
+        assertEquals(TestBinaryType.FRAME, output.type)
     }
 
     @Test

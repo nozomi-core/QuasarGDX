@@ -1,6 +1,6 @@
 package app.quasar.qgl.entity
 
-import app.quasar.qgl.engine.EngineApiAdmin
+import app.quasar.qgl.engine.QuasarEngine
 import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.render.DrawableApi
 import kotlin.reflect.KClass
@@ -11,6 +11,8 @@ abstract class GameNode<D, A> {
         private set
 
     private var parentNode: GameNode<*, *>? = null
+    val parentNodeId: Long?
+        get() = parentNode?.runtimeId
 
     //Data
     private var _data: D? = null
@@ -30,12 +32,12 @@ abstract class GameNode<D, A> {
 
     //Engine
     private val engineApi: EngineApi get() = _engineApi!!
-    private var _engineApi: EngineApiAdmin? = null
+    private var _engineApi: QuasarEngine? = null
 
     //Hooks
-    protected open fun onCreate(argument: A?): D? { return null }
+    abstract fun onCreate(argument: A?): D
     protected open fun onSetup(engine: EngineApi, data: D?) {}
-    protected open fun onSimulate(node: NodeApi, deltaTime: Float, data: D?) {}
+    protected open fun onSimulate(node: NodeApi, deltaTime: Float, data: D) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
@@ -61,11 +63,11 @@ abstract class GameNode<D, A> {
 
     /** Engine Module */
 
-    internal fun create(engineApiAdmin: EngineApiAdmin, argument: Any?) {
+    internal fun create(engineApiAdmin: QuasarEngine, argument: Any?) {
         this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
         this._engineApi?.setCurrentNodeRunning(this)
-        _data = onCreate(argument as A)
+        _data = onCreate(argument as? A)
         onSetup(engineApiAdmin, _data)
         doCreationStep()
     }
@@ -85,7 +87,7 @@ abstract class GameNode<D, A> {
     /** Engine Steps */
 
     private fun doSimulationStep(deltaTime: Float) {
-        onSimulate(nodeApi, deltaTime, _data)
+        onSimulate(nodeApi, deltaTime, _data!!)
         if(!isObjectedMarkedForDestruction) {
             childGraph.nodes.forEach {
                 it.simulate(deltaTime)

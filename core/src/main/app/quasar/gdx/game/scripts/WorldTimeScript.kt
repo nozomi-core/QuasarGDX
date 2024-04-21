@@ -1,9 +1,16 @@
 package app.quasar.gdx.game.scripts
 
+import app.quasar.gdx.game.ScriptTypes
+import app.quasar.gdx.game.logic.doWorldTime
 import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.engine.EngineRef
+import app.quasar.qgl.engine.EngineScript
 import app.quasar.qgl.entity.NodeApi
 import app.quasar.qgl.entity.RootNode
 import app.quasar.qgl.scripts.EngineLogger
+import app.quasar.qgl.serialize.BinaryObject
+import app.quasar.qgl.serialize.BinaryRecord
+import app.quasar.qgl.serialize.QGLMapper
 import org.joda.time.MutableDateTime
 
 interface WorldTime {
@@ -11,13 +18,17 @@ interface WorldTime {
     fun getTimeStamp(): String
 }
 
+@EngineScript(ScriptTypes.WORLD_TIME)
 class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
+
     //Nodes
-    private lateinit var logger: EngineLogger
+    @EngineRef(NodeTypes.ENGINE_LOGGER)
+    lateinit var logger: EngineLogger private set
+
 
     //Interface
     override fun getGameMillis() = requireDataForInterface.gameTime.millis
-    override fun getTimeStamp() = requireDataForInterface.getTimeStamp()
+    override fun getTimeStamp() = ""
 
     override fun onSetup(engine: EngineApi, data: WorldTimeData?) {
         super.onSetup(engine, data)
@@ -25,10 +36,8 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
     }
 
     override fun onCreate(argument: WorldTimeArg?): WorldTimeData {
-        super.onCreate(argument)
-
         return WorldTimeData(
-            gameSpeed = argument?.gameSpeed ?: DEFAULT_SPEED,
+            gameSpeed = argument?.gameSpeed ?: WorldTimeArg.DEFAULT_SPEED,
             gameTime = if(argument?.startTime != null) {
                 MutableDateTime(argument.startTime)
             } else {
@@ -37,36 +46,54 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
         )
     }
 
-    override fun onSimulate(node: NodeApi, deltaTime: Float, data: WorldTimeData?) {
-        if(data == null) return
-
-        data.gameTime.addSeconds((deltaTime * data.gameSpeed).toInt())
-
-        data.counter += deltaTime
-        if(data.counter > 5) {
-            logger.message(this, "onTime: ${data.getTimeStamp()}")
-            data.counter = 0.0f
-        }
+    override fun onSimulate(node: NodeApi, deltaTime: Float, data: WorldTimeData) {
+        doWorldTime(
+            this, deltaTime, data
+        )
     }
 
+    private object NodeTypes {
+        const val ENGINE_LOGGER = 1
+    }
+}
+
+//DATA
+
+data class WorldTimeData(
+    val gameTime: MutableDateTime,
+    var gameSpeed: Float = WorldTimeArg.DEFAULT_SPEED
+)
+
+//ARGUMENT
+
+data class WorldTimeArg(
+    val gameSpeed: Float,
+    val startTime: Long
+) {
     companion object {
         const val DEFAULT_SPEED = 1000000f
     }
 }
-//TODO: remove counter, only test
-data class WorldTimeArg(
-    val gameSpeed: Float,
-    val startTime: Long
-)
 
-data class WorldTimeData(
-    val gameTime: MutableDateTime,
-    var gameSpeed: Float = WorldTimeScript.DEFAULT_SPEED,
-    var counter: Float = 0.0f
-) {
-    fun getTimeStamp() = "${gameTime.year}-${gameTime.monthOfYear}-${gameTime.dayOfMonth}"
+//MAPPER
+
+class WorldTimeMapper: QGLMapper<WorldTimeData> {
+    override fun toBinary(data: WorldTimeData): Array<BinaryRecord> {
+        return arrayOf(
+            BinaryRecord(ID_GAME_TIME, data.gameTime.millis),
+            BinaryRecord(ID_GAME_SPEED, data.gameSpeed)
+        )
+    }
+
+    override fun toEntity(bin: BinaryObject): WorldTimeData {
+        return WorldTimeData(
+            gameTime = MutableDateTime(bin.value<Long>(ID_GAME_TIME)),
+            gameSpeed = bin.value(ID_GAME_SPEED)
+        )
+    }
+
+    companion object {
+        const val ID_GAME_TIME = 0
+        const val ID_GAME_SPEED = 1
+    }
 }
-
-
-
-

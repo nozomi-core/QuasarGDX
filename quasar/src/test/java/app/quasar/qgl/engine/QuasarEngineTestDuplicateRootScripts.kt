@@ -5,13 +5,15 @@ import app.quasar.qgl.test.fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test
 
-class Duplicate: GameNode<Unit, Unit>() {}
+class Duplicate: GameNode<Unit, Unit>() {
+    override fun onCreate(argument: Unit?) {}
+}
 
 class EngineApiTestDuplicateRootScripts {
 
     @Test
     fun testDuplicates() {
-        val engineApi = QuasarEngineApi(TestEmptyDrawableApi())
+        val engineApi = QuasarEngineActual(TestEmptyDrawableApi(), onExit = {}, data = null)
 
         val didFail = try {
             engineApi.createRootScripts(listOf(Duplicate::class, Duplicate::class))

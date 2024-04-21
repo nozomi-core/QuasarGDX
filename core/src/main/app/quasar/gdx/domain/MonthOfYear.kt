@@ -1,4 +1,4 @@
-package app.quasar.gdx.game.model
+package app.quasar.gdx.domain
 
 enum class MonthOfYear(val monthValue: Int) {
     JANUARY(1),

@@ -11,20 +11,21 @@ import com.badlogic.gdx.utils.Disposable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class QuasarEngine2D(
+class Quasar2DEngine(
     private val runtime: QuasarRuntime,
     private val config: QuasarEngine2DConfig,
     private val engineHooks: EngineHooks,
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
-    private var world: GameWorld? = null
-    private var overlay: GameOverlay? = null
-
-    private val engineApi = QuasarEngineApi(drawableApi)
+    private val engineApi: QuasarEngine = QuasarEngineActual(
+        drawableApi = drawableApi,
+        onExit = this::onExit,
+        data = null
+    )
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
-       this.world = kClass.createInstance().apply {
+       kClass.createInstance().apply {
            createRootScripts(useRootScripts())
            create(engineApi)
            runtime.sendWorldEngine(engineApi)
@@ -37,9 +38,13 @@ class QuasarEngine2D(
     }
 
     fun <T: GameOverlay> createOverlay(overlay: KClass<T>) {
-        this.overlay = overlay.createInstance().apply {
+        overlay.createInstance().apply {
             onCreate()
         }
+    }
+
+    private fun onExit(engine: EngineDeserialized) {
+
     }
 
     fun render() {
@@ -59,7 +64,7 @@ class QuasarEngine2D(
         engineHooks.useOverlayCamera().update()
         spriteBatch.projectionMatrix = engineHooks.useOverlayCamera().combined
         spriteBatch.begin()
-        overlay?.onDraw(drawableApi)
+        //overlay?.onDraw(drawableApi)
         spriteBatch.end()
     }
 
