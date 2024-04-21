@@ -1,6 +1,5 @@
 package app.quasar.gdx.tools.console
 
-import app.quasar.qgl.engine.EngineApi
 import app.quasar.qgl.engine.QuasarEngine
 import app.quasar.qgl.scripts.EngineLog
 import app.quasar.qgl.scripts.EngineLogLevel
