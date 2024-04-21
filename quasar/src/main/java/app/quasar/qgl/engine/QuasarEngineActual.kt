@@ -11,14 +11,11 @@ import kotlin.reflect.full.createInstance
 class QuasarEngineActual(
     private val drawableApi: DrawableApi,
     private val onExit: (EngineDeserialized) -> Unit,
-    val data: EngineDeserialized?
+    data: EngineDeserialized?
 ): QuasarEngine, NodeSearchable {
-    //Engine serialized members
-    private var currentRuntimeId = data?.currentRuntimeId ?: 1L
-    private var graph = data?.graph ?: NodeGraph()
-    private var rootScripts = data?.rootScripts?.toMutableList() ?: mutableListOf()
+    private val data = data?.toEngineData() ?: EngineData.createDefault()
 
-    //Queues and Engine metadata
+    //Engine accounting variables
     private val destructionQueue = mutableListOf<GameNode<*,*>>()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*,*>>, Any?>>()
     private var currentNodeIdRunning = -1L
@@ -42,7 +39,7 @@ class QuasarEngineActual(
     }
 
     override fun draw() {
-        graph.nodes.forEach {
+        data.graph.nodes.forEach {
             it.draw(drawableApi)
         }
     }
@@ -70,9 +67,9 @@ class QuasarEngineActual(
         isRunning = false
         onExit(
             EngineDeserialized(
-                currentRuntimeId = currentRuntimeId,
-                graph = graph,
-                rootScripts = rootScripts
+                currentRuntimeId = data.currentRuntimeId,
+                rootScripts = data.rootScripts,
+                graph = data.graph
             )
         )
     }
@@ -80,7 +77,7 @@ class QuasarEngineActual(
     //:: Engine steps
     private fun doDestructionStep() {
         destructionQueue.forEach {
-            graph.nodes.remove(it)
+            data.graph.nodes.remove(it)
         }
         destructionQueue.clear()
     }
@@ -91,19 +88,19 @@ class QuasarEngineActual(
 
             val newEntity = kClass.createInstance()
             newEntity.create(this, argument)
-            graph.nodes.add(newEntity)
+            data.graph.nodes.add(newEntity)
         }
         creationQueue.clear()
     }
 
     private fun doSimulationStep(deltaTime: Float) {
-        graph.nodes.forEach {
+        data.graph.nodes.forEach {
             it.simulate(deltaTime)
         }
     }
 
     //Interface :: (EngineApiAdmin)
-    override fun generateId() = currentRuntimeId++
+    override fun generateId() = data.currentRuntimeId++
 
     override fun <T : GameNode<*,*>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
         checkNodeIsRootScriptThenThrow(nodeScript)
@@ -124,11 +121,11 @@ class QuasarEngineActual(
         doCreationStep()
         checkScriptOrderIntegrity()
 
-        rootScripts = mutableListOf()
-        rootScripts.addAll(mergeAllScripts)
+        data.rootScripts = mutableListOf()
+        data.rootScripts.addAll(mergeAllScripts)
 
         //Check if the script is a root class and call rootCreated in ca
-        graph.nodes.forEach {
+        data.graph.nodes.forEach {
             if (it is RootNode) {
                 it.doRootCreated()
             }
@@ -137,22 +134,22 @@ class QuasarEngineActual(
     //Interface :: (NodeSearchable)
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
-        return graph.requireFindByInterface(nodeInterface)
+        return data.graph.requireFindByInterface(nodeInterface)
     }
 
     override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
-        return graph.findById(id, nodeInterface)
+        return data.graph.findById(id, nodeInterface)
     }
 
     /** Utility and Helper Methods */
 
     private fun checkScriptOrderIntegrity() {
-        graph.nodes.forEach { currentNode ->
+        data.graph.nodes.forEach { currentNode ->
             if(currentNode is RootNode) {
                 val shouldBeBefore = currentNode.shouldRunBefore()
-                val thisNodeIndex = graph.nodes.indexOf(currentNode)
+                val thisNodeIndex = data.graph.nodes.indexOf(currentNode)
                 shouldBeBefore.forEach { dependClass ->
-                    val dependIndex = graph.nodes.indexOf(graph.nodes.first { it::class == dependClass })
+                    val dependIndex = data.graph.nodes.indexOf(data.graph.nodes.first { it::class == dependClass })
                     if(dependIndex > thisNodeIndex) {
                         throw SecurityException("${dependClass.simpleName} should be spawned before ${currentNode::class.simpleName}")
                     }
@@ -166,7 +163,7 @@ class QuasarEngineActual(
     }
 
     private fun checkNodeIsRootScriptThenThrow(script: KClass<*>) {
-        if(rootScripts.contains(script)) {
+        if(data.rootScripts.contains(script)) {
             throw SecurityException("Root scripts are immutable, you can not add or remove them")
         }
     }
