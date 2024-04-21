@@ -1,4 +1,4 @@
-package app.quasar.qgl.entity
+package app.quasar.qgl.engine.core
 
 import kotlin.reflect.KClass
 

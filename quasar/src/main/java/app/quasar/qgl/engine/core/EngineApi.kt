@@ -1,7 +1,5 @@
-package app.quasar.qgl.engine
+package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.entity.GameNode
-import app.quasar.qgl.entity.NodeSearchable
 import kotlin.reflect.KClass
 
 //The public API for the engine that is safe to expose to the game nodes

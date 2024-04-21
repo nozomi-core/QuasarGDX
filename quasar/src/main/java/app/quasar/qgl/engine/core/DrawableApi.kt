@@ -1,6 +1,4 @@
-package app.quasar.qgl.render
-
-import app.quasar.qgl.tiles.TileId
+package app.quasar.qgl.engine.core
 
 interface DrawableApi {
     fun tileGrid(id: TileId, gridX: Int, gridY: Int)

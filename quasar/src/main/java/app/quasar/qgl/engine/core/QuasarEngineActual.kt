@@ -1,23 +1,19 @@
-@file:JvmName("QuasarEngineKt")
+package app.quasar.qgl.engine.core
 
-package app.quasar.qgl.engine
-
-import app.quasar.qgl.entity.*
-import app.quasar.qgl.render.DrawableApi
-import app.quasar.qgl.scripts.QuasarRootScripts
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngineActual(
-    private val drawableApi: DrawableApi,
-    private val onExit: (EngineDeserialized) -> Unit,
-    data: EngineDeserialized?
+        private val drawableApi: DrawableApi,
+        private val rootScripts: List<KClass<*>>,
+        private val onExit: (EngineDeserialized) -> Unit,
+        data: EngineDeserialized?
 ): QuasarEngine, NodeSearchable {
     private val data = data?.toEngineData() ?: EngineData.createDefault()
 
     //Engine accounting variables
-    private val destructionQueue = mutableListOf<GameNode<*,*>>()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*,*>>, Any?>>()
+    private val destructionQueue = mutableListOf<GameNode<*, *>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*, *>>, Any?>>()
     private var currentNodeIdRunning = -1L
 
     private var isRunning = true
@@ -48,7 +44,7 @@ class QuasarEngineActual(
         engineMarkedToExit = true
     }
 
-    override fun destroyNode(node: GameNode<*,*>) {
+    override fun destroyNode(node: GameNode<*, *>) {
         checkNodeIsRootScriptThenThrow(node)
         destructionQueue.add(node)
     }
@@ -102,15 +98,15 @@ class QuasarEngineActual(
     //Interface :: (EngineApiAdmin)
     override fun generateId() = data.currentRuntimeId++
 
-    override fun <T : GameNode<*,*>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
+    override fun <T : GameNode<*, *>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
         checkNodeIsRootScriptThenThrow(nodeScript)
         creationQueue.add(Pair(nodeScript, argument))
     }
 
-    override fun <T : GameNode<*,*>> createRootScripts(gameScripts: List<KClass<T>>) {
+    override fun <T : GameNode<*, *>> createRootScripts(gameScripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
         val mergeAllScripts = mutableListOf<KClass<*>>().apply {
-            addAll(QuasarRootScripts.scripts)
+            addAll(rootScripts)
             addAll(gameScripts)
         }.toList()
 
@@ -158,7 +154,7 @@ class QuasarEngineActual(
         }
     }
 
-    private fun checkNodeIsRootScriptThenThrow(node: GameNode<*,*>) {
+    private fun checkNodeIsRootScriptThenThrow(node: GameNode<*, *>) {
         checkNodeIsRootScriptThenThrow(node::class)
     }
 

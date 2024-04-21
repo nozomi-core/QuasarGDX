@@ -1,6 +1,6 @@
 package app.quasar.gdx.tools.mapeditor
 
-import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.engine.core.EngineApi
 import app.quasar.qgl.tiles.GameWorld
 import kotlin.reflect.KClass
 

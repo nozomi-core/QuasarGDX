@@ -1,7 +1,7 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
-import app.quasar.qgl.render.DrawableApi
+import app.quasar.qgl.engine.core.DrawableApi
 import app.quasar.qgl.tiles.GameOverlay
 
 class EditOverlay: GameOverlay {

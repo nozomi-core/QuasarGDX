@@ -1,6 +1,8 @@
 package app.quasar.qgl.engine
 
-import app.quasar.qgl.entity.GameNode
+import app.quasar.qgl.engine.core.QuasarEngine
+import app.quasar.qgl.engine.core.QuasarEngineActual
+import app.quasar.qgl.engine.core.GameNode
 import app.quasar.qgl.test.fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test

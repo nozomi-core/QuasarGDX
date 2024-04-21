@@ -1,6 +1,6 @@
 package app.quasar.qgl.scripts
 
-import app.quasar.qgl.entity.GameNodeUnit
+import app.quasar.qgl.engine.core.GameNodeUnit
 import kotlin.reflect.KClass
 
 class QuasarEngineLogger: GameNodeUnit(), EngineLogger {

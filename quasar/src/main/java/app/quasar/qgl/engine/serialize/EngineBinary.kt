@@ -1,6 +1,7 @@
-package app.quasar.qgl.engine
+package app.quasar.qgl.engine.serialize
 
-import app.quasar.qgl.entity.GameNode
+import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.engine.core.EngineDeserialized
 import app.quasar.qgl.serialize.*
 
 class EngineBinary {
@@ -35,7 +36,7 @@ class EngineBinary {
             }
         }
 
-        private fun writeGameNode(node: GameNode<*,*>) {
+        private fun writeGameNode(node: GameNode<*, *>) {
             qglOut.writeInt(ID_NODE_CLASS_ID, qglGetBinaryClassId(node::class))
 
             qglOut.writeLong(ID_NODE_RUNTIME_ID, node.runtimeId)

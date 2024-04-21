@@ -1,3 +1,3 @@
-package app.quasar.qgl.tiles
+package app.quasar.qgl.engine.core
 
 data class TileId(val tileId: Int)

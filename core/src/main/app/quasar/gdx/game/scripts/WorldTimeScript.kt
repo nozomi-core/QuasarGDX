@@ -2,11 +2,11 @@ package app.quasar.gdx.game.scripts
 
 import app.quasar.gdx.game.ScriptTypes
 import app.quasar.gdx.game.logic.doWorldTime
-import app.quasar.qgl.engine.EngineApi
-import app.quasar.qgl.engine.EngineRef
-import app.quasar.qgl.engine.EngineScript
-import app.quasar.qgl.entity.NodeApi
-import app.quasar.qgl.entity.RootNode
+import app.quasar.qgl.engine.core.EngineApi
+import app.quasar.qgl.engine.serialize.EngineRef
+import app.quasar.qgl.engine.serialize.EngineScript
+import app.quasar.qgl.engine.core.NodeApi
+import app.quasar.qgl.engine.core.RootNode
 import app.quasar.qgl.scripts.EngineLogger
 import app.quasar.qgl.serialize.BinaryObject
 import app.quasar.qgl.serialize.BinaryRecord

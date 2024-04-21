@@ -1,6 +1,5 @@
-package app.quasar.qgl.engine
+package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.entity.NodeGraph
 import kotlin.reflect.KClass
 
 class EngineData(

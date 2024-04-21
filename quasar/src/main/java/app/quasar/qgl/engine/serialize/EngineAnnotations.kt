@@ -1,4 +1,4 @@
-package app.quasar.qgl.engine
+package app.quasar.qgl.engine.serialize
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.PROPERTY)

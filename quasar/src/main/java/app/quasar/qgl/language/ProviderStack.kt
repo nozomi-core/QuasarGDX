@@ -1,10 +1,10 @@
 package app.quasar.qgl.language
 
-import app.quasar.qgl.entity.GameNode
+import app.quasar.qgl.engine.core.GameNode
 
 class ProviderStack<out T: GameData>(private val startValue: T) {
 
-    private val additions = mutableListOf<Pair<GameNode<*,*>, T>>()
+    private val additions = mutableListOf<Pair<GameNode<*, *>, T>>()
 
     val size: Int
         get() = 1 + additions.size
@@ -16,7 +16,7 @@ class ProviderStack<out T: GameData>(private val startValue: T) {
             additions.last().second
     }
 
-    fun push(node: GameNode<*,*>, value: @UnsafeVariance T) {
+    fun push(node: GameNode<*, *>, value: @UnsafeVariance T) {
 
         val existingNode = additions.find { pair ->
             pair.first == pair

@@ -1,8 +1,5 @@
-package app.quasar.qgl.entity
+package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.engine.QuasarEngine
-import app.quasar.qgl.engine.EngineApi
-import app.quasar.qgl.render.DrawableApi
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 

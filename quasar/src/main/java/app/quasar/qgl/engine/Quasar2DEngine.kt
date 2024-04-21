@@ -1,9 +1,13 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.QuasarRuntime
-import app.quasar.qgl.entity.GameNode
-import app.quasar.qgl.render.DrawableApi
+import app.quasar.qgl.engine.core.QuasarEngine
+import app.quasar.qgl.engine.core.QuasarEngineActual
+import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.engine.core.DrawableApi
+import app.quasar.qgl.engine.core.EngineDeserialized
 import app.quasar.qgl.render.DrawableApiQuasar
+import app.quasar.qgl.scripts.QuasarRootScripts
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
@@ -19,13 +23,14 @@ class Quasar2DEngine(
     private val drawableApi = config.createDrawApi()
 
     private val engineApi: QuasarEngine = QuasarEngineActual(
-        drawableApi = drawableApi,
-        onExit = this::onExit,
-        data = null
+            drawableApi = drawableApi,
+            onExit = this::onExit,
+            data = null,
+            rootScripts = QuasarRootScripts.scripts
     )
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
-       kClass.createInstance().apply {
+        kClass.createInstance().apply {
            createRootScripts(useRootScripts())
            create(engineApi)
            runtime.sendWorldEngine(engineApi)
@@ -33,7 +38,7 @@ class Quasar2DEngine(
     }
 
     private fun createRootScripts(scripts: List<KClass<*>>) {
-        val rootScripts = scripts.filterIsInstance<KClass<GameNode<*,*>>>()
+        val rootScripts = scripts.filterIsInstance<KClass<GameNode<*, *>>>()
         engineApi.createRootScripts(rootScripts)
     }
 

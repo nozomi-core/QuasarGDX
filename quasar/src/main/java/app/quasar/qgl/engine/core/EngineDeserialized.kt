@@ -1,8 +1,5 @@
-package app.quasar.qgl.engine
+package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.entity.NodeGraph
-import app.quasar.qgl.serialize.QGLBinary
-import app.quasar.qgl.serialize.QGLDefinitions
 import kotlin.reflect.KClass
 
 class EngineDeserialized(

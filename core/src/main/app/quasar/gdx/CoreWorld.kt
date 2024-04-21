@@ -2,7 +2,7 @@ package app.quasar.gdx
 
 import app.quasar.gdx.game.scripts.WorldTimeScript
 import app.quasar.gdx.ui.main.MainMap
-import app.quasar.qgl.engine.EngineApi
+import app.quasar.qgl.engine.core.EngineApi
 import app.quasar.qgl.tiles.GameWorld
 import kotlin.reflect.KClass
 
