@@ -1,5 +1,6 @@
 package app.quasar.qgl.tiles
 
+import app.quasar.qgl.engine.core.TileId
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
