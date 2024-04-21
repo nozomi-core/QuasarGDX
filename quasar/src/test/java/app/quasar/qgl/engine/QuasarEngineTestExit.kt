@@ -15,11 +15,12 @@ class QuasarEngineExitTest {
         var engineData: EngineDeserialized? = null
 
         val engine = QuasarEngineActual(
-            drawableApi = TestEmptyDrawableApi(),
-            onExit = {
-                engineData = it
-            },
-            data = null
+                drawableApi = TestEmptyDrawableApi(),
+                onExit = {
+                    engineData = it
+                         },
+                data = null,
+                rootScripts = listOf()
         )
 
         engine.createGameNode(BasicScript::class, Unit)
@@ -37,7 +38,8 @@ class QuasarEngineExitTest {
             onExit = {
                 engineData = it
             },
-            data = null
+            data = null,
+                rootScripts = listOf()
         )
 
         engine.createGameNode(BasicScript::class, Unit)

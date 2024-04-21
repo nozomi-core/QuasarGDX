@@ -11,9 +11,10 @@ import org.junit.Test
 class QuasarEngineTestFindAndCreate {
 
     private fun createEngine(): QuasarEngine = QuasarEngineActual(
-        drawableApi = TestEmptyDrawableApi(),
-        onExit = {},
-        data = null
+            drawableApi = TestEmptyDrawableApi(),
+            onExit = {},
+            data = null,
+            rootScripts = listOf()
     )
 
     @Test

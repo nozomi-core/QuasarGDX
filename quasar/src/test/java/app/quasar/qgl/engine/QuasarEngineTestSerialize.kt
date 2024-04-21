@@ -20,7 +20,8 @@ class QuasarEngineTestSerialize {
             onExit = {
                 engineData = it
             },
-            data = null
+            data = null,
+                rootScripts = listOf()
         )
 
         quasarEngine.createGameNode(SerialScript::class)
