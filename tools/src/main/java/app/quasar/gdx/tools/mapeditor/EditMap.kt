@@ -3,6 +3,7 @@ package app.quasar.gdx.tools.mapeditor
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.GameNode
 import app.quasar.qgl.engine.core.DrawableApi
+import com.badlogic.gdx.graphics.Color
 
 interface PublicEditMap {
     fun printMessage(msg: String)
@@ -22,7 +23,12 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
                 val evenY = y % 2 == 0
 
                 if(evenX && evenY) {
-                    draw.tileGrid(CoreTiles.GREEN_LIGHT, x, y)
+                    draw.batchWith { spriteApi ->
+                        spriteApi.setAlpha(0.5f)
+                        draw.tileGrid(CoreTiles.GREEN_LIGHT, x, y)
+                    }
+
+
                 } else {
                     draw.tileGrid(CoreTiles.RED_LIGHT, x, y)
                 }

@@ -44,13 +44,12 @@ class Player: GameNode<Unit, Unit>() {
         super.onDraw(draw)
         draw.batchWith { api ->
             api.setColor(Color.CYAN)
-            draw.tilePx(CoreTiles.GREEN_LIGHT, position.x, position.y, 1f, rotate)
+            draw.tilePx(CoreTiles.SMILE, position.x, position.y, 1f, rotate)
         }
-
     }
 
     companion object {
         const val PLAYER_SPEED = 20f
-        const val ROTATE_SPEED = 1000f
+        const val ROTATE_SPEED = 1f
     }
 }

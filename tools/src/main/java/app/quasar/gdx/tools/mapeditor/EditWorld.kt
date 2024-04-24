@@ -8,8 +8,9 @@ class EditWorld: GameWorld() {
 
     override fun useRootScripts(): List<KClass<*>> {
         return listOf(
+            Player::class,
             EditMap::class,
-            Player::class
+
         )
     }
 

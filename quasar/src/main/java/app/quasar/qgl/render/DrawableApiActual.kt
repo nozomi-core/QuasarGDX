@@ -18,6 +18,11 @@ class DrawableApiActual(
             spriteBatch.color = color
         }
 
+        override fun setAlpha(alpha: Float) {
+            val color = spriteBatch.color.cpy()
+            color.a = alpha
+            spriteBatch.color = color
+        }
     }
     override fun tileGrid(id: TileId, gridX: Int, gridY: Int) {
         val region = textures.get(id)
@@ -45,4 +50,5 @@ class DrawableApiActual(
 
 interface SpriteApi {
     fun setColor(color: Color)
+    fun setAlpha(alpha: Float)
 }
