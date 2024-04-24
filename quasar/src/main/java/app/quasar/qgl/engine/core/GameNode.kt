@@ -17,7 +17,7 @@ abstract class GameNode<D, A> {
         _engineApi?.checkNodeIsNotRunning(this)
         return _data!!
     }
-    var renderPriority: Int = 0
+    var renderPriority: Float = 0f
         protected set(value) {
             _engineApi?.notifyNodeChanged()
             field = value
