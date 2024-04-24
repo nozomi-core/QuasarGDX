@@ -45,9 +45,7 @@ class QuasarEngineActual(
     }
 
     override fun draw() {
-        drawableNodes.forEach {
-            it.draw(drawableApi)
-        }
+        drawableNodes.draw(drawableApi)
     }
 
     override fun exit() {

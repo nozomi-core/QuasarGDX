@@ -7,6 +7,7 @@ package app.quasar.qgl.engine.core
 class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
 
     private val comparable = compareBy<GameNode<*,*>> { it.renderPriority }
+    private var markNodeGraphChanged = false
 
     init {
         nodeGraph.addListener(this)
@@ -29,6 +30,16 @@ class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
     }
 
     fun notifyNodeChanged() {
-        drawableNodes.sortWith(comparable)
+        markNodeGraphChanged = true
+    }
+
+    fun draw(drawableApi: DrawableApi) {
+        if(markNodeGraphChanged) {
+            drawableNodes.sortWith(comparable)
+            markNodeGraphChanged = false
+        }
+        drawableNodes.forEach {
+            it.draw(drawableApi)
+        }
     }
 }
