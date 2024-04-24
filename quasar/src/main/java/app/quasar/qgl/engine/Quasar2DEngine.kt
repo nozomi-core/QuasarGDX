@@ -6,7 +6,7 @@ import app.quasar.qgl.engine.core.QuasarEngineActual
 import app.quasar.qgl.engine.core.GameNode
 import app.quasar.qgl.engine.core.DrawableApi
 import app.quasar.qgl.engine.core.EngineDeserialized
-import app.quasar.qgl.render.DrawableApiQuasar
+import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.scripts.QuasarRootScripts
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
@@ -86,7 +86,7 @@ class Quasar2DEngine(
     }
 
     private fun QuasarEngine2DConfig.createDrawApi(): DrawableApi {
-        return DrawableApiQuasar(
+        return DrawableApiActual(
             layout,
             createTileTextures(
                 tileset,

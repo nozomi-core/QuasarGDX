@@ -34,7 +34,7 @@ abstract class GameNode<D, A> {
     //Hooks
     abstract fun onCreate(argument: A?): D
     protected open fun onSetup(engine: EngineApi, data: D?) {}
-    protected open fun onSimulate(node: NodeApi, deltaTime: Float, data: D) {}
+    protected open fun onSimulate(node: NodeApi, clock: EngineClock, data: D) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
@@ -72,7 +72,7 @@ abstract class GameNode<D, A> {
         doCreationStep()
     }
 
-    internal fun simulate(deltaTime: Float) {
+    internal fun simulate(deltaTime: EngineClock) {
         this._engineApi?.setCurrentNodeRunning(this)
         doSimulationStep(deltaTime)
         checkObjectIsBeingDestroyed()
@@ -86,7 +86,7 @@ abstract class GameNode<D, A> {
 
     /** Engine Steps */
 
-    private fun doSimulationStep(deltaTime: Float) {
+    private fun doSimulationStep(deltaTime: EngineClock) {
         onSimulate(nodeApi, deltaTime, _data!!)
         if(!isObjectedMarkedForDestruction) {
             childGraph.nodes.forEach {

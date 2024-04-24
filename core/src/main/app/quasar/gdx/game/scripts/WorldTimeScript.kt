@@ -3,6 +3,7 @@ package app.quasar.gdx.game.scripts
 import app.quasar.gdx.game.ScriptTypes
 import app.quasar.gdx.game.logic.doWorldTime
 import app.quasar.qgl.engine.core.EngineApi
+import app.quasar.qgl.engine.core.EngineClock
 import app.quasar.qgl.engine.serialize.EngineRef
 import app.quasar.qgl.engine.serialize.EngineScript
 import app.quasar.qgl.engine.core.NodeApi
@@ -45,9 +46,9 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
         )
     }
 
-    override fun onSimulate(node: NodeApi, deltaTime: Float, data: WorldTimeData) {
+    override fun onSimulate(node: NodeApi, clock: EngineClock, data: WorldTimeData) {
         doWorldTime(
-            this, deltaTime, data
+            this, clock.deltaTime, data
         )
     }
 

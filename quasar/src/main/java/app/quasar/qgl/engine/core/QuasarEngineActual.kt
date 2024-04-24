@@ -20,17 +20,19 @@ class QuasarEngineActual(
 
     private var isRunning = true
     private var engineMarkedToExit = false
+    private val clock = EngineClock()
 
     /** Interface :: (QuasarEngine) */
 
     override fun simulate(deltaTime: Float) {
+        clock.frameDeltaTime = deltaTime
         if(!isRunning) {
             return
         }
 
         doDestructionStep()
         doCreationStep()
-        doSimulationStep(deltaTime)
+        doSimulationStep(clock)
 
         if(engineMarkedToExit && isRunning) {
             doExit()
@@ -92,7 +94,7 @@ class QuasarEngineActual(
         creationQueue.clear()
     }
 
-    private fun doSimulationStep(deltaTime: Float) {
+    private fun doSimulationStep(deltaTime: EngineClock) {
         data.graph.nodes.forEach {
             it.simulate(deltaTime)
         }
