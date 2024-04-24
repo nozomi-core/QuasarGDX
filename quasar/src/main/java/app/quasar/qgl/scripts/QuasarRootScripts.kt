@@ -4,6 +4,7 @@ import kotlin.reflect.KClass
 
 object QuasarRootScripts {
     val scripts = listOf<KClass<*>>(
-        QuasarEngineLogger::class
+        ConsoleLoggerScript::class,
+        InpuStackScript::class
     )
 }

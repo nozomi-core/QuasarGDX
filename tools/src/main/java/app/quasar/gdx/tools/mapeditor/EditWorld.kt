@@ -10,6 +10,7 @@ class EditWorld: GameWorld() {
         return listOf(
             Player::class,
             EditMap::class,
+            ConsolePrinterScript::class
 
         )
     }

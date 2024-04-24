@@ -6,7 +6,7 @@ import app.quasar.qgl.engine.core.EngineApi
 import app.quasar.qgl.engine.core.EngineClock
 import app.quasar.qgl.engine.serialize.EngineRef
 import app.quasar.qgl.engine.serialize.EngineScript
-import app.quasar.qgl.engine.core.NodeApi
+import app.quasar.qgl.engine.core.GameNodeApi
 import app.quasar.qgl.engine.core.RootNode
 import app.quasar.qgl.scripts.EngineLogger
 import app.quasar.qgl.serialize.BinaryObject
@@ -46,7 +46,7 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
         )
     }
 
-    override fun onSimulate(node: NodeApi, clock: EngineClock, data: WorldTimeData) {
+    override fun onSimulate(engine: EngineApi, node: GameNodeApi, clock: EngineClock, data: WorldTimeData) {
         doWorldTime(
             this, clock.deltaTime, data
         )

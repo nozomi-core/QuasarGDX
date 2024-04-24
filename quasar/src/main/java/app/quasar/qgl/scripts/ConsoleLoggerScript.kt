@@ -3,7 +3,7 @@ package app.quasar.qgl.scripts
 import app.quasar.qgl.engine.core.GameNodeUnit
 import kotlin.reflect.KClass
 
-class QuasarEngineLogger: GameNodeUnit(), EngineLogger {
+class ConsoleLoggerScript: GameNodeUnit(), EngineLogger {
     private val callbacks = mutableListOf<LogCallback>()
 
     override fun send(log: EngineLog) {

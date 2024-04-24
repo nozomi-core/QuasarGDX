@@ -39,14 +39,11 @@ abstract class GameNode<D, A> {
     //Hooks
     abstract fun onCreate(argument: A?): D
     protected open fun onSetup(engine: EngineApi, data: D?) {}
-    protected open fun onSimulate(node: NodeApi, clock: EngineClock, data: D) {}
+    protected open fun onSimulate(engine: EngineApi, node: GameNodeApi, clock: EngineClock, data: D) {}
     protected open fun onDraw(draw: DrawableApi){}
     protected open fun onDestroy() {}
 
-    private val nodeApi = object: NodeApi {
-        override val engine: EngineApi
-            get() = engineApi
-
+    private val nodeApi = object: GameNodeApi {
         override fun getParent(): GameNode<*, *> = this@GameNode
 
         override fun destroyNode() {
@@ -92,7 +89,7 @@ abstract class GameNode<D, A> {
     /** Engine Steps */
 
     private fun doSimulationStep(deltaTime: EngineClock) {
-        onSimulate(nodeApi, deltaTime, _data!!)
+        onSimulate(engineApi, nodeApi, deltaTime, _data!!)
         if(!isObjectedMarkedForDestruction) {
             childGraph.forEach {
                 it.simulate(deltaTime)

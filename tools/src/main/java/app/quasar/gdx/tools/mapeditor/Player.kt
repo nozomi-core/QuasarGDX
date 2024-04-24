@@ -1,10 +1,8 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
-import app.quasar.qgl.engine.core.DrawableApi
-import app.quasar.qgl.engine.core.EngineClock
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.NodeApi
+import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.scripts.InputFocus
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
@@ -15,11 +13,29 @@ class Player: GameNode<Unit, Unit>() {
     private var position = Vector3(0f,0f,0f)
     private var rotate: Float = 0f
 
+    private lateinit var inputFocus: InputFocus
+
     override fun onCreate(argument: Unit?) {}
 
-    override fun onSimulate(node: NodeApi, clock: EngineClock, data: Unit) {
-        val worldCamera = node.engine.getEngineHooks().useWorldCamera()
+    override fun onSetup(engine: EngineApi, data: Unit?) {
+        super.onSetup(engine, data)
+        inputFocus = engine.requireFindByInterface(InputFocus::class)
+        inputFocus.setDefault(this)
+    }
 
+    override fun onSimulate(engine: EngineApi, child: GameNodeApi, clock: EngineClock, data: Unit) {
+        val worldCamera = engine.getEngineHooks().useWorldCamera()
+
+        worldCamera.position.x = position.x
+        worldCamera.position.y = position.y
+        inputFocus.withInputFocus(this) {
+            onHandleInput(clock, engine)
+        }
+        //calc rotation
+        rotate += clock.multiply(ROTATE_SPEED)
+    }
+
+    fun onHandleInput(clock: EngineClock, engine: EngineApi) {
         // Move the camera based on input events
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             position.x += clock.multiply(-PLAYER_SPEED)
@@ -39,12 +55,10 @@ class Player: GameNode<Unit, Unit>() {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             renderPriority--
         }
-
-        worldCamera.position.x = position.x
-        worldCamera.position.y = position.y
-
-        //calc rotation
-        rotate += clock.multiply(ROTATE_SPEED)
+        if(Gdx.input.isKeyPressed(Input.Keys.I)) {
+            val printer = engine.requireFindByInterface(ConsolePrinter::class)
+            printer.takeOverInput()
+        }
     }
 
     override fun onDraw(draw: DrawableApi) {
@@ -56,7 +70,9 @@ class Player: GameNode<Unit, Unit>() {
     }
 
     companion object {
-        const val PLAYER_SPEED = 20f
-        const val ROTATE_SPEED = 1f
+        const val PLAYER_SPEED = 50f
+        const val ROTATE_SPEED = 100f
     }
+
+
 }
