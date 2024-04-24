@@ -22,7 +22,12 @@ class QuasarEngineActual(
     private var engineMarkedToExit = false
     private val clock = EngineClock()
 
+    private val drawableNodes = DrawableNodeGraph(this.data.graph)
+
     /** Interface :: (QuasarEngine) */
+    override fun notifyNodeChanged() {
+        drawableNodes.notifyNodeChanged()
+    }
 
     override fun simulate(deltaTime: Float) {
         clock.frameDeltaTime = deltaTime
@@ -40,7 +45,7 @@ class QuasarEngineActual(
     }
 
     override fun draw() {
-        data.graph.forEach {
+        drawableNodes.forEach {
             it.draw(drawableApi)
         }
     }

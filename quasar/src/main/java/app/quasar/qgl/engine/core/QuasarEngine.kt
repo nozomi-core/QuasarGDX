@@ -4,6 +4,8 @@ import kotlin.reflect.KClass
 
 //The full engine api, ADMIN api is for functions that should not be exposes to the public
 interface QuasarEngine: EngineApi {
+    fun notifyNodeChanged()
+
     fun simulate(deltaTime: Float)
     fun draw()
     fun exit()

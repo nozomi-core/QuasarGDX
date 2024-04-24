@@ -17,6 +17,11 @@ abstract class GameNode<D, A> {
         _engineApi?.checkNodeIsNotRunning(this)
         return _data!!
     }
+    var renderPriority: Int = 0
+        protected set(value) {
+            _engineApi?.notifyNodeChanged()
+            field = value
+        }
 
     //Meta data
     private var isObjectedMarkedForDestruction = false

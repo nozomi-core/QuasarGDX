@@ -19,6 +19,7 @@ class Player: GameNode<Unit, Unit>() {
 
     override fun onSimulate(node: NodeApi, clock: EngineClock, data: Unit) {
         val worldCamera = node.engine.getEngineHooks().useWorldCamera()
+        renderPriority = 900
 
         // Move the camera based on input events
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
