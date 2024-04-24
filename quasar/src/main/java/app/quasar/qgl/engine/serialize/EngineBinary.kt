@@ -25,7 +25,7 @@ class EngineBinary {
             }
 
             //Serialise node data
-            engineData.graph.nodes.forEach { node ->
+            engineData.graph.forEach { node ->
                 qglOut.writeFrame(
                     startId = ID_FRAME_NODE_START,
                     endId = ID_FRAME_NODE_END

@@ -89,7 +89,7 @@ abstract class GameNode<D, A> {
     private fun doSimulationStep(deltaTime: EngineClock) {
         onSimulate(nodeApi, deltaTime, _data!!)
         if(!isObjectedMarkedForDestruction) {
-            childGraph.nodes.forEach {
+            childGraph.forEach {
                 it.simulate(deltaTime)
             }
         }
@@ -102,14 +102,14 @@ abstract class GameNode<D, A> {
             val newEntity = kClass.createInstance()
             newEntity.parentNode = this
             newEntity.create(_engineApi!!, argument)
-            childGraph.nodes.add(newEntity)
+            childGraph.add(newEntity)
         }
         creationQueue.clear()
     }
 
     private fun destroy() {
         onDestroy()
-        childGraph.nodes.forEach {
+        childGraph.forEach {
             it.destroy()
         }
         //The engine only needs to remove the root node, child nodes will auto remove with parent dies

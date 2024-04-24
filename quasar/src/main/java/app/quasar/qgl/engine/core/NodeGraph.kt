@@ -3,7 +3,19 @@ package app.quasar.qgl.engine.core
 import kotlin.reflect.KClass
 
 class NodeGraph: NodeSearchable {
-    val nodes = mutableListOf<GameNode<*, *>>()
+    private val nodes = mutableListOf<GameNode<*, *>>()
+
+    fun remove(node: GameNode<*,*>) {
+        nodes.remove(node)
+    }
+
+    fun add(node: GameNode<*,*>) {
+        nodes.add(node)
+    }
+
+    fun forEach(consumer: (GameNode<*,*>) -> Unit) = nodes.forEach(consumer)
+    fun first(predicate: (GameNode<*,*>) -> Boolean) = nodes.first(predicate)
+    fun indexOf(node: GameNode<*,*>) = nodes.indexOf(node)
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
         checkCastIsInterface(nodeInterface)

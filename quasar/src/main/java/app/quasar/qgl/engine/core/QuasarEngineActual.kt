@@ -40,7 +40,7 @@ class QuasarEngineActual(
     }
 
     override fun draw() {
-        data.graph.nodes.forEach {
+        data.graph.forEach {
             it.draw(drawableApi)
         }
     }
@@ -78,7 +78,7 @@ class QuasarEngineActual(
     //:: Engine steps
     private fun doDestructionStep() {
         destructionQueue.forEach {
-            data.graph.nodes.remove(it)
+            data.graph.remove(it)
         }
         destructionQueue.clear()
     }
@@ -89,13 +89,13 @@ class QuasarEngineActual(
 
             val newEntity = kClass.createInstance()
             newEntity.create(this, argument)
-            data.graph.nodes.add(newEntity)
+            data.graph.add(newEntity)
         }
         creationQueue.clear()
     }
 
     private fun doSimulationStep(deltaTime: EngineClock) {
-        data.graph.nodes.forEach {
+        data.graph.forEach {
             it.simulate(deltaTime)
         }
     }
@@ -128,7 +128,7 @@ class QuasarEngineActual(
         data.rootScripts.addAll(mergeAllScripts)
 
         //Check if the script is a root class and call rootCreated in ca
-        data.graph.nodes.forEach {
+        data.graph.forEach {
             if (it is RootNode) {
                 it.doRootCreated()
             }
@@ -147,12 +147,12 @@ class QuasarEngineActual(
     /** Utility and Helper Methods */
 
     private fun checkScriptOrderIntegrity() {
-        data.graph.nodes.forEach { currentNode ->
+        data.graph.forEach { currentNode ->
             if(currentNode is RootNode) {
                 val shouldBeBefore = currentNode.shouldRunBefore()
-                val thisNodeIndex = data.graph.nodes.indexOf(currentNode)
+                val thisNodeIndex = data.graph.indexOf(currentNode)
                 shouldBeBefore.forEach { dependClass ->
-                    val dependIndex = data.graph.nodes.indexOf(data.graph.nodes.first { it::class == dependClass })
+                    val dependIndex = data.graph.indexOf(data.graph.first { it::class == dependClass })
                     if(dependIndex > thisNodeIndex) {
                         throw SecurityException("${dependClass.simpleName} should be spawned before ${currentNode::class.simpleName}")
                     }
