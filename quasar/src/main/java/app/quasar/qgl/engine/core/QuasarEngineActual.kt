@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.EngineHooks
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -7,6 +8,7 @@ class QuasarEngineActual(
     private val drawableApi: DrawableApi,
     private val rootScripts: List<KClass<*>>,
     private val onExit: (EngineDeserialized) -> Unit,
+    private val engineHooks: EngineHooks,
     data: EngineDeserialized?
 ): QuasarEngine, NodeSearchable {
     private val data = data?.toEngineData() ?: EngineData.createDefault()
@@ -20,6 +22,7 @@ class QuasarEngineActual(
     private var engineMarkedToExit = false
 
     /** Interface :: (QuasarEngine) */
+
     override fun simulate(deltaTime: Float) {
         if(!isRunning) {
             return
@@ -95,7 +98,9 @@ class QuasarEngineActual(
         }
     }
 
-    //Interface :: (EngineApiAdmin)
+    //Interface :: (EngineApi)
+    override fun getEngineHooks(): EngineHooks = engineHooks
+
     override fun generateId() = data.currentRuntimeId++
 
     override fun <T : GameNode<*, *>> createGameNode(nodeScript: KClass<T>, argument: Any?) {

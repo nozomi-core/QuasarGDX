@@ -39,6 +39,9 @@ abstract class GameNode<D, A> {
     protected open fun onDestroy() {}
 
     private val nodeApi = object: NodeApi {
+        override val engine: EngineApi
+            get() = engineApi
+
         override fun getParent(): GameNode<*, *> = this@GameNode
 
         override fun destroyNode() {

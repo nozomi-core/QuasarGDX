@@ -64,25 +64,8 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
 
     override fun render() {
         super.render()
-        handleInput()
         ScreenUtils.clear(1f, 1f, 1f, 1f)
         engine2D.render()
-    }
-
-    private fun handleInput() {
-        // Move the camera based on input events
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            worldCamera.translate(-1f, 0f, 0f)
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            worldCamera.translate(1f, 0f, 0f)
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            worldCamera.translate(0f, 1f, 0f)
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            worldCamera.translate(0f, -1f, 0f)
-        }
     }
 
     override fun dispose() {

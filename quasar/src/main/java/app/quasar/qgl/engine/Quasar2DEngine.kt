@@ -23,10 +23,11 @@ class Quasar2DEngine(
     private val drawableApi = config.createDrawApi()
 
     private val engineApi: QuasarEngine = QuasarEngineActual(
-            drawableApi = drawableApi,
-            onExit = this::onExit,
-            data = null,
-            rootScripts = QuasarRootScripts.scripts
+        drawableApi = drawableApi,
+        onExit = this::onExit,
+        data = null,
+        rootScripts = QuasarRootScripts.scripts,
+        engineHooks = engineHooks
     )
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
