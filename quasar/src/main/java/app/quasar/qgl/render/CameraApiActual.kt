@@ -1,6 +1,6 @@
 package app.quasar.qgl.render
 
-import app.quasar.qgl.engine.UiHooks
+import app.quasar.qgl.tiles.UiHooks
 import app.quasar.qgl.engine.core.CameraApi
 
 class CameraApiActual(private val hooks: UiHooks): CameraApi {

@@ -1,7 +1,5 @@
-package app.quasar.qgl.engine
+package app.quasar.qgl.tiles
 
-import app.quasar.qgl.tiles.GameTileset
-import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch

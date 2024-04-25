@@ -15,7 +15,7 @@ class ConsolePrinterScript: GameNode<Unit, Unit>(), ConsolePrinter {
         inputFocus = context.engine.requireFindByInterface(InputFocus::class)
     }
 
-    override fun onSimulate(context: SimContext, node: SelfContext, data: Unit) {
+    override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
         val engine = context.engine
 
         inputFocus.withInputFocus(this) {
