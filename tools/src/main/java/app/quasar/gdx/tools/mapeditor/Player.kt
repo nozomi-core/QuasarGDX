@@ -77,6 +77,7 @@ class Player: GameNode<Unit, Unit>(), GameOverlay {
         draw.tileGrid(CoreTiles.RED_LIGHT, 0, 24)
         draw.tileGrid(CoreTiles.RED_LIGHT, 24, 24)
         draw.tileGrid(CoreTiles.RED_LIGHT, 24, 0)
+        draw.tileGrid(CoreTiles.TREE, 0,0)
     }
 
     companion object {

@@ -11,5 +11,6 @@ class CoreTileset: GameTileset {
         builder.add(CoreTiles.RED_DARK,       0, 2)
         builder.add(CoreTiles.GREEN_LIGHT,    1, 1)
         builder.add(CoreTiles.SMILE,          0, 3)
+        builder.addSpan(CoreTiles.TREE,       0, 4, 2, 2)
     }
 }

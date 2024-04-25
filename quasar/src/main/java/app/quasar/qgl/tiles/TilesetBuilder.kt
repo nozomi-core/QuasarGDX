@@ -13,7 +13,7 @@ class TilesetBuilder(
 
     private val defaultRegion = TextureRegion(texture, 0, 0, layout.tileSize ,layout.tileSize)
 
-    fun add(ref: TileId, gridX: Int, gridY: Int) {
+    fun add(ref: TileId, gridX: Int, gridY: Int, width: Int = layout.tileSize, height: Int = layout.tileSize) {
         if(ref.id > largestIndex) {
             largestIndex = ref.id
         }
@@ -21,8 +21,12 @@ class TilesetBuilder(
         val regionX = mapGridToTextureX(gridX)
         val regionY =  mapGridToTextureY(gridY)
 
-        val textureRegion = TextureRegion(texture, regionX, regionY, layout.tileSize, layout.tileSize)
+        val textureRegion = TextureRegion(texture, regionX, regionY, width, height)
         tileMap[ref.id] = textureRegion
+    }
+
+    fun addSpan(ref: TileId, gridX: Int, gridY: Int, spanWidth: Int, spanHeight: Int) {
+        return add(ref, gridX, gridY, spanWidth * layout.tileSize, spanHeight * layout.tileSize)
     }
 
     private fun mapGridToTextureX(gridX: Int): Int {
