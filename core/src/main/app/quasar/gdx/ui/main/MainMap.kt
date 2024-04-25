@@ -1,13 +1,15 @@
 package app.quasar.gdx.ui.main
 
 import app.quasar.gdx.tiles.CoreTiles
+import app.quasar.qgl.engine.core.DrawContext
 import app.quasar.qgl.engine.core.GameNode
 import app.quasar.qgl.engine.core.DrawableApi
 
 class MainMap: GameNode<Unit, Unit>() {
 
-    override fun onDraw(draw: DrawableApi) {
-        super.onDraw(draw)
+    override fun onDraw(context: DrawContext) {
+        val draw = context.draw
+
         //Draw map
         for(x in 0 until 20) {
             for(y in 0 until 20) {

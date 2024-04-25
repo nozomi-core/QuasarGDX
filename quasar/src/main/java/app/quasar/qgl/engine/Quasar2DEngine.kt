@@ -1,11 +1,7 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.QuasarRuntime
-import app.quasar.qgl.engine.core.QuasarEngine
-import app.quasar.qgl.engine.core.QuasarEngineActual
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.DrawableApi
-import app.quasar.qgl.engine.core.EngineDeserialized
+import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.scripts.QuasarRootScripts
 import app.quasar.qgl.tiles.*
@@ -22,8 +18,7 @@ class Quasar2DEngine(
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
-    private val engineApi: QuasarEngine = QuasarEngineActual(
-        drawableApi = drawableApi,
+    private val engineApi: QuasarEngine = QuasarEngineActual(DrawContext(drawableApi),
         onExit = this::onExit,
         data = null,
         rootScripts = QuasarRootScripts.scripts,

@@ -1,5 +1,6 @@
 package integrations.app.quasar.qgl
 
+import app.quasar.qgl._fixtures.TestDrawContext
 import app.quasar.qgl.engine.serialize.EngineBinary
 import app.quasar.qgl.serialize.*
 import app.quasar.qgl._fixtures.TestEmptyDrawableApi
@@ -16,12 +17,13 @@ class QuasarEngineTestSerialize {
         var engineData: EngineDeserialized? = null
 
         val quasarEngine = QuasarEngineActual(
-            drawableApi = TestEmptyDrawableApi(),
+            TestDrawContext.create(),
             onExit = {
                 engineData = it
             },
             data = null,
-                rootScripts = listOf()
+            rootScripts = listOf(),
+            engineHooks = null
         )
 
         quasarEngine.createGameNode(SerialScript::class)

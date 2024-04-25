@@ -6,6 +6,8 @@ class NodeGraph: NodeSearchable {
     private val nodes = mutableListOf<GameNode<*, *>>()
     private val callbacks = mutableSetOf<GraphChangedListener>()
 
+    val size: Int get() = nodes.size
+
     fun addListener(listener: GraphChangedListener) {
         callbacks.add(listener)
     }

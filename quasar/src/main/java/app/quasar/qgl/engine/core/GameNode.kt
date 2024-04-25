@@ -38,12 +38,12 @@ abstract class GameNode<D, A> {
 
     //Hooks
     abstract fun onCreate(argument: A?): D
-    protected open fun onSetup(engine: EngineApi, data: D?) {}
-    protected open fun onSimulate(engine: EngineApi, node: GameNodeApi, clock: EngineClock, data: D) {}
-    protected open fun onDraw(draw: DrawableApi){}
+    protected open fun onSetup(context: SetupContext, data: D?) {}
+    protected open fun onSimulate(context: SimContext, self: SelfContext, data: D) {}
+    protected open fun onDraw(context: DrawContext){}
     protected open fun onDestroy() {}
 
-    private val nodeApi = object: GameNodeApi {
+    private val selfContext = object: SelfContext {
         override fun getParent(): GameNode<*, *> = this@GameNode
 
         override fun destroyNode() {
@@ -70,29 +70,29 @@ abstract class GameNode<D, A> {
         this.runtimeId = engineApiAdmin.generateId()
         this._engineApi?.setCurrentNodeRunning(this)
         _data = onCreate(argument as? A)
-        onSetup(engineApiAdmin, _data)
+        onSetup(SetupContext(engine = engineApi), _data)
         doCreationStep()
     }
 
-    internal fun simulate(deltaTime: EngineClock) {
+    internal fun simulate(context: SimContext) {
         this._engineApi?.setCurrentNodeRunning(this)
-        doSimulationStep(deltaTime)
+        doSimulationStep(context)
         checkObjectIsBeingDestroyed()
         doCreationStep()
     }
 
-    internal fun draw(drawableApi: DrawableApi) {
+    internal fun draw(context: DrawContext) {
         this._engineApi?.setCurrentNodeRunning(this)
-        onDraw(drawableApi)
+        onDraw(context)
     }
 
     /** Engine Steps */
 
-    private fun doSimulationStep(deltaTime: EngineClock) {
-        onSimulate(engineApi, nodeApi, deltaTime, _data!!)
+    private fun doSimulationStep(context: SimContext) {
+        onSimulate(context, selfContext, _data!!)
         if(!isObjectedMarkedForDestruction) {
             childGraph.forEach {
-                it.simulate(deltaTime)
+                it.simulate(context)
             }
         }
     }

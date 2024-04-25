@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl._fixtures.TestDrawContext
 import app.quasar.qgl._fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test
@@ -8,11 +9,11 @@ import org.junit.Test
 class QuasarEngineTestFindAndCreate {
 
     private fun createEngine(): QuasarEngine = QuasarEngineActual(
-        drawableApi = TestEmptyDrawableApi(),
+        TestDrawContext.create(),
         onExit = {},
         data = null,
-        rootScripts = listOf()
-    )
+        rootScripts = listOf(),
+        engineHooks = null)
 
     @Test
     fun testFindByConcreteClassOnlyInterfaceFindAllowed() {

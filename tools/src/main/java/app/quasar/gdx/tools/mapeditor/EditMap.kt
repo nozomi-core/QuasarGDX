@@ -1,6 +1,7 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
+import app.quasar.qgl.engine.core.DrawContext
 import app.quasar.qgl.engine.core.GameNode
 import app.quasar.qgl.engine.core.DrawableApi
 import com.badlogic.gdx.graphics.Color
@@ -15,7 +16,9 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     private val speedMs = 4f
 
-    override fun onDraw(draw: DrawableApi) {
+    override fun onDraw(context: DrawContext) {
+        val draw = context.draw
+
         //Draw map
         for(x in 0 until 20) {
             for(y in 0 until 20) {

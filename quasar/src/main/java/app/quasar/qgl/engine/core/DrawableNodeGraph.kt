@@ -33,13 +33,13 @@ class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
         markNodeGraphChanged = true
     }
 
-    fun draw(drawableApi: DrawableApi) {
+    fun draw(context: DrawContext) {
         if(markNodeGraphChanged) {
             drawableNodes.sortWith(comparable)
             markNodeGraphChanged = false
         }
         drawableNodes.forEach {
-            it.draw(drawableApi)
+            it.draw(context)
         }
     }
 }

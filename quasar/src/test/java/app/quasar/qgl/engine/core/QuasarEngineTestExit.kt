@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl._fixtures.TestDrawContext
 import app.quasar.qgl._fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test
@@ -11,12 +12,13 @@ class QuasarEngineExitTest {
         var engineData: EngineDeserialized? = null
 
         val engine = QuasarEngineActual(
-            drawableApi = TestEmptyDrawableApi(),
+            TestDrawContext.create(),
             onExit = {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf()
+            rootScripts = listOf(),
+            engineHooks = null
         )
 
         engine.createGameNode(BasicScript::class, Unit)
@@ -30,13 +32,13 @@ class QuasarEngineExitTest {
         var engineData: EngineDeserialized? = null
 
         val engine = QuasarEngineActual(
-            drawableApi = TestEmptyDrawableApi(),
+            TestDrawContext.create(),
             onExit = {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf()
-        )
+            rootScripts = listOf(),
+            engineHooks = null)
 
         engine.createGameNode(BasicScript::class, Unit)
         engine.simulate(10f)
@@ -44,7 +46,7 @@ class QuasarEngineExitTest {
         engine.simulate(10f)
         Assert.assertNotNull(engineData)
         Assert.assertEquals(engineData?.currentRuntimeId, 2L)
-        Assert.assertEquals(engineData?.graph?.nodes?.size, 1)
+        Assert.assertEquals(engineData?.graph?.size, 1)
     }
 }
 

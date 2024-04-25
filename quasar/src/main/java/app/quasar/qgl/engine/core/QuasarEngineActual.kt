@@ -5,10 +5,10 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngineActual(
-    private val drawableApi: DrawableApi,
+    private val drawContext: DrawContext,
     private val rootScripts: List<KClass<*>>,
     private val onExit: (EngineDeserialized) -> Unit,
-    private val engineHooks: EngineHooks,
+    private val engineHooks: EngineHooks?,
     data: EngineDeserialized?
 ): QuasarEngine, NodeSearchable {
     private val data = data?.toEngineData() ?: EngineData.createDefault()
@@ -24,6 +24,12 @@ class QuasarEngineActual(
 
     private val drawableNodes = DrawableNodeGraph(this.data.graph)
 
+    //Contexts
+    private val simContext = SimContext(
+        engine = this,
+        clock = clock
+    )
+
     /** Interface :: (QuasarEngine) */
     override fun notifyNodeChanged() {
         drawableNodes.notifyNodeChanged()
@@ -37,7 +43,7 @@ class QuasarEngineActual(
 
         doDestructionStep()
         doCreationStep()
-        doSimulationStep(clock)
+        doSimulationStep()
 
         if(engineMarkedToExit && isRunning) {
             doExit()
@@ -45,7 +51,7 @@ class QuasarEngineActual(
     }
 
     override fun draw() {
-        drawableNodes.draw(drawableApi)
+        drawableNodes.draw(drawContext)
     }
 
     override fun exit() {
@@ -97,14 +103,14 @@ class QuasarEngineActual(
         creationQueue.clear()
     }
 
-    private fun doSimulationStep(deltaTime: EngineClock) {
+    private fun doSimulationStep() {
         data.graph.forEach {
-            it.simulate(deltaTime)
+            it.simulate(simContext)
         }
     }
 
     //Interface :: (EngineApi)
-    override fun getEngineHooks(): EngineHooks = engineHooks
+    override fun getEngineHooks(): EngineHooks = engineHooks!!
 
     override fun generateId() = data.currentRuntimeId++
 

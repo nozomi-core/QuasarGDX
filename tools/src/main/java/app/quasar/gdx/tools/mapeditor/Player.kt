@@ -17,14 +17,16 @@ class Player: GameNode<Unit, Unit>() {
 
     override fun onCreate(argument: Unit?) {}
 
-    override fun onSetup(engine: EngineApi, data: Unit?) {
-        super.onSetup(engine, data)
-        inputFocus = engine.requireFindByInterface(InputFocus::class)
+    override fun onSetup(context: SetupContext, data: Unit?) {
+        inputFocus = context.engine.requireFindByInterface(InputFocus::class)
         inputFocus.setDefault(this)
     }
 
-    override fun onSimulate(engine: EngineApi, child: GameNodeApi, clock: EngineClock, data: Unit) {
-        val worldCamera = engine.getEngineHooks().useWorldCamera()
+    override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
+        val engine = context.engine
+        val clock = context.clock
+
+        val worldCamera = context.engine.getEngineHooks().useWorldCamera()
 
         worldCamera.position.x = position.x
         worldCamera.position.y = position.y
@@ -35,7 +37,7 @@ class Player: GameNode<Unit, Unit>() {
         rotate += clock.multiply(ROTATE_SPEED)
     }
 
-    fun onHandleInput(clock: EngineClock, engine: EngineApi) {
+    private fun onHandleInput(clock: EngineClock, engine: EngineApi) {
         // Move the camera based on input events
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             position.x += clock.multiply(-PLAYER_SPEED)
@@ -61,8 +63,9 @@ class Player: GameNode<Unit, Unit>() {
         }
     }
 
-    override fun onDraw(draw: DrawableApi) {
-        super.onDraw(draw)
+    override fun onDraw(context: DrawContext) {
+        val draw = context.draw
+
         draw.batchWith { api ->
             api.setColor(Color.CYAN)
             draw.tilePx(CoreTiles.SMILE, position.x, position.y, 1f, rotate)

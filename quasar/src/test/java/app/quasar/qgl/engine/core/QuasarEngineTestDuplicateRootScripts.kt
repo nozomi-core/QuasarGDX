@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl._fixtures.TestDrawContext
 import app.quasar.qgl._fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test
@@ -12,7 +13,7 @@ class EngineApiTestDuplicateRootScripts {
 
     @Test
     fun testDuplicates() {
-        val engineApi = QuasarEngineActual(TestEmptyDrawableApi(), onExit = {}, data = null, rootScripts = listOf())
+        val engineApi = QuasarEngineActual(TestDrawContext.create(), onExit = {}, data = null, rootScripts = listOf(), engineHooks =  null)
 
         val didFail = try {
             engineApi.createRootScripts(listOf(Duplicate::class, Duplicate::class))
