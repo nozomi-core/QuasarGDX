@@ -6,6 +6,7 @@ import app.quasar.qgl.tiles.TileSheetLayout
 import app.quasar.qgl.tiles.TileTextures
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector3
 
 class DrawableApiActual(
     private val layout: TileSheetLayout,
@@ -32,6 +33,10 @@ class DrawableApiActual(
     override fun tilePx(id: TileId, x: Float, y: Float) {
         val region = textures.get(id)
         spriteBatch.draw(region, x, y)
+    }
+
+    override fun tilePx(id: TileId, vector: Vector3) {
+        tilePx(id, vector.x, vector.y)
     }
 
     override fun tilePx(id: TileId, x: Float, y: Float, scale: Float, rotation: Float) {

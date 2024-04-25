@@ -12,7 +12,8 @@ class EditWorld: GameWorld() {
             Player::class,
             EditMap::class,
             ConsolePrinterScript::class,
-            WorldBoundScript::class
+            WorldBoundScript::class,
+            ProximityScript::class
         )
     }
 
