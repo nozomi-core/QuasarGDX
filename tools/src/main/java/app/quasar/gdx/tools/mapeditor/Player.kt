@@ -8,7 +8,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 
-class Player: GameNode<Unit, Unit>() {
+class Player: GameNode<Unit, Unit>(), GameOverlay {
 
     private var position = Vector3(0f,0f,0f)
     private var rotate: Float = 0f
@@ -70,10 +70,17 @@ class Player: GameNode<Unit, Unit>() {
         context.camera.setCamera(position.x, position.y)
     }
 
+    override fun onDrawOverlay(context: DrawContext) {
+        val draw = context.draw
+
+        draw.tileGrid(CoreTiles.GREEN_LIGHT, 0, 0)
+        draw.tileGrid(CoreTiles.RED_LIGHT, 0, 24)
+        draw.tileGrid(CoreTiles.RED_LIGHT, 24, 24)
+        draw.tileGrid(CoreTiles.RED_LIGHT, 24, 0)
+    }
+
     companion object {
         const val PLAYER_SPEED = 50f
         const val ROTATE_SPEED = 100f
     }
-
-
 }

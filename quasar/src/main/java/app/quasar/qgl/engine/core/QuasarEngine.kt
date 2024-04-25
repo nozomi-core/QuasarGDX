@@ -7,7 +7,9 @@ interface QuasarEngine: EngineApi {
     fun notifyNodeChanged()
 
     fun simulate(deltaTime: Float)
+    //TODO: think about renaming this to `drawWorld`
     fun draw()
+    fun drawOverlay()
     fun exit()
 
     fun <T: GameNode<*, *>> createRootScripts(scripts: List<KClass<T>>)

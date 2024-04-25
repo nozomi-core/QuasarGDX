@@ -21,6 +21,7 @@ class QuasarEngineActual(
     private val clock = EngineClock()
 
     private val drawableNodes = DrawableNodeGraph(this.data.graph)
+    private val overlayNodes = DrawableOverlayGraph(this.data.graph)
 
     //Contexts
     private val simContext = SimContext(
@@ -50,6 +51,10 @@ class QuasarEngineActual(
 
     override fun draw() {
         drawableNodes.draw(drawContext)
+    }
+
+    override fun drawOverlay() {
+        overlayNodes.draw(drawContext)
     }
 
     override fun exit() {

@@ -45,7 +45,6 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
         super.create()
         engine2D = Quasar2DEngine(runtime, config, uiHooks).apply {
             createWorld(EditWorld::class)
-            createOverlay(EditOverlay::class)
         }
         worldCamera = OrthographicCamera()
         overlayCamera = OrthographicCamera()

@@ -26,8 +26,6 @@ class Quasar2DEngine(
         rootScripts = QuasarRootScripts.scripts
     )
 
-    private var gameOverlay: GameOverlay? = null
-
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
         kClass.createInstance().apply {
            createRootScripts(useRootScripts())
@@ -39,12 +37,6 @@ class Quasar2DEngine(
     private fun createRootScripts(scripts: List<KClass<*>>) {
         val rootScripts = scripts.filterIsInstance<KClass<GameNode<*, *>>>()
         engineApi.createRootScripts(rootScripts)
-    }
-
-    fun <T: GameOverlay> createOverlay(overlay: KClass<T>) {
-        gameOverlay = overlay.createInstance().apply {
-            onCreate()
-        }
     }
 
     fun render() {
@@ -64,7 +56,7 @@ class Quasar2DEngine(
         engineHooks.useOverlayCamera().update()
         spriteBatch.projectionMatrix = engineHooks.useOverlayCamera().combined
         spriteBatch.begin()
-        gameOverlay?.onDraw(drawableApi)
+        engineApi.drawOverlay()
         spriteBatch.end()
     }
 
