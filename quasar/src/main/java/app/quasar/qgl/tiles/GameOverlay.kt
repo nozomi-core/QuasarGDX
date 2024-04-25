@@ -4,5 +4,5 @@ import app.quasar.qgl.engine.core.DrawableApi
 
 interface GameOverlay {
     fun onCreate()
-    fun onDraw(drawApi: DrawableApi)
+    fun onDraw(draw: DrawableApi)
 }

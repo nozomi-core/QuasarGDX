@@ -12,8 +12,8 @@ class QuasarEngineTestFindAndCreate {
         TestDrawContext.create(),
         onExit = {},
         data = null,
-        rootScripts = listOf(),
-        engineHooks = null)
+        rootScripts = listOf()
+    )
 
     @Test
     fun testFindByConcreteClassOnlyInterfaceFindAllowed() {

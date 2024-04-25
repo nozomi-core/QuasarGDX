@@ -22,8 +22,7 @@ class QuasarEngineTestSerialize {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf(),
-            engineHooks = null
+            rootScripts = listOf()
         )
 
         quasarEngine.createGameNode(SerialScript::class)

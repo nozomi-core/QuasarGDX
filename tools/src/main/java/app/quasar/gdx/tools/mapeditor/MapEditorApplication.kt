@@ -4,12 +4,10 @@ import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.QuasarEngine2DConfig
-import app.quasar.qgl.engine.EngineHooks
+import app.quasar.qgl.engine.UiHooks
 import app.quasar.qgl.engine.Quasar2DEngine
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.ApplicationAdapter
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -36,7 +34,7 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
         )
     }
 
-    private val engineCallbacks = object : EngineHooks {
+    private val uiHooks = object : UiHooks {
         override fun useWorldCamera() = worldCamera
         override fun useWorldViewport() = worldViewport
         override fun useOverlayCamera() = overlayCamera
@@ -45,7 +43,7 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
 
     override fun create() {
         super.create()
-        engine2D = Quasar2DEngine(runtime, config, engineCallbacks).apply {
+        engine2D = Quasar2DEngine(runtime, config, uiHooks).apply {
             createWorld(EditWorld::class)
             createOverlay(EditOverlay::class)
         }

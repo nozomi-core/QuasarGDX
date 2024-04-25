@@ -13,7 +13,7 @@ class EngineApiTestDuplicateRootScripts {
 
     @Test
     fun testDuplicates() {
-        val engineApi = QuasarEngineActual(TestDrawContext.create(), onExit = {}, data = null, rootScripts = listOf(), engineHooks =  null)
+        val engineApi = QuasarEngineActual(TestDrawContext.create(), onExit = {}, data = null, rootScripts = listOf())
 
         val didFail = try {
             engineApi.createRootScripts(listOf(Duplicate::class, Duplicate::class))

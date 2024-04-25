@@ -10,5 +10,6 @@ class SetupContext(
 )
 
 class DrawContext(
-    val draw: DrawableApi
+    val draw: DrawableApi,
+    val camera: CameraApi
 )

@@ -11,7 +11,6 @@ class EditWorld: GameWorld() {
             Player::class,
             EditMap::class,
             ConsolePrinterScript::class
-
         )
     }
 

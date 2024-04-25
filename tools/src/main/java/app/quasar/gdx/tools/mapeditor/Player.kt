@@ -26,10 +26,6 @@ class Player: GameNode<Unit, Unit>() {
         val engine = context.engine
         val clock = context.clock
 
-        val worldCamera = context.engine.getEngineHooks().useWorldCamera()
-
-        worldCamera.position.x = position.x
-        worldCamera.position.y = position.y
         inputFocus.withInputFocus(this) {
             onHandleInput(clock, engine)
         }
@@ -70,6 +66,8 @@ class Player: GameNode<Unit, Unit>() {
             api.setColor(Color.CYAN)
             draw.tilePx(CoreTiles.SMILE, position.x, position.y, 1f, rotate)
         }
+
+        context.camera.setCamera(position.x, position.y)
     }
 
     companion object {

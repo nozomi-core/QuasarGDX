@@ -4,7 +4,7 @@ import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.CoreWorld
 import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.QuasarRuntime
-import app.quasar.qgl.engine.EngineHooks
+import app.quasar.qgl.engine.UiHooks
 import app.quasar.qgl.engine.Quasar2DEngine
 import app.quasar.qgl.engine.QuasarEngine2DConfig
 import app.quasar.qgl.tiles.TileSheetLayout
@@ -37,7 +37,7 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
         )
     }
 
-    private val engineCallbacks = object : EngineHooks {
+    private val engineCallbacks = object : UiHooks {
         override fun useWorldCamera() = worldCamera
         override fun useWorldViewport() = worldViewport
         override fun useOverlayCamera() = overlayCamera

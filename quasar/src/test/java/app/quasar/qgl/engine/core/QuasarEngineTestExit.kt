@@ -17,8 +17,7 @@ class QuasarEngineExitTest {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf(),
-            engineHooks = null
+            rootScripts = listOf()
         )
 
         engine.createGameNode(BasicScript::class, Unit)
@@ -37,8 +36,8 @@ class QuasarEngineExitTest {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf(),
-            engineHooks = null)
+            rootScripts = listOf()
+        )
 
         engine.createGameNode(BasicScript::class, Unit)
         engine.simulate(10f)

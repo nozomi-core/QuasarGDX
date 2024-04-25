@@ -2,6 +2,7 @@ package app.quasar.qgl.engine
 
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.scripts.QuasarRootScripts
 import app.quasar.qgl.tiles.*
@@ -14,16 +15,18 @@ import kotlin.reflect.full.createInstance
 class Quasar2DEngine(
     private val runtime: QuasarRuntime,
     private val config: QuasarEngine2DConfig,
-    private val engineHooks: EngineHooks,
+    private val engineHooks: UiHooks,
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
-    private val engineApi: QuasarEngine = QuasarEngineActual(DrawContext(drawableApi),
-        onExit = this::onExit,
+    private val engineApi: QuasarEngine = QuasarEngineActual(
         data = null,
-        rootScripts = QuasarRootScripts.scripts,
-        engineHooks = engineHooks
+        drawContext = DrawContext(drawableApi, CameraApiActual(engineHooks)),
+        onExit = this::onExit,
+        rootScripts = QuasarRootScripts.scripts
     )
+
+    private var gameOverlay: GameOverlay? = null
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
         kClass.createInstance().apply {
@@ -39,7 +42,7 @@ class Quasar2DEngine(
     }
 
     fun <T: GameOverlay> createOverlay(overlay: KClass<T>) {
-        overlay.createInstance().apply {
+        gameOverlay = overlay.createInstance().apply {
             onCreate()
         }
     }
@@ -65,7 +68,7 @@ class Quasar2DEngine(
         engineHooks.useOverlayCamera().update()
         spriteBatch.projectionMatrix = engineHooks.useOverlayCamera().combined
         spriteBatch.begin()
-        //overlay?.onDraw(drawableApi)
+        gameOverlay?.onDraw(drawableApi)
         spriteBatch.end()
     }
 

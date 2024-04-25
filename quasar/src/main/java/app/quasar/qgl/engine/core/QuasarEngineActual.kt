@@ -1,15 +1,13 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.engine.EngineHooks
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngineActual(
+    data: EngineDeserialized?,
     private val drawContext: DrawContext,
     private val rootScripts: List<KClass<*>>,
     private val onExit: (EngineDeserialized) -> Unit,
-    private val engineHooks: EngineHooks?,
-    data: EngineDeserialized?
 ): QuasarEngine, NodeSearchable {
     private val data = data?.toEngineData() ?: EngineData.createDefault()
 
@@ -108,9 +106,6 @@ class QuasarEngineActual(
             it.simulate(simContext)
         }
     }
-
-    //Interface :: (EngineApi)
-    override fun getEngineHooks(): EngineHooks = engineHooks!!
 
     override fun generateId() = data.currentRuntimeId++
 
