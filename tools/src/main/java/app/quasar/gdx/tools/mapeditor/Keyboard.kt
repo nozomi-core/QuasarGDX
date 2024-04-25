@@ -10,7 +10,7 @@ class Keyboard: GameNodeUnit() {
     private lateinit var logger: EngineLogger
     private lateinit var inputFocus: InputFocus
 
-    override fun onSetup(context: SetupContext, data: Unit?) {
+    override fun onSetup(context: SetupContext, data: Unit) {
         logger = context.engine.requireFindByInterface(EngineLogger::class)
         inputFocus = context.engine.requireFindByInterface(InputFocus::class)
 

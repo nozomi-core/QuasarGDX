@@ -1,6 +1,7 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.qgl.engine.core.EngineApi
+import app.quasar.qgl.scripts.WorldBoundScript
 import app.quasar.qgl.tiles.GameWorld
 import kotlin.reflect.KClass
 
@@ -11,7 +12,7 @@ class EditWorld: GameWorld() {
             Player::class,
             EditMap::class,
             ConsolePrinterScript::class,
-            AudioScript::class
+            WorldBoundScript::class
         )
     }
 

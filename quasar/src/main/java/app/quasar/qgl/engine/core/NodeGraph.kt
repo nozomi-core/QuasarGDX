@@ -28,7 +28,7 @@ class NodeGraph: NodeSearchable {
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
         checkCastIsInterface(nodeInterface)
-        val first =  nodes.firstOrNull { nodeInterface.java.isAssignableFrom(it.javaClass)}
+        val first =  nodes.firstOrNull { it.isImplemented(nodeInterface) }
         return first as T!!
     }
 
@@ -36,6 +36,18 @@ class NodeGraph: NodeSearchable {
         checkCastIsInterface(nodeInterface)
         val first = nodes.first { it.runtimeId == id && it.isAlive }
         return first as? T?
+    }
+
+    override fun <T : Any> forEachInterface(nodeInterface: KClass<T>, callback: (T) -> Unit) {
+        nodes.forEach { node ->
+            if(node.isImplemented(nodeInterface)) {
+                callback(node as T)
+            }
+        }
+    }
+
+    private fun GameNode<*,*>.isImplemented(nodeInterface: KClass<*>): Boolean {
+        return nodeInterface.java.isAssignableFrom(this.javaClass)
     }
 }
 

@@ -3,11 +3,10 @@ package app.quasar.gdx.ui.main
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.DrawContext
 import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.DrawableApi
 
 class MainMap: GameNode<Unit, Unit>() {
 
-    override fun onDraw(context: DrawContext) {
+    override fun onDraw(context: DrawContext, data: Unit) {
         val draw = context.draw
 
         //Draw map

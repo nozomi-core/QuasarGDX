@@ -3,8 +3,6 @@ package app.quasar.gdx.tools.mapeditor
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.DrawContext
 import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.DrawableApi
-import com.badlogic.gdx.graphics.Color
 
 interface PublicEditMap {
     fun printMessage(msg: String)
@@ -16,7 +14,7 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     private val speedMs = 4f
 
-    override fun onDraw(context: DrawContext) {
+    override fun onDraw(context: DrawContext, data: Unit) {
         val draw = context.draw
 
         //Draw map

@@ -11,7 +11,7 @@ class ConsolePrinterScript: GameNode<Unit, Unit>(), ConsolePrinter {
     private lateinit var inputFocus: InputFocus
 
     override fun onCreate(argument: Unit?) {}
-    override fun onSetup(context: SetupContext, data: Unit?) {
+    override fun onSetup(context: SetupContext, data: Unit) {
         inputFocus = context.engine.requireFindByInterface(InputFocus::class)
     }
 

@@ -153,6 +153,10 @@ class QuasarEngineActual(
         return data.graph.findById(id, nodeInterface)
     }
 
+    override fun <T : Any> forEachInterface(nodeInterface: KClass<T>, callback: (T) -> Unit) {
+        data.graph.forEachInterface(nodeInterface, callback)
+    }
+
     /** Utility and Helper Methods */
 
     private fun checkScriptOrderIntegrity() {

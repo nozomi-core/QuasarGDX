@@ -3,6 +3,8 @@ package app.quasar.qgl.engine.core
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
+typealias SimulationTask<D> = (context: SimContext, self: SelfContext, data: D) -> Unit
+
 abstract class GameNode<D, A> {
     var runtimeId: Long = -1L
         private set
@@ -31,6 +33,7 @@ abstract class GameNode<D, A> {
     //Node management
     private val childGraph = NodeGraph()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*, *>>, Any?>>()
+    private val simulationTasks = mutableListOf<SimulationTask<D>>()
 
     //Engine
     private val engineApi: EngineApi get() = _engineApi!!
@@ -38,9 +41,9 @@ abstract class GameNode<D, A> {
 
     //Hooks
     abstract fun onCreate(argument: A?): D
-    protected open fun onSetup(context: SetupContext, data: D?) {}
+    protected open fun onSetup(context: SetupContext, data: D) {}
     protected open fun onSimulate(context: SimContext, self: SelfContext, data: D) {}
-    protected open fun onDraw(context: DrawContext){}
+    protected open fun onDraw(context: DrawContext, data: D){}
     protected open fun onDestroy() {}
 
     private val selfContext = object: SelfContext {
@@ -61,6 +64,14 @@ abstract class GameNode<D, A> {
         override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
             return childGraph.findById(id, nodeInterface)
         }
+
+        override fun <T : Any> forEachInterface(nodeInterface: KClass<T>, callback: (T) -> Unit) {
+            return childGraph.forEachInterface(nodeInterface, callback)
+        }
+    }
+
+    protected fun simulationTask(callback: SimulationTask<D>) {
+        simulationTasks.add(callback)
     }
 
     /** Engine Module */
@@ -70,7 +81,7 @@ abstract class GameNode<D, A> {
         this.runtimeId = engineApiAdmin.generateId()
         this._engineApi?.setCurrentNodeRunning(this)
         _data = onCreate(argument as? A)
-        onSetup(SetupContext(engine = engineApi), _data)
+        onSetup(SetupContext(engine = engineApi), _data!!)
         doCreationStep()
     }
 
@@ -83,12 +94,15 @@ abstract class GameNode<D, A> {
 
     internal fun draw(context: DrawContext) {
         this._engineApi?.setCurrentNodeRunning(this)
-        onDraw(context)
+        onDraw(context, _data!!)
     }
 
     /** Engine Steps */
 
     private fun doSimulationStep(context: SimContext) {
+        simulationTasks.forEach { it(context, selfContext, _data!!) }
+        simulationTasks.clear()
+
         onSimulate(context, selfContext, _data!!)
         if(!isObjectedMarkedForDestruction) {
             childGraph.forEach {

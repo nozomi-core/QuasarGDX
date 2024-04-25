@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
+import kotlin.random.Random
 
 class Player: GameNode<Unit, Unit>(), GameOverlay {
 
@@ -17,7 +18,7 @@ class Player: GameNode<Unit, Unit>(), GameOverlay {
 
     override fun onCreate(argument: Unit?) {}
 
-    override fun onSetup(context: SetupContext, data: Unit?) {
+    override fun onSetup(context: SetupContext, data: Unit) {
         inputFocus = context.engine.requireFindByInterface(InputFocus::class)
         inputFocus.setDefault(this)
     }
@@ -53,13 +54,22 @@ class Player: GameNode<Unit, Unit>(), GameOverlay {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             renderPriority--
         }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            val random = Random(System.currentTimeMillis())
+            val speed = random.nextFloat()
+
+            MissileScript.create(engine, MissileArg(position, speed))
+        }
+
+
         if(Gdx.input.isKeyPressed(Input.Keys.I)) {
             val printer = engine.requireFindByInterface(ConsolePrinter::class)
             printer.takeOverInput()
         }
     }
 
-    override fun onDraw(context: DrawContext) {
+    override fun onDraw(context: DrawContext, data: Unit) {
         val draw = context.draw
 
         draw.batchWith { api ->

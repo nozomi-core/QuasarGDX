@@ -13,7 +13,7 @@ class AudioScript: GameNodeUnit() {
 
     private var music: Music? = null
 
-    override fun onSetup(context: SetupContext, data: Unit?) {
+    override fun onSetup(context: SetupContext, data: Unit) {
         playNextTrack()
     }
 
