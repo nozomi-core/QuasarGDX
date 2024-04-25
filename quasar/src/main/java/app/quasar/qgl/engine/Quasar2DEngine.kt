@@ -22,7 +22,7 @@ class Quasar2DEngine(
     private val engineApi: QuasarEngine = QuasarEngineActual(
         data = null,
         drawContext = DrawContext(drawableApi, CameraApiActual(engineHooks)),
-        onExit = this::onExit,
+        onExit = {},
         rootScripts = QuasarRootScripts.scripts
     )
 
@@ -45,10 +45,6 @@ class Quasar2DEngine(
         gameOverlay = overlay.createInstance().apply {
             onCreate()
         }
-    }
-
-    private fun onExit(engine: EngineDeserialized) {
-
     }
 
     fun render() {
