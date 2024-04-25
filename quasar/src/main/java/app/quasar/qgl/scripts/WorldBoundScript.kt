@@ -1,6 +1,7 @@
 package app.quasar.qgl.scripts
 
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.engine.core.interfaces.WorldBounded
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 

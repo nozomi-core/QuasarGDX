@@ -2,6 +2,8 @@ package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.engine.core.interfaces.WorldBounded
+import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.math.Vector3
 
 class MissileScript: GameNode<MissileData, MissileArg>(), WorldBounded, WorldPosition {

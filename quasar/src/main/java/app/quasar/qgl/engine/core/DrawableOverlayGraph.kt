@@ -1,5 +1,7 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.core.interfaces.GameOverlay
+
 class DrawableOverlayGraph(nodeGraph: NodeGraph): GraphChangedListener {
 
     private val overlayCalls = mutableListOf<GameOverlay>()

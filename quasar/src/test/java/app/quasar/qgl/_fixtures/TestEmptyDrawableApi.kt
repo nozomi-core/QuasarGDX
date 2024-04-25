@@ -1,5 +1,6 @@
 package app.quasar.qgl._fixtures
 
+import app.quasar.qgl.engine.core.CameraApi
 import app.quasar.qgl.engine.core.DrawContext
 import app.quasar.qgl.engine.core.DrawableApi
 import app.quasar.qgl.engine.core.TileId
@@ -12,6 +13,10 @@ class TestEmptyDrawableApi: DrawableApi {
     override fun batchWith(callback: (SpriteApi) -> Unit) {}
 }
 
+class TestEmptyCameraApi: CameraApi {
+    override fun setCamera(x: Float, y: Float) {}
+}
+
 object TestDrawContext {
-    fun create() = DrawContext(TestEmptyDrawableApi())
+    fun create() = DrawContext(TestEmptyDrawableApi(), TestEmptyCameraApi())
 }

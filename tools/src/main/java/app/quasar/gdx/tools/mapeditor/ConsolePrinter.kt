@@ -2,17 +2,19 @@ package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.scripts.EngineLogger
-import app.quasar.qgl.scripts.InputFocus
+import app.quasar.qgl.scripts.InputNode
+import app.quasar.qgl.scripts.InputStack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputAdapter
 
-class ConsolePrinterScript: GameNode<Unit, Unit>(), ConsolePrinter {
+class ConsolePrinterScript: GameNode<Unit, Unit>(), ConsolePrinter, InputNode {
 
-    private lateinit var inputFocus: InputFocus
+    private lateinit var inputFocus: InputStack
 
     override fun onCreate(argument: Unit?) {}
     override fun onSetup(context: SetupContext, data: Unit) {
-        inputFocus = context.engine.requireFindByInterface(InputFocus::class)
+        inputFocus = context.engine.requireFindByInterface(InputStack::class)
     }
 
     override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
@@ -26,7 +28,7 @@ class ConsolePrinterScript: GameNode<Unit, Unit>(), ConsolePrinter {
                 inputFocus.popInput(this)
             }
 
-            if(Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+            if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
                 engine.createGameNode(Keyboard::class)
             }
         }
@@ -35,6 +37,8 @@ class ConsolePrinterScript: GameNode<Unit, Unit>(), ConsolePrinter {
     override fun takeOverInput() {
         inputFocus.pushInput(this)
     }
+
+    override fun getInputAdapter(): InputAdapter? = null
 }
 
 interface ConsolePrinter {

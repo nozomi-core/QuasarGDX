@@ -9,7 +9,7 @@ import org.junit.Test
 class QuasarEngineTestFindAndCreate {
 
     private fun createEngine(): QuasarEngine = QuasarEngineActual(
-        TestDrawContext.create(),
+        drawContext = TestDrawContext.create(),
         onExit = {},
         data = null,
         rootScripts = listOf()

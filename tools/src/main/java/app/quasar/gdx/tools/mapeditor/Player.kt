@@ -2,24 +2,27 @@ package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.scripts.InputFocus
+import app.quasar.qgl.engine.core.interfaces.GameOverlay
+import app.quasar.qgl.scripts.InputNode
+import app.quasar.qgl.scripts.InputStack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import kotlin.random.Random
 
-class Player: GameNode<Unit, Unit>(), GameOverlay {
+class Player: GameNode<Unit, Unit>(), GameOverlay, InputNode {
 
     private var position = Vector3(0f,0f,0f)
     private var rotate: Float = 0f
 
-    private lateinit var inputFocus: InputFocus
+    private lateinit var inputFocus: InputStack
 
     override fun onCreate(argument: Unit?) {}
 
     override fun onSetup(context: SetupContext, data: Unit) {
-        inputFocus = context.engine.requireFindByInterface(InputFocus::class)
+        inputFocus = context.engine.requireFindByInterface(InputStack::class)
         inputFocus.setDefault(this)
     }
 
@@ -94,4 +97,6 @@ class Player: GameNode<Unit, Unit>(), GameOverlay {
         const val PLAYER_SPEED = 50f
         const val ROTATE_SPEED = 100f
     }
+
+    override fun getInputAdapter(): InputAdapter? = null
 }

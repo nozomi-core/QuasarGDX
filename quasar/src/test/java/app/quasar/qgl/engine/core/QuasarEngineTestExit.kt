@@ -12,7 +12,7 @@ class QuasarEngineExitTest {
         var engineData: EngineDeserialized? = null
 
         val engine = QuasarEngineActual(
-            TestDrawContext.create(),
+            drawContext = TestDrawContext.create(),
             onExit = {
                 engineData = it
             },
@@ -31,7 +31,7 @@ class QuasarEngineExitTest {
         var engineData: EngineDeserialized? = null
 
         val engine = QuasarEngineActual(
-            TestDrawContext.create(),
+            drawContext = TestDrawContext.create(),
             onExit = {
                 engineData = it
             },

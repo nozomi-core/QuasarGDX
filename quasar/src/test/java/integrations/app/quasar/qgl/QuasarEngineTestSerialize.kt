@@ -17,7 +17,7 @@ class QuasarEngineTestSerialize {
         var engineData: EngineDeserialized? = null
 
         val quasarEngine = QuasarEngineActual(
-            TestDrawContext.create(),
+            drawContext = TestDrawContext.create(),
             onExit = {
                 engineData = it
             },
