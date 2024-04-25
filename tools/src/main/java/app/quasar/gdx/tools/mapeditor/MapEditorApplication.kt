@@ -27,7 +27,7 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
 
     private val config by lazy {
         QuasarEngine2DConfig(
-            texture = Texture(CoreAssets.TILE_SET),
+            texture = Texture(CoreAssets.Sprites.TILE_SET),
             spriteBatch = SpriteBatch(),
             tileset = CoreTileset(),
             layout = TileSheetLayout(tileSize = 16)

@@ -30,7 +30,7 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
 
     private val config by lazy {
         QuasarEngine2DConfig(
-            texture = Texture(CoreAssets.TILE_SET),
+            texture = Texture(CoreAssets.Sprites.TILE_SET),
             spriteBatch = SpriteBatch(),
             tileset = CoreTileset(),
             layout = TileSheetLayout(tileSize = 16)
@@ -43,7 +43,6 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
         override fun useOverlayCamera() = overlayCamera
         override fun useOverlayViewport() = overlayViewport
     }
-
 
     override fun show() {
         engine2D = Quasar2DEngine(runtime, config, engineCallbacks).apply {

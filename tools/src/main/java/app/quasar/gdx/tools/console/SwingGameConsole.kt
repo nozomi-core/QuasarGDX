@@ -25,6 +25,8 @@ class SwingGameConsole(engineApi: QuasarEngine) {
             val panel = JPanel(BorderLayout())
 
             setSize(800, 1200)
+            setLocation(100,100)
+
             defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 
             contentPane.add(panel)
