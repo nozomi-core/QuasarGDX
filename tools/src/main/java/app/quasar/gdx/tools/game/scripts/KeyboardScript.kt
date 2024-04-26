@@ -1,4 +1,4 @@
-package app.quasar.gdx.tools.scripts
+package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.scripts.ConsoleLog
@@ -8,7 +8,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 
-class KeyboardScript: GameNodeUnit(), InputNode {
+interface Keyboard: InputNode
+
+class KeyboardScript: GameNodeUnit(), Keyboard {
     private lateinit var logger: ConsoleLog
     private lateinit var inputFocus: InputStack
 
@@ -53,5 +55,5 @@ class KeyboardScript: GameNodeUnit(), InputNode {
         inputFocus.popInput(this)
     }
 
-    override fun getInputAdapter(): InputAdapter? = inputAdapter
+    override fun getInputAdapter(): InputAdapter = inputAdapter
 }

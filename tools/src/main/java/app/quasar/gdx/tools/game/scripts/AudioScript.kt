@@ -1,4 +1,4 @@
-package app.quasar.gdx.tools.scripts
+package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.CoreAssets
 import app.quasar.qgl.engine.core.GameNodeUnit

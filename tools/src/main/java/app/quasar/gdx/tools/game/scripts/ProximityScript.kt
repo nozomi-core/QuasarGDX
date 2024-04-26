@@ -1,11 +1,13 @@
-package app.quasar.gdx.tools.scripts
+package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.math.Vector3
 
-class ProximityScript: GameNodeUnit(), WorldPosition {
+interface Proximity: WorldPosition
+
+class ProximityScript: GameNodeUnit(), Proximity {
 
     private val position = Vector3(64f, 64f, 0f)
     private var isActive = false

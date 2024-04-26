@@ -1,4 +1,4 @@
-package app.quasar.gdx.tools.scripts
+package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.*
@@ -6,7 +6,9 @@ import app.quasar.qgl.engine.core.interfaces.WorldBounded
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.math.Vector3
 
-class MissileScript: GameNode<MissileData>(), WorldBounded, WorldPosition {
+interface Missile: WorldPosition, WorldBounded
+
+class MissileScript: GameNode<MissileData>(), Missile {
 
     override fun onCreate(input: NodeInput): MissileData {
         return input.map<MissileInput, MissileData> { arg ->

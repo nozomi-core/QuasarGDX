@@ -1,4 +1,4 @@
-package app.quasar.gdx.tools.scripts
+package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.scripts.ConsoleLog
@@ -8,10 +8,11 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 
-interface ConsolePrinter {
+interface ConsolePrinter: InputNode {
     fun takeOverInput()
 }
-class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter, InputNode {
+
+class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter {
 
     private lateinit var inputFocus: InputStack
 
