@@ -5,12 +5,12 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngineActual(
-    data: EngineDeserialized?,
+    deserialised: EngineDeserialized?,
     private val drawContext: DrawContext,
     private val frameworkScripts: List<KClass<*>>,
     private val onExit: (EngineDeserialized) -> Unit,
 ): QuasarEngine, NodeSearchable {
-    private val data = data?.toEngineData() ?: EngineData.createDefault()
+    private val data = deserialised?.toEngineData() ?: EngineData.createDefault()
 
     //Engine accounting variables
     private val destructionQueue = mutableListOf<GameNode<*>>()
@@ -18,7 +18,6 @@ class QuasarEngineActual(
 
     private var isRunning = true
     private var engineMarkedToExit = false
-    private val clock = EngineClock()
 
     private val drawableNodes = DrawableNodeGraph(this.data.graph)
     private val overlayNodes = DrawableOverlayGraph(this.data.graph)
@@ -26,7 +25,7 @@ class QuasarEngineActual(
     //Contexts
     private val simContext = SimContext(
         engine = this,
-        clock = clock
+        clock = this.data.clock
     )
 
     /** Interface :: (QuasarEngine) */
@@ -35,7 +34,10 @@ class QuasarEngineActual(
     }
 
     override fun simulate(deltaTime: Float) {
-        clock.frameDeltaTime = deltaTime
+        data.clock.frameDeltaTime = deltaTime
+        data.clock.tick()
+
+
         if(!isRunning) {
             return
         }

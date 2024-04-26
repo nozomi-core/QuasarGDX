@@ -11,7 +11,8 @@ class EngineDeserialized(
         return EngineData(
             currentRuntimeId = currentRuntimeId,
             coreScripts = coreScripts.toMutableList(),
-            graph = graph
+            graph = graph,
+            clock = EngineClock()
         )
     }
 }

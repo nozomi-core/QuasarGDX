@@ -20,7 +20,7 @@ class Quasar2DEngine(
     private val drawableApi = config.createDrawApi()
 
     private val engineApi: QuasarEngine = QuasarEngineActual(
-        data = null,
+        deserialised = null,
         drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks)),
         onExit = {},
         frameworkScripts = QuasarCoreScripts.scripts

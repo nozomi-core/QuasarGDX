@@ -45,6 +45,7 @@ class PlayerScript: GameNode<PlayerData>(), Player {
 
     private fun onHandleInput(data: PlayerData, clock: EngineClock, engine: EngineApi) {
         // Move the camera based on input events
+
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             data.position.x += clock.multiply(-PLAYER_SPEED)
         }

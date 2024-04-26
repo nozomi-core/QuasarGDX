@@ -19,8 +19,10 @@ class ProximityScript: GameNodeUnit(), Proximity {
     }
 
     override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
-        val playerPosition = player.query(Vector3())
-        isActive = playerPosition.dst(position) < 32f
+        if(context.clock.tick32) {
+            val playerPosition = player.query(Vector3())
+            isActive = playerPosition.dst(position) < 32f
+        }
     }
 
     override fun onDraw(context: DrawContext, data: Unit) {
