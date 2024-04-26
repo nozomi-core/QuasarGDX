@@ -17,7 +17,7 @@ interface WorldTime {
 }
 
 @EngineScript(ScriptTypes.WORLD_TIME)
-class WorldTimeScript: RootNode<WorldTimeData>(), WorldTime {
+class WorldTimeScript: GameNode<WorldTimeData>(), WorldTime {
 
     //Nodes
     @EngineRef(NodeTypes.ENGINE_LOGGER)

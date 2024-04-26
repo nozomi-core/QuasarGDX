@@ -126,10 +126,10 @@ class QuasarEngineActual(
         data.coreScripts = mutableListOf()
         data.coreScripts.addAll(mergeAllScripts)
 
-        //Check if the script is a root class and call rootCreated in ca
+        //If node is a CORE node, we can run data after the initial core is created
         data.graph.forEach {
-            if (it is RootNode) {
-                it.doRootCreated()
+            if (it is CoreNode) {
+                it.onCoreCreated()
             }
         }
     }
@@ -155,8 +155,8 @@ class QuasarEngineActual(
 
     private fun checkScriptOrderIntegrity() {
         data.graph.forEach { currentNode ->
-            if(currentNode is RootNode) {
-                val shouldBeBefore = currentNode.shouldRunBefore()
+            if(currentNode is CoreNode) {
+                val shouldBeBefore = currentNode.getShouldRunBefore()
                 val thisNodeIndex = data.graph.indexOf(currentNode)
                 shouldBeBefore.forEach { dependClass ->
                     val dependIndex = data.graph.indexOf(data.graph.first { it::class == dependClass })

@@ -23,7 +23,7 @@ class Quasar2DEngine(
         data = null,
         drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks)),
         onExit = {},
-        rootScripts = QuasarCoreScripts.scripts
+        frameworkScripts = QuasarCoreScripts.scripts
     )
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
