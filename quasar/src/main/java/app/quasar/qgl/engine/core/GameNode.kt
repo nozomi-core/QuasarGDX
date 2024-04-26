@@ -10,12 +10,12 @@ abstract class GameNode<D> {
     var runtimeId: Long = -1L
         private set
 
-    private var parentNode:     GameNode<*>? = null
-    val parentNodeId:           Long? get() = parentNode?.runtimeId
+    private var parentNode: GameNode<*>? = null
+    val parentNodeId: Long? get() = parentNode?.runtimeId
 
     //Data
-    private var _data:      D? = null
-    val dataForInterface:   D get() {
+    private var _data: D? = null
+    protected val dataForInterface: D get() {
         return _data!!
     }
 
@@ -40,7 +40,7 @@ abstract class GameNode<D> {
     private var _engineApi: QuasarEngine? = null
 
     //Hooks
-    abstract fun onCreate(input: NodeInput): D
+    protected abstract fun onCreate(input: NodeInput): D
     protected open fun onSetup(context: SetupContext, data: D) {}
     protected open fun onSimulate(context: SimContext, self: SelfContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D){}
@@ -97,6 +97,8 @@ abstract class GameNode<D> {
     internal fun draw(context: DrawContext) {
         onDraw(context, _data!!)
     }
+
+    internal fun getDataForBinary() = _data
 
     /** Engine Steps */
 

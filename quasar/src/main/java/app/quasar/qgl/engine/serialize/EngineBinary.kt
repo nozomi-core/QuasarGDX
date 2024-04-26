@@ -45,7 +45,7 @@ class EngineBinary {
             }
 
             //Serialize Data
-            val nodeData = node.dataForInterface
+            val nodeData = node.getDataForBinary()
 
             if(nodeData != null) {
                 val mapper = definitions.findMapperForClass(nodeData::class) as QGLMapper<Any>

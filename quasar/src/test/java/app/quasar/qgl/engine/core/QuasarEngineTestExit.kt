@@ -17,7 +17,7 @@ class QuasarEngineExitTest {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf()
+            frameworkScripts = listOf()
         )
 
         engine.createGameNode(BasicScript::class, Unit)
@@ -36,7 +36,7 @@ class QuasarEngineExitTest {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf()
+            frameworkScripts = listOf()
         )
 
         engine.createGameNode(BasicScript::class, Unit)
@@ -49,8 +49,8 @@ class QuasarEngineExitTest {
     }
 }
 
-class BasicScript: GameNode<BasicData, Unit>() {
-    override fun onCreate(argument: Unit?): BasicData {
+class BasicScript: GameNode<BasicData>() {
+    override fun onCreate(input: NodeInput): BasicData {
         return BasicData("Milo Ramen", 26)
     }
 }

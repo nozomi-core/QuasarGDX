@@ -6,6 +6,7 @@ import app.quasar.qgl.serialize.*
 import app.quasar.qgl._fixtures.TestEmptyDrawableApi
 import app.quasar.qgl.engine.core.EngineDeserialized
 import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.engine.core.NodeInput
 import app.quasar.qgl.engine.core.QuasarEngineActual
 import org.junit.Assert
 import org.junit.Test
@@ -22,7 +23,7 @@ class QuasarEngineTestSerialize {
                 engineData = it
             },
             data = null,
-            rootScripts = listOf()
+            frameworkScripts = listOf()
         )
 
         quasarEngine.createGameNode(SerialScript::class)
@@ -61,8 +62,8 @@ class QuasarEngineTestSerialize {
 }
 
 @QGLClass(64)
-class SerialScript: GameNode<SerialData, Unit>() {
-    override fun onCreate(argument: Unit?): SerialData {
+class SerialScript: GameNode<SerialData>() {
+    override fun onCreate(input: NodeInput): SerialData {
         return SerialData(
             title = "BinaryData",
             count = 88

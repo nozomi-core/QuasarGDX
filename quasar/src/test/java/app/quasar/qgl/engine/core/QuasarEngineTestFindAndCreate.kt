@@ -12,7 +12,7 @@ class QuasarEngineTestFindAndCreate {
         drawContext = TestDrawContext.create(),
         onExit = {},
         data = null,
-        rootScripts = listOf()
+        frameworkScripts = listOf()
     )
 
     @Test
@@ -61,8 +61,8 @@ class QuasarEngineTestFindAndCreate {
 
 interface Find
 
-class FindScript: GameNode<FindData, Unit>(), Find {
-    override fun onCreate(argument: Unit?): FindData {
+class FindScript: GameNode<FindData>(), Find {
+    override fun onCreate(input: NodeInput): FindData {
         return FindData("popcorn")
     }
 
