@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 
 class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapter() {
@@ -49,8 +50,8 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
         worldCamera = OrthographicCamera()
         overlayCamera = OrthographicCamera()
         worldViewport = ExtendViewport(320f, 180f, worldCamera)
-        overlayViewport = FitViewport(400f, 400f, overlayCamera)
-        overlayCamera.translate(200f, 200f)
+        overlayViewport = ExtendViewport(320f, 180f, overlayCamera)
+        overlayCamera.translate(320f/2, 180f/2)
     }
 
     override fun resize(width: Int, height: Int) {

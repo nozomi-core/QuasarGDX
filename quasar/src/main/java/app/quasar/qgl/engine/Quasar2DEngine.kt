@@ -8,6 +8,8 @@ import app.quasar.qgl.QuasarCoreScripts
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.Disposable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -19,9 +21,11 @@ class Quasar2DEngine(
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
+    private val drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks), ShapeRenderer())
+
     private val engineApi: QuasarEngine = QuasarEngineActual(
         deserialised = null,
-        drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks)),
+        drawContext = drawContext,
         onExit = {},
         frameworkScripts = QuasarCoreScripts.scripts
     )
@@ -55,6 +59,7 @@ class Quasar2DEngine(
         uiHooks.useOverlayViewport().apply()
         uiHooks.useOverlayCamera().update()
         spriteBatch.projectionMatrix = uiHooks.useOverlayCamera().combined
+        drawContext.shapeRenderer.projectionMatrix = uiHooks.useOverlayCamera().combined
         spriteBatch.begin()
         engineApi.drawOverlay()
         spriteBatch.end()

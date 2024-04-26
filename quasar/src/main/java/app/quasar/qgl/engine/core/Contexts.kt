@@ -1,5 +1,7 @@
 package app.quasar.qgl.engine.core
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+
 class SimContext(
     val engine: EngineApi,
     val clock: EngineClock
@@ -11,5 +13,6 @@ class SetupContext(
 
 class DrawContext(
     val draw: DrawableApi,
-    val camera: CameraApi
+    val camera: CameraApi,
+    val shapeRenderer: ShapeRenderer
 )
