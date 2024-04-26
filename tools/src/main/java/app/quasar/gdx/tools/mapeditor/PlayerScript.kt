@@ -51,10 +51,10 @@ class PlayerScript: GameNodeUnit(), Player {
             position.y += clock.multiply(-PLAYER_SPEED)
         }
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            renderPriority++
+            zDrawIndex++
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            renderPriority--
+            zDrawIndex--
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {

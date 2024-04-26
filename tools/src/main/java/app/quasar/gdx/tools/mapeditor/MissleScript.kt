@@ -32,7 +32,7 @@ class MissileScript: GameNode<MissileData>(), WorldBounded, WorldPosition {
         }
     }
 
-    override fun query(input: Vector3): Vector3 = input.set(requireDataForInterface.position)
+    override fun query(input: Vector3): Vector3 = input.set(dataForInterface.position)
 
 }
 

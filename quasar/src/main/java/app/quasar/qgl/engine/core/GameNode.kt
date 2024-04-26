@@ -10,17 +10,16 @@ abstract class GameNode<D> {
     var runtimeId: Long = -1L
         private set
 
-    private var parentNode: GameNode<*>? = null
-    val parentNodeId: Long?
-        get() = parentNode?.runtimeId
+    private var parentNode:     GameNode<*>? = null
+    val parentNodeId:           Long? get() = parentNode?.runtimeId
 
     //Data
-    private var _data: D? = null
-    val requireDataForInterface: D get() {
-        _engineApi?.checkNodeIsNotRunning(this)
+    private var _data:      D? = null
+    val dataForInterface:   D get() {
         return _data!!
     }
-    var renderPriority: Float = 0f
+
+    var zDrawIndex: Int = 0
         protected set(value) {
             _engineApi?.notifyNodeChanged()
             field = value
@@ -156,12 +155,16 @@ abstract class GameNode<D> {
         }
     }
 
+    override fun hashCode(): Int {
+        return runtimeId.hashCode()
+    }
+
     override fun toString(): String {
         return "GameNode@$runtimeId"
     }
 }
 
-class NodeInput(val value: Any?) {
+class NodeInput internal constructor(val value: Any?) {
     fun <I,O> map(mapper: (I) -> O): O {
         return mapper(value as I)
     }

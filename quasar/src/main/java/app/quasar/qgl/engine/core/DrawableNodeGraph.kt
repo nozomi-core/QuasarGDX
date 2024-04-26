@@ -6,7 +6,7 @@ package app.quasar.qgl.engine.core
  */
 class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
 
-    private val comparable = compareBy<GameNode<*>> { it.renderPriority }
+    private val comparable = compareBy<GameNode<*>> { it.zDrawIndex }
     private var markNodeGraphChanged = false
 
     init {
