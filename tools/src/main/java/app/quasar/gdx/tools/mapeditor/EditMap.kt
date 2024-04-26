@@ -2,13 +2,13 @@ package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.DrawContext
-import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.engine.core.GameNodeUnit
 
 interface PublicEditMap {
     fun printMessage(msg: String)
 }
 
-class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
+class EditMap: GameNodeUnit(), PublicEditMap {
 
     private var positionX = 0f
 
@@ -41,9 +41,5 @@ class EditMap: GameNode<Unit, Unit>(), PublicEditMap {
 
     override fun printMessage(msg: String) {
         println("Using public message interface: $msg")
-    }
-
-    override fun onCreate(argument: Unit?) {
-
     }
 }

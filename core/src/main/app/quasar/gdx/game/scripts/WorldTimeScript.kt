@@ -17,7 +17,7 @@ interface WorldTime {
 }
 
 @EngineScript(ScriptTypes.WORLD_TIME)
-class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
+class WorldTimeScript: RootNode<WorldTimeData>(), WorldTime {
 
     //Nodes
     @EngineRef(NodeTypes.ENGINE_LOGGER)
@@ -31,15 +31,13 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
         logger = context.engine.requireFindByInterface(EngineLogger::class)
     }
 
-    override fun onCreate(argument: WorldTimeArg?): WorldTimeData {
-        return WorldTimeData(
-            gameSpeed = argument?.gameSpeed ?: WorldTimeArg.DEFAULT_SPEED,
-            gameTime = if(argument?.startTime != null) {
-                MutableDateTime(argument.startTime)
-            } else {
-                MutableDateTime.now()
-            }
-        )
+    override fun onCreate(input: NodeInput): WorldTimeData {
+        return input.map<WorldTimeInput, WorldTimeData> { arg ->
+            WorldTimeData(
+                gameSpeed = arg.gameSpeed,
+                gameTime = MutableDateTime(arg.startTime)
+            )
+        }
     }
 
     override fun onSimulate(context: SimContext, self: SelfContext, data: WorldTimeData) {
@@ -57,12 +55,12 @@ class WorldTimeScript: RootNode<WorldTimeData, WorldTimeArg>(), WorldTime {
 
 data class WorldTimeData(
     val gameTime: MutableDateTime,
-    var gameSpeed: Float = WorldTimeArg.DEFAULT_SPEED
+    var gameSpeed: Float = WorldTimeInput.DEFAULT_SPEED
 )
 
 //ARGUMENT
 
-data class WorldTimeArg(
+data class WorldTimeInput(
     val gameSpeed: Float,
     val startTime: Long
 ) {

@@ -14,13 +14,13 @@ class DrawableOverlayGraph(nodeGraph: NodeGraph): GraphChangedListener {
         overlayCalls.forEach { it.onDrawOverlay(context) }
     }
 
-    override fun onAdded(node: GameNode<*, *>) {
+    override fun onAdded(node: GameNode<*>) {
         if(node is GameOverlay) {
             overlayCalls.add(node)
         }
     }
 
-    override fun onRemoved(node: GameNode<*, *>) {
+    override fun onRemoved(node: GameNode<*>) {
         if(node is GameOverlay) {
             overlayCalls.remove(node)
         }

@@ -3,8 +3,9 @@ package app.quasar.gdx.ui.main
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.DrawContext
 import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.engine.core.GameNodeUnit
 
-class MainMap: GameNode<Unit, Unit>() {
+class MainMap: GameNodeUnit() {
 
     override fun onDraw(context: DrawContext, data: Unit) {
         val draw = context.draw
@@ -22,9 +23,5 @@ class MainMap: GameNode<Unit, Unit>() {
                 }
             }
         }
-    }
-
-    override fun onCreate(argument: Unit?) {
-
     }
 }

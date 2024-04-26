@@ -13,8 +13,8 @@ class QuasarEngineActual(
     private val data = data?.toEngineData() ?: EngineData.createDefault()
 
     //Engine accounting variables
-    private val destructionQueue = mutableListOf<GameNode<*, *>>()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*, *>>, Any?>>()
+    private val destructionQueue = mutableListOf<GameNode<*>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*>>, Any?>>()
     private var currentNodeIdRunning = -1L
 
     private var isRunning = true
@@ -62,16 +62,16 @@ class QuasarEngineActual(
         engineMarkedToExit = true
     }
 
-    override fun destroyNode(node: GameNode<*, *>) {
+    override fun destroyNode(node: GameNode<*>) {
         checkNodeIsRootScriptThenThrow(node)
         destructionQueue.add(node)
     }
 
-    override fun setCurrentNodeRunning(node: GameNode<*, *>) {
+    override fun setCurrentNodeRunning(node: GameNode<*>) {
         this.currentNodeIdRunning = node.runtimeId
     }
 
-    override fun checkNodeIsNotRunning(node: GameNode<*, *>) {
+    override fun checkNodeIsNotRunning(node: GameNode<*>) {
         if (isRunning && currentNodeIdRunning == node.runtimeId) {
             throw IllegalAccessException("Can not perform this operation while current node running")
         }
@@ -115,12 +115,12 @@ class QuasarEngineActual(
 
     override fun generateId() = data.currentRuntimeId++
 
-    override fun <T : GameNode<*, *>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
+    override fun <T : GameNode<*>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
         checkNodeIsRootScriptThenThrow(nodeScript)
         creationQueue.add(Pair(nodeScript, argument))
     }
 
-    override fun <T : GameNode<*, *>> createRootScripts(gameScripts: List<KClass<T>>) {
+    override fun <T : GameNode<*>> createRootScripts(gameScripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
         val mergeAllScripts = mutableListOf<KClass<*>>().apply {
             addAll(rootScripts)
@@ -179,7 +179,7 @@ class QuasarEngineActual(
         }
     }
 
-    private fun checkNodeIsRootScriptThenThrow(node: GameNode<*, *>) {
+    private fun checkNodeIsRootScriptThenThrow(node: GameNode<*>) {
         checkNodeIsRootScriptThenThrow(node::class)
     }
 

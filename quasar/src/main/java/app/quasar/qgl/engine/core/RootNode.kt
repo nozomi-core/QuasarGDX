@@ -2,7 +2,7 @@ package app.quasar.qgl.engine.core
 
 import kotlin.reflect.KClass
 
-abstract class RootNode<D, A>: GameNode<D, A>() {
+abstract class RootNode<D>: GameNode<D>() {
 
     open fun shouldRunBefore(): List<KClass<*>> = emptyList()
 

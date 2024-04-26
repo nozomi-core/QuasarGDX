@@ -8,11 +8,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 
-class ConsolePrinterScript: GameNode<Unit, Unit>(), ConsolePrinter, InputNode {
+class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter, InputNode {
 
     private lateinit var inputFocus: InputStack
 
-    override fun onCreate(argument: Unit?) {}
     override fun onSetup(context: SetupContext, data: Unit) {
         inputFocus = context.engine.requireFindByInterface(InputStack::class)
     }

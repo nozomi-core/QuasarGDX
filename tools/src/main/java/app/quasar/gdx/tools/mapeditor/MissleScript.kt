@@ -6,10 +6,12 @@ import app.quasar.qgl.engine.core.interfaces.WorldBounded
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.math.Vector3
 
-class MissileScript: GameNode<MissileData, MissileArg>(), WorldBounded, WorldPosition {
+class MissileScript: GameNode<MissileData>(), WorldBounded, WorldPosition {
 
-    override fun onCreate(argument: MissileArg?): MissileData {
-        return MissileData(argument!!.start.cpy(), argument.speed)
+    override fun onCreate(input: NodeInput): MissileData {
+        return input.map<MissileInput, MissileData> { arg ->
+            MissileData(arg.start.cpy(), arg.speed)
+        }
     }
 
     override fun onSimulate(context: SimContext, self: SelfContext, data: MissileData) {
@@ -21,7 +23,7 @@ class MissileScript: GameNode<MissileData, MissileArg>(), WorldBounded, WorldPos
     }
 
     companion object {
-        fun create(engineApi: EngineApi, argument: MissileArg) = engineApi.createGameNode(MissileScript::class, argument)
+        fun create(engineApi: EngineApi, argument: MissileInput) = engineApi.createGameNode(MissileScript::class, argument)
     }
 
     override fun onBoundExceeded() {
@@ -38,7 +40,7 @@ data class MissileData(
     val position: Vector3,
     val speed: Float
 )
-data class MissileArg(
+data class MissileInput(
     val start: Vector3,
     val speed: Float
 )

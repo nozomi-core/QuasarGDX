@@ -13,14 +13,12 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import kotlin.random.Random
 
-class PlayerScript: GameNode<Unit, Unit>(), Player {
+class PlayerScript: GameNodeUnit(), Player {
 
     private var position = Vector3(0f,0f,0f)
     private var rotate: Float = 0f
 
     private lateinit var inputFocus: InputStack
-
-    override fun onCreate(argument: Unit?) {}
 
     override fun onSetup(context: SetupContext, data: Unit) {
         inputFocus = context.engine.requireFindByInterface(InputStack::class)
@@ -63,7 +61,7 @@ class PlayerScript: GameNode<Unit, Unit>(), Player {
             val random = Random(System.currentTimeMillis())
             val speed = random.nextFloat()
 
-            MissileScript.create(engine, MissileArg(position, speed))
+            MissileScript.create(engine, MissileInput(position, speed))
         }
 
 

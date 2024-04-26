@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3
 import kotlin.reflect.KClass
 
 class NodeGraph: NodeSearchable {
-    private val nodes = mutableListOf<GameNode<*, *>>()
+    private val nodes = mutableListOf<GameNode<*>>()
     private val callbacks = mutableSetOf<GraphChangedListener>()
 
     val size: Int get() = nodes.size
@@ -14,19 +14,19 @@ class NodeGraph: NodeSearchable {
         callbacks.add(listener)
     }
 
-    fun remove(node: GameNode<*,*>) {
+    fun remove(node: GameNode<*>) {
         nodes.remove(node)
         callbacks.forEach { it.onRemoved(node) }
     }
 
-    fun add(node: GameNode<*,*>) {
+    fun add(node: GameNode<*>) {
         nodes.add(node)
         callbacks.forEach { it.onAdded(node) }
     }
 
-    fun forEach(consumer: (GameNode<*,*>) -> Unit) = nodes.forEach(consumer)
-    fun first(predicate: (GameNode<*,*>) -> Boolean) = nodes.first(predicate)
-    fun indexOf(node: GameNode<*,*>) = nodes.indexOf(node)
+    fun forEach(consumer: (GameNode<*>) -> Unit) = nodes.forEach(consumer)
+    fun first(predicate: (GameNode<*>) -> Boolean) = nodes.first(predicate)
+    fun indexOf(node: GameNode<*>) = nodes.indexOf(node)
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
         checkCastIsInterface(nodeInterface)
@@ -65,7 +65,7 @@ class NodeGraph: NodeSearchable {
         return result
     }
 
-    private fun GameNode<*,*>.isImplemented(nodeInterface: KClass<*>): Boolean {
+    private fun GameNode<*>.isImplemented(nodeInterface: KClass<*>): Boolean {
         return nodeInterface.java.isAssignableFrom(this.javaClass)
     }
 }
@@ -77,6 +77,6 @@ private fun checkCastIsInterface(kClass: KClass<*>) {
 }
 
 interface GraphChangedListener {
-    fun onAdded(node: GameNode<*,*>)
-    fun onRemoved(node: GameNode<*,*>)
+    fun onAdded(node: GameNode<*>)
+    fun onRemoved(node: GameNode<*>)
 }

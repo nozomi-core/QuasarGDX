@@ -36,7 +36,7 @@ class EngineBinary {
             }
         }
 
-        private fun writeGameNode(node: GameNode<*, *>) {
+        private fun writeGameNode(node: GameNode<*>) {
             qglOut.writeInt(ID_NODE_CLASS_ID, qglGetBinaryClassId(node::class))
 
             qglOut.writeLong(ID_NODE_RUNTIME_ID, node.runtimeId)

@@ -6,26 +6,26 @@ package app.quasar.qgl.engine.core
  */
 class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
 
-    private val comparable = compareBy<GameNode<*,*>> { it.renderPriority }
+    private val comparable = compareBy<GameNode<*>> { it.renderPriority }
     private var markNodeGraphChanged = false
 
     init {
         nodeGraph.addListener(this)
     }
 
-    private val drawableNodes = mutableListOf<GameNode<*,*>>()
+    private val drawableNodes = mutableListOf<GameNode<*>>()
 
-    override fun onAdded(node: GameNode<*, *>) {
+    override fun onAdded(node: GameNode<*>) {
         drawableNodes.add(node)
         notifyNodeChanged()
     }
 
-    override fun onRemoved(node: GameNode<*, *>) {
+    override fun onRemoved(node: GameNode<*>) {
         drawableNodes.remove(node)
         notifyNodeChanged()
     }
 
-    fun forEach(callback: (GameNode<*,*>) -> Unit) {
+    fun forEach(callback: (GameNode<*>) -> Unit) {
         drawableNodes.forEach(callback)
     }
 

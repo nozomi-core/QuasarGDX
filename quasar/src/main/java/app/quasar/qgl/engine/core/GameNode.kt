@@ -6,11 +6,11 @@ import kotlin.reflect.full.createInstance
 
 typealias SimulationTask<D> = (context: SimContext, self: SelfContext, data: D) -> Unit
 
-abstract class GameNode<D, A> {
+abstract class GameNode<D> {
     var runtimeId: Long = -1L
         private set
 
-    private var parentNode: GameNode<*, *>? = null
+    private var parentNode: GameNode<*>? = null
     val parentNodeId: Long?
         get() = parentNode?.runtimeId
 
@@ -33,7 +33,7 @@ abstract class GameNode<D, A> {
 
     //Node management
     private val childGraph = NodeGraph()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*, *>>, Any?>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*>>, Any?>>()
     private val simulationTasks = mutableListOf<SimulationTask<D>>()
 
     //Engine
@@ -41,20 +41,20 @@ abstract class GameNode<D, A> {
     private var _engineApi: QuasarEngine? = null
 
     //Hooks
-    abstract fun onCreate(argument: A?): D
+    abstract fun onCreate(input: NodeInput): D
     protected open fun onSetup(context: SetupContext, data: D) {}
     protected open fun onSimulate(context: SimContext, self: SelfContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D){}
     protected open fun onDestroy() {}
 
     private val selfContext = object: SelfContext {
-        override fun getParent(): GameNode<*, *> = this@GameNode
+        override fun getParent(): GameNode<*> = this@GameNode
 
         override fun destroyNode() {
             isObjectedMarkedForDestruction = true
         }
 
-        override fun <T : GameNode<*, *>> createChild(node: KClass<T>, argument: Any?) {
+        override fun <T : GameNode<*>> createChild(node: KClass<T>, argument: Any?) {
             creationQueue.add(Pair(node, argument))
         }
 
@@ -85,7 +85,7 @@ abstract class GameNode<D, A> {
         this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
         this._engineApi?.setCurrentNodeRunning(this)
-        _data = onCreate(argument as? A)
+        _data = onCreate(NodeInput(argument))
         onSetup(SetupContext(engine = engineApi), _data!!)
         doCreationStep()
     }
@@ -150,7 +150,7 @@ abstract class GameNode<D, A> {
 
     //Java Interface
     override fun equals(other: Any?): Boolean {
-        return when(other is GameNode<*, *>) {
+        return when(other is GameNode<*>) {
             true -> other.runtimeId == this.runtimeId
             false -> false
         }
@@ -158,5 +158,11 @@ abstract class GameNode<D, A> {
 
     override fun toString(): String {
         return "GameNode@$runtimeId"
+    }
+}
+
+class NodeInput(val value: Any?) {
+    fun <I,O> map(mapper: (I) -> O): O {
+        return mapper(value as I)
     }
 }
