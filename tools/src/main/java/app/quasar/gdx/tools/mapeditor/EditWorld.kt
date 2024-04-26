@@ -9,7 +9,7 @@ class EditWorld: GameWorld() {
 
     override fun useRootScripts(): List<KClass<*>> {
         return listOf(
-            Player::class,
+            PlayerScript::class,
             EditMap::class,
             ConsolePrinterScript::class,
             WorldBoundScript::class,

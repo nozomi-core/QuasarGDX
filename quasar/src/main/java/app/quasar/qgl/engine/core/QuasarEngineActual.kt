@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -155,6 +156,10 @@ class QuasarEngineActual(
 
     override fun <T : Any> forEachInterface(nodeInterface: KClass<T>, callback: (T) -> Unit) {
         data.graph.forEachInterface(nodeInterface, callback)
+    }
+
+    override fun <T : Any> getNearby(target: WorldPosition, distance: Float, nodeInterface: KClass<T>): List<T> {
+        return data.graph.getNearby(target, distance, nodeInterface)
     }
 
     /** Utility and Helper Methods */

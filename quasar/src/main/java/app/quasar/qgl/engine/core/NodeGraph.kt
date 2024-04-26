@@ -1,5 +1,7 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import com.badlogic.gdx.math.Vector3
 import kotlin.reflect.KClass
 
 class NodeGraph: NodeSearchable {
@@ -44,6 +46,23 @@ class NodeGraph: NodeSearchable {
                 callback(node as T)
             }
         }
+    }
+
+    override fun <T : Any> getNearby(target: WorldPosition, distance: Float, nodeInterface: KClass<T>): List<T> {
+        val result = mutableListOf<T>()
+        val targetVector = Vector3().apply { target.query(this) }
+        val checkVector = Vector3()
+
+        nodes.forEach { node ->
+            if(node.isImplemented(nodeInterface) && node is WorldPosition) {
+                //check distance
+                node.query(checkVector)
+                if(targetVector.dst(checkVector) < distance) {
+                    result.add(node as T)
+                }
+            }
+        }
+        return result
     }
 
     private fun GameNode<*,*>.isImplemented(nodeInterface: KClass<*>): Boolean {

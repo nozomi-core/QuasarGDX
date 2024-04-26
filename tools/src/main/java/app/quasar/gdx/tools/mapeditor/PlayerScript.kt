@@ -3,6 +3,7 @@ package app.quasar.gdx.tools.mapeditor
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
+import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import app.quasar.qgl.scripts.InputNode
 import app.quasar.qgl.scripts.InputStack
 import com.badlogic.gdx.Gdx
@@ -12,7 +13,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 import kotlin.random.Random
 
-class Player: GameNode<Unit, Unit>(), GameOverlay, InputNode {
+class PlayerScript: GameNode<Unit, Unit>(), Player {
 
     private var position = Vector3(0f,0f,0f)
     private var rotate: Float = 0f
@@ -93,10 +94,17 @@ class Player: GameNode<Unit, Unit>(), GameOverlay, InputNode {
         draw.tileGrid(CoreTiles.TREE, 0,0)
     }
 
+    override fun query(input: Vector3): Vector3 = input.set(position)
+
+
     companion object {
         const val PLAYER_SPEED = 50f
         const val ROTATE_SPEED = 100f
     }
 
     override fun getInputAdapter(): InputAdapter? = null
+}
+
+interface Player: GameOverlay, InputNode, WorldPosition {
+
 }
