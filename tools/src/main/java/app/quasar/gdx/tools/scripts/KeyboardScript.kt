@@ -1,15 +1,15 @@
-package app.quasar.gdx.tools.mapeditor
+package app.quasar.gdx.tools.scripts
 
 import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.scripts.EngineLogger
+import app.quasar.qgl.scripts.ConsoleLog
 import app.quasar.qgl.scripts.InputNode
 import app.quasar.qgl.scripts.InputStack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 
-class Keyboard: GameNodeUnit(), InputNode {
-    private lateinit var logger: EngineLogger
+class KeyboardScript: GameNodeUnit(), InputNode {
+    private lateinit var logger: ConsoleLog
     private lateinit var inputFocus: InputStack
 
     private lateinit var inputAdapter: InputAdapter
@@ -17,7 +17,7 @@ class Keyboard: GameNodeUnit(), InputNode {
     private var stringBuilder = StringBuilder()
 
     override fun onSetup(context: SetupContext, data: Unit) {
-        logger = context.engine.requireFindByInterface(EngineLogger::class)
+        logger = context.engine.requireFindByInterface(ConsoleLog::class)
         inputFocus = context.engine.requireFindByInterface(InputStack::class)
 
         logger.message(this, "KeyBoard.create")

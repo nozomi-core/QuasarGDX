@@ -7,6 +7,13 @@ import app.quasar.qgl.engine.core.SimContext
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
 
+interface InputStack {
+    fun setDefault(node: InputNode)
+    fun pushInput(node: InputNode)
+    fun popInput(node: InputNode)
+    fun withInputFocus(node: InputNode, callback: () -> Unit)
+}
+
 class InputStackScript: GameNodeUnit(), InputStack {
 
     private val provider = NodeProvider<InputNode>()
@@ -33,13 +40,6 @@ class InputStackScript: GameNodeUnit(), InputStack {
         val inputFocus = provider.provide()
         Gdx.input.inputProcessor = inputFocus?.getInputAdapter()
     }
-}
-
-interface InputStack {
-    fun setDefault(node: InputNode)
-    fun pushInput(node: InputNode)
-    fun popInput(node: InputNode)
-    fun withInputFocus(node: InputNode, callback: () -> Unit)
 }
 
 interface InputNode {

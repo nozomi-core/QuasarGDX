@@ -1,13 +1,16 @@
-package app.quasar.gdx.tools.mapeditor
+package app.quasar.gdx.tools.scripts
 
 import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.scripts.EngineLogger
+import app.quasar.qgl.scripts.ConsoleLog
 import app.quasar.qgl.scripts.InputNode
 import app.quasar.qgl.scripts.InputStack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 
+interface ConsolePrinter {
+    fun takeOverInput()
+}
 class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter, InputNode {
 
     private lateinit var inputFocus: InputStack
@@ -21,14 +24,14 @@ class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter, InputNode {
 
         inputFocus.withInputFocus(this) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                val engineLogger = engine.requireFindByInterface(EngineLogger::class)
+                val engineLogger = engine.requireFindByInterface(ConsoleLog::class)
 
                 engineLogger.message(this, "ENTER THE CONSOLE!!")
                 inputFocus.popInput(this)
             }
 
             if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-                engine.createGameNode(Keyboard::class)
+                engine.createGameNode(KeyboardScript::class)
             }
         }
     }
@@ -38,8 +41,4 @@ class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter, InputNode {
     }
 
     override fun getInputAdapter(): InputAdapter? = null
-}
-
-interface ConsolePrinter {
-    fun takeOverInput()
 }

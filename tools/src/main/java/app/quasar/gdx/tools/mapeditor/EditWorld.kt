@@ -1,5 +1,8 @@
 package app.quasar.gdx.tools.mapeditor
 
+import app.quasar.gdx.tools.scripts.ConsolePrinterScript
+import app.quasar.gdx.tools.scripts.PlayerScript
+import app.quasar.gdx.tools.scripts.ProximityScript
 import app.quasar.qgl.engine.core.EngineApi
 import app.quasar.qgl.scripts.WorldBoundScript
 import app.quasar.qgl.tiles.GameWorld

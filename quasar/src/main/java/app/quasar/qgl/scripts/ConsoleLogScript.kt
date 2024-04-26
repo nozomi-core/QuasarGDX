@@ -3,7 +3,14 @@ package app.quasar.qgl.scripts
 import app.quasar.qgl.engine.core.GameNodeUnit
 import kotlin.reflect.KClass
 
-class ConsoleLoggerScript: GameNodeUnit(), EngineLogger {
+interface ConsoleLog {
+    fun message(source: Any, message: String)
+    fun warn(source: Any, message: String)
+    fun send(log: EngineLog)
+    fun addOnLogMessage(callback: LogCallback)
+}
+
+class ConsoleLogScript: GameNodeUnit(), ConsoleLog {
     private val callbacks = mutableListOf<LogCallback>()
 
     override fun send(log: EngineLog) {
@@ -23,13 +30,6 @@ class ConsoleLoggerScript: GameNodeUnit(), EngineLogger {
     override fun warn(source: Any, message: String) {
         send(EngineLog(source = source::class, message = message, level = EngineLogLevel.WARN))
     }
-}
-
-interface EngineLogger {
-    fun message(source: Any, message: String)
-    fun warn(source: Any, message: String)
-    fun send(log: EngineLog)
-    fun addOnLogMessage(callback: LogCallback)
 }
 
 typealias LogCallback = (log: EngineLog) -> Unit

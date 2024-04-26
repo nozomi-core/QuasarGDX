@@ -5,7 +5,7 @@ import app.quasar.gdx.game.logic.doWorldTime
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.serialize.EngineRef
 import app.quasar.qgl.engine.serialize.EngineScript
-import app.quasar.qgl.scripts.EngineLogger
+import app.quasar.qgl.scripts.ConsoleLog
 import app.quasar.qgl.serialize.BinaryObject
 import app.quasar.qgl.serialize.BinaryRecord
 import app.quasar.qgl.serialize.QGLMapper
@@ -21,14 +21,14 @@ class WorldTimeScript: GameNode<WorldTimeData>(), WorldTime {
 
     //Nodes
     @EngineRef(NodeTypes.ENGINE_LOGGER)
-    lateinit var logger: EngineLogger private set
+    lateinit var logger: ConsoleLog private set
 
     //Interface
     override fun getGameMillis() = dataForInterface.gameTime.millis
     override fun getTimeStamp() = ""
 
     override fun onSetup(context: SetupContext, data: WorldTimeData) {
-        logger = context.engine.requireFindByInterface(EngineLogger::class)
+        logger = context.engine.requireFindByInterface(ConsoleLog::class)
     }
 
     override fun onCreate(input: NodeInput): WorldTimeData {

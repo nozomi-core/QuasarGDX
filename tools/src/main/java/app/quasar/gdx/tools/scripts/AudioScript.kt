@@ -1,4 +1,4 @@
-package app.quasar.gdx.tools.mapeditor
+package app.quasar.gdx.tools.scripts
 
 import app.quasar.gdx.CoreAssets
 import app.quasar.qgl.engine.core.GameNodeUnit
