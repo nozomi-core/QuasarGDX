@@ -1,6 +1,7 @@
 package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
+import app.quasar.gdx.tools.canvas
 import app.quasar.gdx.tools.game.data.PlayerData
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
@@ -12,6 +13,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.math.Vector3
 import kotlin.random.Random
 
@@ -93,19 +95,6 @@ class PlayerScript: GameNode<PlayerData>(), Player {
 
     override fun onDrawOverlay(context: DrawContext) {
         val draw = context.draw
-
-        //draw.tileGrid(CoreTiles.GREEN_LIGHT, 0, 0)
-        //draw.tileGrid(CoreTiles.RED_LIGHT, 0, 24)
-        //draw.tileGrid(CoreTiles.RED_LIGHT, 24, 24)
-        //draw.tileGrid(CoreTiles.RED_LIGHT, 24, 0)
-        //draw.tileGrid(CoreTiles.TREE, 0,0)
-
-        with(context.shapeRenderer) {
-            begin(ShapeRenderer.ShapeType.Filled)
-            color = Color.CORAL
-            rect(10f, 10f, 50f, 50f)
-            end()
-        }
     }
 
     override fun query(input: Vector3): Vector3 = input.set(dataForInterface.position)

@@ -1,6 +1,7 @@
 package app.quasar.qgl.engine.core
 
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -57,6 +58,10 @@ class QuasarEngineActual(
 
     override fun drawOverlay() {
         overlayNodes.draw(drawContext)
+    }
+
+    override fun drawShapes(shapeRenderer: ShapeRenderer) {
+        overlayNodes.drawShapes(shapeRenderer)
     }
 
     override fun exit() {

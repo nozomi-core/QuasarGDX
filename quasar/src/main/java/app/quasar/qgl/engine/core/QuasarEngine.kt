@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import kotlin.reflect.KClass
 
 //The full engine api, ADMIN api is for functions that should not be exposes to the public
@@ -10,6 +11,7 @@ interface QuasarEngine: EngineApi {
     //TODO: think about renaming this to `drawWorld`
     fun draw()
     fun drawOverlay()
+    fun drawShapes(shapeRenderer: ShapeRenderer)
     fun exit()
 
     fun <T: GameNode<*>> createStartScripts(scripts: List<KClass<T>>)
