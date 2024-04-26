@@ -7,7 +7,7 @@ import kotlin.reflect.full.createInstance
 class QuasarEngineActual(
     data: EngineDeserialized?,
     private val drawContext: DrawContext,
-    private val rootScripts: List<KClass<*>>,
+    private val frameworkScripts: List<KClass<*>>,
     private val onExit: (EngineDeserialized) -> Unit,
 ): QuasarEngine, NodeSearchable {
     private val data = data?.toEngineData() ?: EngineData.createDefault()
@@ -62,7 +62,7 @@ class QuasarEngineActual(
     }
 
     override fun destroyNode(node: GameNode<*>) {
-        checkNodeIsRootScriptThenThrow(node)
+        checkNodeIsCoreScriptThenThrow(node)
         destructionQueue.add(node)
     }
 
@@ -71,7 +71,7 @@ class QuasarEngineActual(
         onExit(
             EngineDeserialized(
                 currentRuntimeId = data.currentRuntimeId,
-                rootScripts = data.rootScripts,
+                coreScripts = data.coreScripts,
                 graph = data.graph
             )
         )
@@ -104,27 +104,27 @@ class QuasarEngineActual(
 
     override fun generateId() = data.currentRuntimeId++
 
-    override fun <T : GameNode<*>> createGameNode(nodeScript: KClass<T>, argument: Any?) {
-        checkNodeIsRootScriptThenThrow(nodeScript)
-        creationQueue.add(Pair(nodeScript, argument))
+    override fun <T : GameNode<*>> createGameNode(node: KClass<T>, argument: Any?) {
+        checkNodeIsCoreScriptThenThrow(node)
+        creationQueue.add(Pair(node, argument))
     }
 
-    override fun <T : GameNode<*>> createRootScripts(gameScripts: List<KClass<T>>) {
+    override fun <T : GameNode<*>> createStartScripts(scripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
         val mergeAllScripts = mutableListOf<KClass<*>>().apply {
-            addAll(rootScripts)
-            addAll(gameScripts)
+            addAll(frameworkScripts)
+            addAll(scripts)
         }.toList()
 
-        checkUniqueRootScripts(mergeAllScripts)
+        checkUniqueCoreScripts(mergeAllScripts)
         mergeAllScripts.filterIsInstance<KClass<T>>().forEach {
             createGameNode(it)
         }
         doCreationStep()
         checkScriptOrderIntegrity()
 
-        data.rootScripts = mutableListOf()
-        data.rootScripts.addAll(mergeAllScripts)
+        data.coreScripts = mutableListOf()
+        data.coreScripts.addAll(mergeAllScripts)
 
         //Check if the script is a root class and call rootCreated in ca
         data.graph.forEach {
@@ -168,24 +168,23 @@ class QuasarEngineActual(
         }
     }
 
-    private fun checkNodeIsRootScriptThenThrow(node: GameNode<*>) {
-        checkNodeIsRootScriptThenThrow(node::class)
+    private fun checkNodeIsCoreScriptThenThrow(node: GameNode<*>) {
+        checkNodeIsCoreScriptThenThrow(node::class)
     }
 
-    private fun checkNodeIsRootScriptThenThrow(script: KClass<*>) {
-        if(data.rootScripts.contains(script)) {
+    private fun checkNodeIsCoreScriptThenThrow(script: KClass<*>) {
+        if(data.coreScripts.contains(script)) {
             throw SecurityException("Root scripts are immutable, you can not add or remove them")
         }
     }
-}
 
-/** Utils that don't require class members */
-private fun checkUniqueRootScripts(scripts: List<KClass<*>>) {
-    val checkDuplicates = HashSet<KClass<*>>()
-    scripts.forEach {
-        if(checkDuplicates.contains(it)) {
-            throw IllegalArgumentException("Can not have duplicate classes in root scripts, only 1 instance shall be spawned")
+    private fun checkUniqueCoreScripts(scripts: List<KClass<*>>) {
+        val checkDuplicates = HashSet<KClass<*>>()
+        scripts.forEach {
+            if(checkDuplicates.contains(it)) {
+                throw IllegalArgumentException("Can not have duplicate classes in root scripts, only 1 instance shall be spawned")
+            }
+            checkDuplicates.add(it)
         }
-        checkDuplicates.add(it)
     }
 }

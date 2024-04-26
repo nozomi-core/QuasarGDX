@@ -12,6 +12,6 @@ interface QuasarEngine: EngineApi {
     fun drawOverlay()
     fun exit()
 
-    fun <T: GameNode<*>> createRootScripts(scripts: List<KClass<T>>)
+    fun <T: GameNode<*>> createStartScripts(scripts: List<KClass<T>>)
     fun destroyNode(node: GameNode<*>)
 }

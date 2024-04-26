@@ -4,7 +4,7 @@ import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
-import app.quasar.qgl.QuasarRootScripts
+import app.quasar.qgl.QuasarCoreScripts
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
@@ -15,15 +15,15 @@ import kotlin.reflect.full.createInstance
 class Quasar2DEngine(
     private val runtime: QuasarRuntime,
     private val config: QuasarEngine2DConfig,
-    private val engineHooks: UiHooks,
+    private val uiHooks: UiHooks,
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
     private val engineApi: QuasarEngine = QuasarEngineActual(
         data = null,
-        drawContext = DrawContext(drawableApi, CameraApiActual(engineHooks)),
+        drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks)),
         onExit = {},
-        rootScripts = QuasarRootScripts.scripts
+        rootScripts = QuasarCoreScripts.scripts
     )
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
@@ -36,25 +36,25 @@ class Quasar2DEngine(
 
     private fun createRootScripts(scripts: List<KClass<*>>) {
         val rootScripts = scripts.filterIsInstance<KClass<GameNode<*>>>()
-        engineApi.createRootScripts(rootScripts)
+        engineApi.createStartScripts(rootScripts)
     }
 
     fun render() {
         val spriteBatch = config.spriteBatch
 
         //Draw world frame
-        engineHooks.useWorldViewport().apply()
-        engineHooks.useWorldCamera().update()
-        spriteBatch.projectionMatrix = engineHooks.useWorldCamera().combined
+        uiHooks.useWorldViewport().apply()
+        uiHooks.useWorldCamera().update()
+        spriteBatch.projectionMatrix = uiHooks.useWorldCamera().combined
         spriteBatch.begin()
         engineApi.simulate(Gdx.graphics.deltaTime)
         engineApi.draw()
         spriteBatch.end()
 
         //DrawUI
-        engineHooks.useOverlayViewport().apply()
-        engineHooks.useOverlayCamera().update()
-        spriteBatch.projectionMatrix = engineHooks.useOverlayCamera().combined
+        uiHooks.useOverlayViewport().apply()
+        uiHooks.useOverlayCamera().update()
+        spriteBatch.projectionMatrix = uiHooks.useOverlayCamera().combined
         spriteBatch.begin()
         engineApi.drawOverlay()
         spriteBatch.end()

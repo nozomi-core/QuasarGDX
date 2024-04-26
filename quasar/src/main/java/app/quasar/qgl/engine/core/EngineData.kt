@@ -4,7 +4,7 @@ import kotlin.reflect.KClass
 
 class EngineData(
     var currentRuntimeId: Long,
-    var rootScripts: MutableList<KClass<*>>,
+    var coreScripts: MutableList<KClass<*>>,
     var graph: NodeGraph
 ) {
     companion object {

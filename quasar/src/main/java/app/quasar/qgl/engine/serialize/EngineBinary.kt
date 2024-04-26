@@ -21,7 +21,7 @@ class EngineBinary {
                 endId = ID_FRAME_METADATA_END
             ) {
                 qglOut.writeLong(ID_LAST_RUNTIME_ID, engineData.currentRuntimeId)
-                qglOut.writeIntArray(ID_ROOT_SCRIPTS, engineData.rootScripts.map { qglGetBinaryClassId(it) }.toIntArray())
+                qglOut.writeIntArray(ID_ROOT_SCRIPTS, engineData.coreScripts.map { qglGetBinaryClassId(it) }.toIntArray())
             }
 
             //Serialise node data
