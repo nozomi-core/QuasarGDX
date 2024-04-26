@@ -83,21 +83,18 @@ abstract class GameNode<D> {
     internal fun create(engineApiAdmin: QuasarEngine, argument: Any?) {
         this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
-        this._engineApi?.setCurrentNodeRunning(this)
         _data = onCreate(NodeInput(argument))
         onSetup(SetupContext(engine = engineApi), _data!!)
         doCreationStep()
     }
 
     internal fun simulate(context: SimContext) {
-        this._engineApi?.setCurrentNodeRunning(this)
         doSimulationStep(context)
         checkObjectIsBeingDestroyed()
         doCreationStep()
     }
 
     internal fun draw(context: DrawContext) {
-        this._engineApi?.setCurrentNodeRunning(this)
         onDraw(context, _data!!)
     }
 

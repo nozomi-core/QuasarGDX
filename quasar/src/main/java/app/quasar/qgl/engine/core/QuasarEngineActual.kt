@@ -15,7 +15,6 @@ class QuasarEngineActual(
     //Engine accounting variables
     private val destructionQueue = mutableListOf<GameNode<*>>()
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*>>, Any?>>()
-    private var currentNodeIdRunning = -1L
 
     private var isRunning = true
     private var engineMarkedToExit = false
@@ -65,16 +64,6 @@ class QuasarEngineActual(
     override fun destroyNode(node: GameNode<*>) {
         checkNodeIsRootScriptThenThrow(node)
         destructionQueue.add(node)
-    }
-
-    override fun setCurrentNodeRunning(node: GameNode<*>) {
-        this.currentNodeIdRunning = node.runtimeId
-    }
-
-    override fun checkNodeIsNotRunning(node: GameNode<*>) {
-        if (isRunning && currentNodeIdRunning == node.runtimeId) {
-            throw IllegalAccessException("Can not perform this operation while current node running")
-        }
     }
 
     private fun doExit() {

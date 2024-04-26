@@ -14,6 +14,4 @@ interface QuasarEngine: EngineApi {
 
     fun <T: GameNode<*>> createRootScripts(scripts: List<KClass<T>>)
     fun destroyNode(node: GameNode<*>)
-    fun setCurrentNodeRunning(node: GameNode<*>)
-    fun checkNodeIsNotRunning(node: GameNode<*>)
 }
