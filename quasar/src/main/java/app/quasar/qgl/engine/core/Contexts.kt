@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.core.interfaces.GameOverlay
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class SimContext(
@@ -8,7 +9,8 @@ class SimContext(
 )
 
 class SetupContext(
-    val engine: EngineApi
+    val engine: EngineApi,
+    val registerOverlay: (GameOverlay) -> Unit
 )
 
 class DrawContext(

@@ -26,6 +26,7 @@ class PlayerScript: GameNode<PlayerData>(), Player {
     override fun onSetup(context: SetupContext, data: PlayerData) {
         inputFocus = context.engine.requireFindByInterface(InputStack::class)
         inputFocus.setDefault(this)
+        context.registerOverlay(this)
     }
 
     override fun onCreate(input: NodeInput): PlayerData {

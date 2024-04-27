@@ -68,11 +68,11 @@ class NodeGraph: NodeSearchable {
     private fun GameNode<*>.isImplemented(nodeInterface: KClass<*>): Boolean {
         return nodeInterface.java.isAssignableFrom(this.javaClass)
     }
-}
 
-private fun checkCastIsInterface(kClass: KClass<*>) {
-    if(!kClass.java.isInterface) {
-        throw SecurityException("Can only search for interfaces when finding a node in the engine")
+    private fun checkCastIsInterface(kClass: KClass<*>) {
+        if(!kClass.java.isInterface) {
+            throw SecurityException("Can only search for interfaces when finding a node in the engine")
+        }
     }
 }
 

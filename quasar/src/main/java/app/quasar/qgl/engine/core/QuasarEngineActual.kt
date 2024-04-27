@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.core.interfaces.GameOverlay
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import kotlin.reflect.KClass
@@ -21,7 +22,11 @@ class QuasarEngineActual(
     private var engineMarkedToExit = false
 
     private val drawableNodes = DrawableNodeGraph(this.data.graph)
-    private val overlayNodes = DrawableOverlayGraph(this.data.graph)
+    private val overlayNodes = DrawableOverlayGraph()
+
+    override val registerOverlay: (GameOverlay) -> Unit = {
+        overlayNodes.add(it)
+    }
 
     //Contexts
     private val simContext = SimContext(

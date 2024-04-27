@@ -18,6 +18,10 @@ class FontScript: GameNodeUnit(), GameOverlay, GameOverlayShape {
 
     private var timer = 0f
 
+    override fun onSetup(context: SetupContext, data: Unit) {
+        context.registerOverlay(this)
+    }
+
     override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
         timer += context.clock.deltaTime
         if(timer > 20f) {
