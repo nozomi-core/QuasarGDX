@@ -25,7 +25,7 @@ class QuasarEngineTestSerialize {
             frameworkScripts = listOf()
         )
 
-        quasarEngine.createGameNode(SerialScript::class)
+        quasarEngine.createNode(SerialScript::class)
         quasarEngine.exit()
         quasarEngine.simulate(10f)
 

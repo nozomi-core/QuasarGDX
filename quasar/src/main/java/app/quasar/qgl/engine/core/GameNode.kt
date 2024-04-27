@@ -66,6 +66,12 @@ abstract class GameNode<D>: ReadableGameNode {
             creationQueue.add(Pair(node, argument))
         }
 
+        override fun <T : GameNode<*>> createSingleChild(node: KClass<T>, argument: Any?) {
+            if(!childGraph.contains(node)) {
+                createChild(node, argument)
+            }
+        }
+
         override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
             return childGraph.requireFindByInterface(nodeInterface)
         }

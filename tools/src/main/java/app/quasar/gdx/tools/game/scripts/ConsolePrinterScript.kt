@@ -32,7 +32,7 @@ class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter {
             }
 
             if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-                engine.createGameNode(KeyboardScript::class)
+                engine.createNode(KeyboardScript::class)
             }
         }
     }

@@ -37,7 +37,7 @@ class QuasarEngineTestFindAndCreate {
     @Test
     fun testFindByInterfaceScriptCreatedButPendingEntryIntoGraph() {
         val engine = createEngine()
-        engine.createGameNode(FindScript::class)
+        engine.createNode(FindScript::class)
 
         Assert.assertTrue(try {
             engine.requireFindByInterface(Find::class)
@@ -48,7 +48,7 @@ class QuasarEngineTestFindAndCreate {
     @Test
     fun testFindByInterfaceScriptWasCreated() {
         val engine = createEngine()
-        engine.createGameNode(FindScript::class)
+        engine.createNode(FindScript::class)
         engine.simulate(10f)
 
         Assert.assertTrue(try {

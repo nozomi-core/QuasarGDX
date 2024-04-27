@@ -1,7 +1,5 @@
 package app.quasar.qgl.engine.core
 
-import java.lang.ref.WeakReference
-
 class NodeProvider<T> {
 
     private var default: T? = null

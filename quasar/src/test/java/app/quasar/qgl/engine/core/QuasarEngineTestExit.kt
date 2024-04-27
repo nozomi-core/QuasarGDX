@@ -19,7 +19,7 @@ class QuasarEngineExitTest {
             frameworkScripts = listOf()
         )
 
-        engine.createGameNode(BasicScript::class, Unit)
+        engine.createNode(BasicScript::class, Unit)
         engine.simulate(10f)
         engine.exit()
         Assert.assertEquals(null, engineData)
@@ -38,7 +38,7 @@ class QuasarEngineExitTest {
             frameworkScripts = listOf()
         )
 
-        engine.createGameNode(BasicScript::class, Unit)
+        engine.createNode(BasicScript::class, Unit)
         engine.simulate(10f)
         engine.exit()
         engine.simulate(10f)

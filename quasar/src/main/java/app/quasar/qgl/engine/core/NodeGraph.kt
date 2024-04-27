@@ -24,6 +24,10 @@ class NodeGraph: NodeSearchable {
         callbacks.forEach { it.onAdded(node) }
     }
 
+    fun contains(script: KClass<*>): Boolean {
+        return nodes.find { it::class == script } != null
+    }
+
     fun forEach(consumer: (GameNode<*>) -> Unit) = nodes.forEach(consumer)
     fun first(predicate: (GameNode<*>) -> Boolean) = nodes.first(predicate)
     fun indexOf(node: GameNode<*>) = nodes.indexOf(node)

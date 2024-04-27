@@ -1,7 +1,6 @@
 package app.quasar.qgl.engine.core
 
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import kotlin.reflect.KClass
 
 //The full engine api, ADMIN api is for functions that should not be exposes to the public

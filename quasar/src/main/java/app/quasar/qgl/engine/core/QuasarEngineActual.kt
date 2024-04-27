@@ -115,9 +115,15 @@ class QuasarEngineActual(
 
     override fun generateId() = data.currentRuntimeId++
 
-    override fun <T : GameNode<*>> createGameNode(node: KClass<T>, argument: Any?) {
+    override fun <T : GameNode<*>> createNode(node: KClass<T>, argument: Any?) {
         checkNodeIsCoreScriptThenThrow(node)
         creationQueue.add(Pair(node, argument))
+    }
+
+    override fun <T : GameNode<*>> createSingleNode(node: KClass<T>, argument: Any?) {
+        if(!data.graph.contains(node)) {
+            createSingleNode(node, argument)
+        }
     }
 
     override fun <T : GameNode<*>> createStartScripts(scripts: List<KClass<T>>) {
@@ -129,7 +135,7 @@ class QuasarEngineActual(
 
         checkUniqueCoreScripts(mergeAllScripts)
         mergeAllScripts.filterIsInstance<KClass<T>>().forEach {
-            createGameNode(it)
+            createNode(it)
         }
         doCreationStep()
         checkScriptOrderIntegrity()

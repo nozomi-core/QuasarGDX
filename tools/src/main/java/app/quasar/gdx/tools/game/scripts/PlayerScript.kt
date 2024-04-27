@@ -71,7 +71,7 @@ class PlayerScript: GameNode<PlayerData>(), Player {
             zDrawIndex--
         }
         if(Gdx.input.isKeyPressed(Input.Keys.P)) {
-            self.createChild(FontScript::class,)
+            self.createSingleChild(FontScript::class,)
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {

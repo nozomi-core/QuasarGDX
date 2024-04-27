@@ -5,5 +5,6 @@ import kotlin.reflect.KClass
 interface SelfContext: NodeSearchable {
     fun destroyNode()
     fun <T: GameNode<*>> createChild(node: KClass<T>, argument: Any? = null)
+    fun <T: GameNode<*>> createSingleChild(node: KClass<T>, argument: Any? = null)
     fun getParent(): GameNode<*>
 }

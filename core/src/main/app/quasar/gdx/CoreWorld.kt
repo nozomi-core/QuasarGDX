@@ -16,6 +16,6 @@ class CoreWorld: GameWorld() {
 
     override fun onCreate(engine: EngineApi) {
         super.onCreate(engine)
-        engine.createGameNode(MainMap::class)
+        engine.createNode(MainMap::class)
     }
 }

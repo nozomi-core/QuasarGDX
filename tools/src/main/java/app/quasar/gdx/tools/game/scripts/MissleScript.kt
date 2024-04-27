@@ -25,7 +25,7 @@ class MissileScript: GameNode<MissileData>(), Missile {
     }
 
     companion object {
-        fun create(engineApi: EngineApi, argument: MissileInput) = engineApi.createGameNode(MissileScript::class, argument)
+        fun create(engineApi: EngineApi, argument: MissileInput) = engineApi.createNode(MissileScript::class, argument)
     }
 
     override fun onBoundExceeded() {
