@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.core.interfaces.GameOverlay
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -39,6 +40,9 @@ abstract class GameNode<D>: ReadableGameNode {
 
     //Node management
     private val childGraph = NodeGraph()
+    private val drawableNodes = DrawableNodeGraph(childGraph)
+    private val childOverlays = DrawableOverlayGraph(childGraph)
+
     private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*>>, Any?>>()
     private val simulationTasks = mutableListOf<SimulationTask<D>>()
 
@@ -103,9 +107,12 @@ abstract class GameNode<D>: ReadableGameNode {
 
     internal fun draw(context: DrawContext) {
         onDraw(context, _data!!)
+        drawableNodes.draw(context)
     }
 
     internal fun getDataForBinary() = _data
+    internal fun getChildOverlays() = childOverlays
+    internal fun getChildNodes() = childGraph
 
     /** Engine Steps */
 

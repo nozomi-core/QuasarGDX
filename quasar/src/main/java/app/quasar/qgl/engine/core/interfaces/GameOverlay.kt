@@ -1,12 +1,12 @@
 package app.quasar.qgl.engine.core.interfaces
 
 import app.quasar.qgl.engine.core.DrawContext
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import app.quasar.qgl.engine.core.ShapeContext
 
 interface GameOverlay {
     fun onDrawOverlay(context: DrawContext)
 }
 
 interface GameOverlayShape {
-    fun onDrawShape(shape: ShapeRenderer)
+    fun onDrawShape(context: ShapeContext)
 }

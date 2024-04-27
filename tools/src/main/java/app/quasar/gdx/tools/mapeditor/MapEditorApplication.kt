@@ -6,6 +6,7 @@ import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.tiles.QuasarEngine2DConfig
 import app.quasar.qgl.tiles.UiHooks
 import app.quasar.qgl.engine.Quasar2DEngine
+import app.quasar.qgl.engine.core.OverlayScreen
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -26,12 +27,15 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
     private lateinit var overlayViewport: Viewport
     private lateinit var engine2D: Quasar2DEngine
 
+    private val screen = OverlayScreen(1920f, 1080f)
+
     private val config by lazy {
         QuasarEngine2DConfig(
             texture = Texture(CoreAssets.Sprites.TILE_SET),
             spriteBatch = SpriteBatch(),
             tileset = CoreTileset(),
-            layout = TileSheetLayout(tileSize = 16)
+            layout = TileSheetLayout(tileSize = 16),
+            screen = screen
         )
     }
 
@@ -50,7 +54,7 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
         worldCamera = OrthographicCamera()
         overlayCamera = OrthographicCamera()
         worldViewport = ExtendViewport(320f, 180f, worldCamera)
-        overlayViewport = ExtendViewport(320f, 180f, overlayCamera)
+        overlayViewport = ExtendViewport(screen.width, screen.height, overlayCamera)
     }
 
     override fun resize(width: Int, height: Int) {

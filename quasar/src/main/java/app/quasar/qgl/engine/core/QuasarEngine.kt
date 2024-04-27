@@ -11,7 +11,7 @@ interface QuasarEngine: EngineApi {
     //TODO: think about renaming this to `drawWorld`
     fun draw()
     fun drawOverlay()
-    fun drawShapes(shapeRenderer: ShapeRenderer)
+    fun drawShapes(context: ShapeContext)
     fun exit()
 
     fun <T: GameNode<*>> createStartScripts(scripts: List<KClass<T>>)

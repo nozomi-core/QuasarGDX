@@ -1,7 +1,6 @@
 package app.quasar.qgl.engine.core
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 
 class SimContext(
     val engine: EngineApi,
@@ -15,5 +14,6 @@ class SetupContext(
 class DrawContext(
     val draw: DrawableApi,
     val camera: CameraApi,
+    val screen: OverlayScreen,
     val render: (callback: (SpriteBatch) -> Unit) -> Unit
 )

@@ -25,9 +25,9 @@ class Quasar2DEngine(
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
-    private val shapeRenderer = ShapeRenderer()
+    private val shapeContext = ShapeContext(ShapeRenderer(), config.screen)
 
-    private val drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks)) {
+    private val drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks), config.screen) {
         it(config.spriteBatch)
     }
 
@@ -63,6 +63,10 @@ class Quasar2DEngine(
         engineApi.draw()
         spriteBatch.end()
 
+        //Shape renderer
+        shapeContext.shape.projectionMatrix = uiHooks.useOverlayCamera().combined
+        engineApi.drawShapes(shapeContext)
+
         //DrawUI
         uiHooks.useOverlayViewport().apply()
         uiHooks.useOverlayCamera().update()
@@ -70,16 +74,12 @@ class Quasar2DEngine(
         spriteBatch.begin()
         engineApi.drawOverlay()
         spriteBatch.end()
-
-        //Shape renderer
-        shapeRenderer.projectionMatrix = uiHooks.useOverlayCamera().combined
-        engineApi.drawShapes(shapeRenderer)
     }
 
     override fun dispose() {
         config.spriteBatch.dispose()
         config.texture.dispose()
-        shapeRenderer.dispose()
+        shapeContext.shape.dispose()
     }
 
     private fun createTileTextures(tileset: GameTileset, tileSheetLayout: TileSheetLayout, texture: Texture): TileTextures {

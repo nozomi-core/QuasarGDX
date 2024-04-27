@@ -2,7 +2,6 @@ package app.quasar.qgl.engine.core
 
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
 import app.quasar.qgl.engine.core.interfaces.GameOverlayShape
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 
 class DrawableOverlayGraph(nodeGraph: NodeGraph): GraphChangedListener {
 
@@ -13,14 +12,40 @@ class DrawableOverlayGraph(nodeGraph: NodeGraph): GraphChangedListener {
     }
 
     fun draw(context: DrawContext) {
-        overlayCalls.forEach { it.onDrawOverlay(context) }
+        overlayCalls.forEach { overlay ->
+            overlay.onDrawOverlay(context)
+
+            if(overlay is GameNode<*>) {
+                overlay.getChildOverlays().draw(context)
+                drawChildOverlay(context, overlay.getChildNodes())
+            }
+        }
     }
 
-    fun drawShapes(shape: ShapeRenderer) {
+    fun drawShapes(context: ShapeContext) {
         overlayCalls.forEach { overlay ->
             if(overlay is GameOverlayShape) {
-                overlay.onDrawShape(shape)
+                overlay.onDrawShape(context)
             }
+
+            if(overlay is GameNode<*>) {
+                overlay.getChildOverlays().drawShapes(context)
+                drawChildShapes(context, overlay.getChildNodes())
+            }
+        }
+    }
+
+    private fun drawChildShapes(context: ShapeContext, graph: NodeGraph) {
+        graph.forEach { child ->
+            child.getChildOverlays().drawShapes(context)
+            drawChildShapes(context, child.getChildNodes())
+        }
+    }
+
+    private fun drawChildOverlay(context: DrawContext, graph: NodeGraph) {
+        graph.forEach { child ->
+            child.getChildOverlays().draw(context)
+            drawChildOverlay(context, child.getChildNodes())
         }
     }
 

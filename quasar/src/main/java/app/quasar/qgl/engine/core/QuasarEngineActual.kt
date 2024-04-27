@@ -60,8 +60,8 @@ class QuasarEngineActual(
         overlayNodes.draw(drawContext)
     }
 
-    override fun drawShapes(shapeRenderer: ShapeRenderer) {
-        overlayNodes.drawShapes(shapeRenderer)
+    override fun drawShapes(context: ShapeContext) {
+        overlayNodes.drawShapes(context)
     }
 
     override fun exit() {

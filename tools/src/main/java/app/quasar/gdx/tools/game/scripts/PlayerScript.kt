@@ -40,14 +40,16 @@ class PlayerScript: GameNode<PlayerData>(), Player {
         val clock = context.clock
 
         inputFocus.withInputFocus(this) {
-            onHandleInput(data, clock, engine)
+            onHandleInput(data, context, self)
         }
         //calc rotation
         data.rotate += clock.multiply(ROTATE_SPEED)
     }
 
-    private fun onHandleInput(data: PlayerData, clock: EngineClock, engine: EngineApi) {
+    private fun onHandleInput(data: PlayerData, context: SimContext, self: SelfContext) {
         // Move the camera based on input events
+        val clock = context.clock
+        val engine = context.engine
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             data.position.x += clock.multiply(-PLAYER_SPEED)
@@ -66,6 +68,9 @@ class PlayerScript: GameNode<PlayerData>(), Player {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             zDrawIndex--
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.P)) {
+            self.createChild(FontScript::class,)
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
