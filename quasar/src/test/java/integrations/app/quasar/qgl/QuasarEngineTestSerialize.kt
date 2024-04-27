@@ -22,7 +22,7 @@ class QuasarEngineTestSerialize {
             onExit = {
                 engineData = it
             },
-            data = null,
+            deserialised = null,
             frameworkScripts = listOf()
         )
 

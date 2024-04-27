@@ -6,12 +6,15 @@ import kotlin.reflect.full.createInstance
 
 typealias SimulationTask<D> = (context: SimContext, self: SelfContext, data: D) -> Unit
 
-abstract class GameNode<D> {
-    var runtimeId: Long = -1L
-        private set
+interface ReadableGameNode {
+    val isAlive: Boolean
+    val id: Long
+    val parent: ReadableGameNode?
+}
 
+abstract class GameNode<D>: ReadableGameNode {
+    private var runtimeId: Long = -1L
     private var parentNode: GameNode<*>? = null
-    val parentNodeId: Long? get() = parentNode?.runtimeId
 
     //Data
     private var _data: D? = null
@@ -28,7 +31,11 @@ abstract class GameNode<D> {
     //Meta data
     private var isObjectedMarkedForDestruction = false
     private var isDestroyed = false
-    val isAlive get() = !isDestroyed
+
+    //NodeReadable
+    override val isAlive get() = !isDestroyed
+    override val parent: ReadableGameNode? get() = parentNode
+    override val id: Long get() = runtimeId
 
     //Node management
     private val childGraph = NodeGraph()

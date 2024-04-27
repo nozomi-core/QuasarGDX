@@ -21,5 +21,5 @@ class TestEmptyCameraApi: CameraApi {
 }
 
 object TestDrawContext {
-    fun create() = DrawContext(TestEmptyDrawableApi(), TestEmptyCameraApi())
+    fun create() = DrawContext(TestEmptyDrawableApi(), TestEmptyCameraApi()) {}
 }

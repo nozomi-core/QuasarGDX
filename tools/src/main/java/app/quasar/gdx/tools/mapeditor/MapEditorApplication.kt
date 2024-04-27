@@ -51,7 +51,6 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
         overlayCamera = OrthographicCamera()
         worldViewport = ExtendViewport(320f, 180f, worldCamera)
         overlayViewport = ExtendViewport(320f, 180f, overlayCamera)
-        overlayCamera.translate(320f/2, 180f/2)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -62,7 +61,7 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
 
     override fun render() {
         super.render()
-        ScreenUtils.clear(1f, 1f, 1f, 1f)
+        ScreenUtils.clear(0f, 0f, 0f, 1f)
         engine2D.render()
     }
 

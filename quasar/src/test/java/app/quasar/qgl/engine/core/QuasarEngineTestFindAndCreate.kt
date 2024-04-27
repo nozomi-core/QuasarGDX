@@ -11,7 +11,7 @@ class QuasarEngineTestFindAndCreate {
     private fun createEngine(): QuasarEngine = QuasarEngineActual(
         drawContext = TestDrawContext.create(),
         onExit = {},
-        data = null,
+        deserialised = null,
         frameworkScripts = listOf()
     )
 

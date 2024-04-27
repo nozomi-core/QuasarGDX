@@ -16,7 +16,7 @@ class QuasarEngineExitTest {
             onExit = {
                 engineData = it
             },
-            data = null,
+            deserialised = null,
             frameworkScripts = listOf()
         )
 
@@ -35,7 +35,7 @@ class QuasarEngineExitTest {
             onExit = {
                 engineData = it
             },
-            data = null,
+            deserialised = null,
             frameworkScripts = listOf()
         )
 

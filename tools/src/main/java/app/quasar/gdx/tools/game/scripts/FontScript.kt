@@ -23,12 +23,12 @@ class FontScript: GameNodeUnit(), GameOverlay, GameOverlayShape {
 
     override fun onDrawShape(shape: ShapeRenderer) {
         shape.canvas(ShapeRenderer.ShapeType.Filled) {
-            color = Color.FOREST
+            color = Color.LIGHT_GRAY
             rect(10f, 10f, 35f, 35f)
         }
 
         shape.canvas(ShapeRenderer.ShapeType.Line) {
-            color = Color.BLACK
+            color = Color.NAVY
             rect(10f, 10f, 35f, 35f)
         }
     }

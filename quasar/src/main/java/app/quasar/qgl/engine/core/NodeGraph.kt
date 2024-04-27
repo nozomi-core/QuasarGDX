@@ -36,7 +36,7 @@ class NodeGraph: NodeSearchable {
 
     override fun <T : Any> findById(id: Long, nodeInterface: KClass<T>): T? {
         checkCastIsInterface(nodeInterface)
-        val first = nodes.first { it.runtimeId == id && it.isAlive }
+        val first = nodes.first { it.id == id && it.isAlive }
         return first as? T?
     }
 

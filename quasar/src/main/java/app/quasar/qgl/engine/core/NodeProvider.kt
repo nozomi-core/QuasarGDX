@@ -5,10 +5,12 @@ import java.lang.ref.WeakReference
 class NodeProvider<T> {
 
     private var default: T? = null
-    private val nodeSet = HashSet<WeakReference<T>>()
+    private val nodeSet = HashSet<NodeReference<T>>()
 
     private fun cleanCollectedReferences() {
-        nodeSet.removeIf { it.get() == null }
+        nodeSet.removeIf {
+            it.get() == null
+        }
     }
 
     fun provide(): T? {
@@ -25,7 +27,7 @@ class NodeProvider<T> {
     }
 
     fun push(value: T) {
-        nodeSet.add(WeakReference(value))
+        nodeSet.add(NodeReference(value))
     }
 
     fun pop(node: T) {
