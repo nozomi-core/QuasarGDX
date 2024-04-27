@@ -1,7 +1,6 @@
 package app.quasar.qgl.engine.core
 
 import app.quasar.qgl._fixtures.TestDrawContext
-import app.quasar.qgl._fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test
 
@@ -11,7 +10,7 @@ class QuasarEngineTestFindAndCreate {
     private fun createEngine(): QuasarEngine = QuasarEngineActual(
         drawContext = TestDrawContext.create(),
         onExit = {},
-        deserialised = null,
+        deserialized = null,
         frameworkScripts = listOf()
     )
 

@@ -2,17 +2,16 @@ package app.quasar.qgl.engine.core
 
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class QuasarEngineActual(
-    deserialised: EngineDeserialized?,
+    deserialized: EngineDeserialized?,
     private val drawContext: DrawContext,
     private val frameworkScripts: List<KClass<*>>,
     private val onExit: (EngineDeserialized) -> Unit,
 ): QuasarEngine, NodeSearchable {
-    private val data = deserialised?.toEngineData() ?: EngineData.createDefault()
+    private val data = deserialized?.toEngineData() ?: EngineData.createDefault()
 
     //Engine accounting variables
     private val destructionQueue = mutableListOf<GameNode<*>>()
@@ -22,7 +21,6 @@ class QuasarEngineActual(
     private var engineMarkedToExit = false
 
     private val drawableNodes = DrawableNodeGraph(this.data.graph)
-
     private val overlayNodes = DrawableOverlayGraph()
 
     override val registerOverlay: (GameOverlay) -> Unit = {

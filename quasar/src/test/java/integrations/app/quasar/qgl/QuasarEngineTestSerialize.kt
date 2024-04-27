@@ -3,7 +3,6 @@ package integrations.app.quasar.qgl
 import app.quasar.qgl._fixtures.TestDrawContext
 import app.quasar.qgl.engine.serialize.EngineBinary
 import app.quasar.qgl.serialize.*
-import app.quasar.qgl._fixtures.TestEmptyDrawableApi
 import app.quasar.qgl.engine.core.EngineDeserialized
 import app.quasar.qgl.engine.core.GameNode
 import app.quasar.qgl.engine.core.NodeInput
@@ -22,7 +21,7 @@ class QuasarEngineTestSerialize {
             onExit = {
                 engineData = it
             },
-            deserialised = null,
+            deserialized = null,
             frameworkScripts = listOf()
         )
 

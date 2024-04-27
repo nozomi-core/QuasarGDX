@@ -1,7 +1,6 @@
 package app.quasar.qgl.engine.core
 
 import app.quasar.qgl._fixtures.TestDrawContext
-import app.quasar.qgl._fixtures.TestEmptyDrawableApi
 import org.junit.Assert
 import org.junit.Test
 
@@ -16,7 +15,7 @@ class QuasarEngineExitTest {
             onExit = {
                 engineData = it
             },
-            deserialised = null,
+            deserialized = null,
             frameworkScripts = listOf()
         )
 
@@ -35,7 +34,7 @@ class QuasarEngineExitTest {
             onExit = {
                 engineData = it
             },
-            deserialised = null,
+            deserialized = null,
             frameworkScripts = listOf()
         )
 

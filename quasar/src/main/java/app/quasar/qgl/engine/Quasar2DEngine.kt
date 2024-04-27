@@ -7,14 +7,9 @@ import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.QuasarCoreScripts
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.utils.Disposable
-import java.awt.Shape
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -32,7 +27,7 @@ class Quasar2DEngine(
     }
 
     private val engineApi: QuasarEngine = QuasarEngineActual(
-        deserialised = null,
+        deserialized = null,
         drawContext = drawContext,
         onExit = {},
         frameworkScripts = QuasarCoreScripts.scripts
