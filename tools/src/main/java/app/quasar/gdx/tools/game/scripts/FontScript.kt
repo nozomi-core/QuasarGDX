@@ -1,5 +1,6 @@
 package app.quasar.gdx.tools.game.scripts
 
+import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.canvas
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
@@ -27,6 +28,10 @@ class FontScript: GameNodeUnit(), GameOverlay, GameOverlayShape {
         if(timer > 20f) {
             self.destroyNode()
         }
+    }
+
+    override fun onDraw(context: DrawContext, data: Unit) {
+        context.draw.tilePx(CoreTiles.SIGNAL_REGULAR, -32f, -32f)
     }
 
     override fun onDrawOverlay(context: DrawContext) {

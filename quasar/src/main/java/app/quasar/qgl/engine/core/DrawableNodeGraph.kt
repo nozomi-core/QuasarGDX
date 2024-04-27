@@ -6,14 +6,14 @@ package app.quasar.qgl.engine.core
  */
 class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
 
-    private val comparable = compareBy<GameNode<*>> { it.zDrawIndex }
+    private val comparable = compareBy<NodeReference<GameNode<*>>> { it.get()?.zDrawIndex }
     private var markNodeGraphChanged = false
 
     init {
         nodeGraph.addListener(this)
     }
 
-    private val drawableNodes = mutableListOf<GameNode<*>>()
+    private val drawableNodes = NodeCollection<GameNode<*>>()
 
     override fun onAdded(node: GameNode<*>) {
         drawableNodes.add(node)
@@ -23,10 +23,6 @@ class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
     override fun onRemoved(node: GameNode<*>) {
         drawableNodes.remove(node)
         notifyNodeChanged()
-    }
-
-    fun forEach(callback: (GameNode<*>) -> Unit) {
-        drawableNodes.forEach(callback)
     }
 
     fun notifyNodeChanged() {
@@ -39,7 +35,7 @@ class DrawableNodeGraph(nodeGraph: NodeGraph): GraphChangedListener {
             markNodeGraphChanged = false
         }
         drawableNodes.forEach {
-            it.draw(context)
+            it.get()?.draw(context)
         }
     }
 }
