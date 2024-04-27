@@ -22,6 +22,7 @@ class QuasarEngineActual(
     private var engineMarkedToExit = false
 
     private val drawableNodes = DrawableNodeGraph(this.data.graph)
+
     private val overlayNodes = DrawableOverlayGraph()
 
     override val registerOverlay: (GameOverlay) -> Unit = {
