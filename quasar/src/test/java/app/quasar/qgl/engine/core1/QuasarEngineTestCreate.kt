@@ -1,6 +1,7 @@
 package app.quasar.qgl.engine.core1
 
 import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.engine.core.NodeArgument
 import app.quasar.qgl.engine.core.QuasarEngine
 import app.quasar.qgl.engine.core.QuasarEngineActual
 import org.junit.Assert
@@ -38,10 +39,16 @@ class EngineCreateTest {
     }
 }
 
-class ExampleScript: GameNode() {
+class ExampleScript: GameNode<ExampleData>() {
     var didCallSimulate = false
 
     override fun onSimulate() {
         didCallSimulate = true
     }
+
+    override fun onCreate(argument: NodeArgument): ExampleData {
+        return ExampleData()
+    }
 }
+
+class ExampleData

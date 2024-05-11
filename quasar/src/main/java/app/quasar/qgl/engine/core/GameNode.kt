@@ -1,19 +1,24 @@
 package app.quasar.qgl.engine.core
 
-abstract class GameNode: ReadableGameNode {
+abstract class GameNode<D>: ReadableGameNode {
+    private val record = NodeRecord<D>()
 
-    var tag: String? = null
-        private set
+    internal val tag: String?
+        get() = record.tag
 
+    protected abstract fun onCreate(argument: NodeArgument): D
     protected open fun onSimulate() {}
-    protected open fun onCreate() {}
 
     internal fun create(factory: NodeFactory) {
-        this.tag = factory.tag
-        onCreate()
+        record.tag = factory.tag
+        onCreate(factory.argument)
     }
 
     internal fun simulate() {
         onSimulate()
+    }
+
+    internal fun nodeException(): Exception {
+        return Exception()
     }
 }

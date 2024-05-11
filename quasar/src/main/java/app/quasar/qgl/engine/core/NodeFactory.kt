@@ -7,5 +7,5 @@ class NodeFactory(factory: (NodeFactory) -> Unit) {
     }
 
     var tag: String? = null
-    var argument: NodeArgument? = null
+    var argument: NodeArgument = NullArgument
 }

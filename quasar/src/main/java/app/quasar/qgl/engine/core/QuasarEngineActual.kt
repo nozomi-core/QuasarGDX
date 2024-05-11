@@ -15,7 +15,7 @@ class QuasarEngineActual: QuasarEngine {
         nodeGraph.simulate()
     }
 
-    override fun <T : GameNode> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
+    override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
         nodeGraph.createNode(script, factory)
     }
 

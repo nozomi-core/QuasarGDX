@@ -5,7 +5,7 @@ import kotlin.reflect.full.createInstance
 
 class NodeGraph {
 
-    private val nodeList = mutableListOf<GameNode>()
+    private val nodeList = mutableListOf<GameNode<*>>()
 
     internal fun simulate() {
         nodeList.forEach {
@@ -13,7 +13,7 @@ class NodeGraph {
         }
     }
 
-    internal fun <T : GameNode> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
+    internal fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
         val newNode = script.createInstance()
 
         newNode.create(NodeFactory(factory))
