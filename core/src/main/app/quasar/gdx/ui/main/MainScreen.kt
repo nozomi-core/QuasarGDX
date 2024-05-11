@@ -6,7 +6,7 @@ import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.tiles.UiHooks
 import app.quasar.qgl.engine.Quasar2DEngine
-import app.quasar.qgl.engine.core.OverlayScreen1
+import app.quasar.qgl.engine.core1.OverlayScreen1
 import app.quasar.qgl.tiles.QuasarEngine2DConfig
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.Gdx

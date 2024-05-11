@@ -1,6 +1,6 @@
 package app.quasar.qgl._fixtures
 
-import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.engine.core1.*
 import app.quasar.qgl.render.SpriteApi
 import com.badlogic.gdx.math.Vector3
 

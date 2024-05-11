@@ -2,9 +2,9 @@ package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.canvas
-import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.engine.core.interfaces.GameOverlay1
-import app.quasar.qgl.engine.core.interfaces.GameOverlayShape1
+import app.quasar.qgl.engine.core1.*
+import app.quasar.qgl.engine.core1.interfaces.GameOverlay1
+import app.quasar.qgl.engine.core1.interfaces.GameOverlayShape1
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont

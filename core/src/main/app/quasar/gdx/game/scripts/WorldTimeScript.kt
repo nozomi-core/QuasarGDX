@@ -3,7 +3,7 @@ package app.quasar.gdx.game.scripts
 import app.quasar.gdx.game.ScriptTypes
 import app.quasar.gdx.game.data.WorldTimeData
 import app.quasar.gdx.game.logic.doWorldTime
-import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.engine.core1.*
 import app.quasar.qgl.engine.serialize.EngineRef
 import app.quasar.qgl.engine.serialize.EngineScript
 import app.quasar.qgl.scripts.ConsoleLog

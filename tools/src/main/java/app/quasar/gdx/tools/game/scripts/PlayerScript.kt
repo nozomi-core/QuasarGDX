@@ -2,9 +2,9 @@ package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.game.data.PlayerData
-import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.engine.core.interfaces.GameOverlay1
-import app.quasar.qgl.engine.core.interfaces.WorldPosition1
+import app.quasar.qgl.engine.core1.*
+import app.quasar.qgl.engine.core1.interfaces.GameOverlay1
+import app.quasar.qgl.engine.core1.interfaces.WorldPosition1
 import app.quasar.qgl.scripts.InputNode
 import app.quasar.qgl.scripts.InputStack
 import com.badlogic.gdx.Gdx

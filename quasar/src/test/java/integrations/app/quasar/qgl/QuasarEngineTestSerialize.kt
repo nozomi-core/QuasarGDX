@@ -3,10 +3,10 @@ package integrations.app.quasar.qgl
 import app.quasar.qgl._fixtures.TestDrawContext
 import app.quasar.qgl.engine.serialize.EngineBinary1
 import app.quasar.qgl.serialize.*
-import app.quasar.qgl.engine.core.EngineDeserialized1
-import app.quasar.qgl.engine.core.GameNode1
-import app.quasar.qgl.engine.core.NodeInput1
-import app.quasar.qgl.engine.core.QuasarEngineActual1
+import app.quasar.qgl.engine.core1.EngineDeserialized1
+import app.quasar.qgl.engine.core1.GameNode1
+import app.quasar.qgl.engine.core1.NodeInput1
+import app.quasar.qgl.engine.core1.QuasarEngineActual1
 import org.junit.Assert
 import org.junit.Test
 

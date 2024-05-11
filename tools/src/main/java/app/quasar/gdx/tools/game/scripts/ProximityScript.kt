@@ -1,8 +1,8 @@
 package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
-import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.engine.core.interfaces.WorldPosition1
+import app.quasar.qgl.engine.core1.*
+import app.quasar.qgl.engine.core1.interfaces.WorldPosition1
 import com.badlogic.gdx.math.Vector3
 
 interface Proximity: WorldPosition1

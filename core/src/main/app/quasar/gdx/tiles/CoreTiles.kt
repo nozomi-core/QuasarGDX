@@ -1,6 +1,6 @@
 package app.quasar.gdx.tiles
 
-import app.quasar.qgl.engine.core.TileId1
+import app.quasar.qgl.engine.core1.TileId1
 
 object CoreTiles {
     val TRANSPARENT =               TileId1(0)

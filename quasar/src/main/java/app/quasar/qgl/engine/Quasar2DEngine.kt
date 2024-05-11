@@ -1,7 +1,7 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.QuasarRuntime
-import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.engine.core1.*
 import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.QuasarCoreScripts

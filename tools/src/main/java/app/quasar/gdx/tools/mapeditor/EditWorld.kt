@@ -3,7 +3,7 @@ package app.quasar.gdx.tools.mapeditor
 import app.quasar.gdx.tools.game.scripts.ConsolePrinterScript
 import app.quasar.gdx.tools.game.scripts.PlayerScript
 import app.quasar.gdx.tools.game.scripts.ProximityScript
-import app.quasar.qgl.engine.core.EngineApi1
+import app.quasar.qgl.engine.core1.EngineApi1
 import app.quasar.qgl.scripts.WorldBoundScript
 import app.quasar.qgl.tiles.GameWorld
 import kotlin.reflect.KClass

@@ -1,7 +1,7 @@
 package app.quasar.qgl.render
 
-import app.quasar.qgl.engine.core.DrawableApi1
-import app.quasar.qgl.engine.core.TileId1
+import app.quasar.qgl.engine.core1.DrawableApi1
+import app.quasar.qgl.engine.core1.TileId1
 import app.quasar.qgl.tiles.TileSheetLayout
 import app.quasar.qgl.tiles.TileTextures
 import com.badlogic.gdx.graphics.Color

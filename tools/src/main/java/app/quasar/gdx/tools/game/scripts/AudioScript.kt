@@ -1,8 +1,8 @@
 package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.CoreAssets
-import app.quasar.qgl.engine.core.GameNodeUnit1
-import app.quasar.qgl.engine.core.SetupContext1
+import app.quasar.qgl.engine.core1.GameNodeUnit1
+import app.quasar.qgl.engine.core1.SetupContext1
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Music
 
