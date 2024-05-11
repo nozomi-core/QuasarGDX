@@ -1,21 +1,21 @@
 package app.quasar.qgl.engine.serialize
 
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.EngineDeserialized
+import app.quasar.qgl.engine.core.GameNode1
+import app.quasar.qgl.engine.core.EngineDeserialized1
 import app.quasar.qgl.serialize.*
 
-class EngineBinary {
+class EngineBinary1 {
 
     class Out(
         private val definitions: QGLDefinitions,
         private val qglOut: QGLBinary.Out,
-        engineData: EngineDeserialized
+        engineData: EngineDeserialized1
     ) {
         init {
             save(engineData)
         }
 
-        private fun save(engineData: EngineDeserialized) {
+        private fun save(engineData: EngineDeserialized1) {
             qglOut.writeFrame(
                 startId = ID_FRAME_METADATA_START,
                 endId = ID_FRAME_METADATA_END
@@ -36,7 +36,7 @@ class EngineBinary {
             }
         }
 
-        private fun writeGameNode(node: GameNode<*>) {
+        private fun writeGameNode(node: GameNode1<*>) {
             qglOut.writeInt(ID_NODE_CLASS_ID, qglGetBinaryClassId(node::class))
 
             qglOut.writeLong(ID_NODE_RUNTIME_ID, node.id)

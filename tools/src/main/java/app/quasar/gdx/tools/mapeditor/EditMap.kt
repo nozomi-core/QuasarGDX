@@ -1,20 +1,20 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
-import app.quasar.qgl.engine.core.DrawContext
-import app.quasar.qgl.engine.core.GameNodeUnit
+import app.quasar.qgl.engine.core.DrawContext1
+import app.quasar.qgl.engine.core.GameNodeUnit1
 
 interface PublicEditMap {
     fun printMessage(msg: String)
 }
 
-class EditMap: GameNodeUnit(), PublicEditMap {
+class EditMap: GameNodeUnit1(), PublicEditMap {
 
     private var positionX = 0f
 
     private val speedMs = 4f
 
-    override fun onDraw(context: DrawContext, data: Unit) {
+    override fun onDraw(context: DrawContext1, data: Unit) {
         val draw = context.draw
 
         //Draw map

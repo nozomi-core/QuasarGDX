@@ -12,15 +12,15 @@ interface ConsolePrinter: InputNode {
     fun takeOverInput()
 }
 
-class ConsolePrinterScript: GameNodeUnit(), ConsolePrinter {
+class ConsolePrinterScript: GameNodeUnit1(), ConsolePrinter {
 
     private lateinit var inputFocus: InputStack
 
-    override fun onSetup(context: SetupContext, data: Unit) {
+    override fun onSetup(context: SetupContext1, data: Unit) {
         inputFocus = context.engine.requireFindByInterface(InputStack::class)
     }
 
-    override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
+    override fun onSimulate(context: SimContext1, self: SelfContext1, data: Unit) {
         val engine = context.engine
 
         inputFocus.withInputFocus(this) {

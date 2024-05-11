@@ -15,7 +15,7 @@ interface WorldTime {
 }
 
 @EngineScript(ScriptTypes.WORLD_TIME)
-class WorldTimeScript: GameNode<WorldTimeData>(), WorldTime {
+class WorldTimeScript: GameNode1<WorldTimeData>(), WorldTime {
 
     //Nodes
     @EngineRef(NodeTypes.ENGINE_LOGGER)
@@ -25,11 +25,11 @@ class WorldTimeScript: GameNode<WorldTimeData>(), WorldTime {
     override fun getGameMillis() = dataForInterface.gameTime.millis
     override fun getTimeStamp() = ""
 
-    override fun onSetup(context: SetupContext, data: WorldTimeData) {
+    override fun onSetup(context: SetupContext1, data: WorldTimeData) {
         console = context.engine.requireFindByInterface(ConsoleLog::class)
     }
 
-    override fun onCreate(input: NodeInput): WorldTimeData {
+    override fun onCreate(input: NodeInput1): WorldTimeData {
         return input.map<WorldTimeInput, WorldTimeData> { arg ->
             WorldTimeData(
                 gameSpeed = arg.gameSpeed,
@@ -38,7 +38,7 @@ class WorldTimeScript: GameNode<WorldTimeData>(), WorldTime {
         }
     }
 
-    override fun onSimulate(context: SimContext, self: SelfContext, data: WorldTimeData) {
+    override fun onSimulate(context: SimContext1, self: SelfContext1, data: WorldTimeData) {
         doWorldTime(
             this,
             context,

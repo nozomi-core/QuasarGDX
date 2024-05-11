@@ -6,7 +6,7 @@ import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.tiles.QuasarEngine2DConfig
 import app.quasar.qgl.tiles.UiHooks
 import app.quasar.qgl.engine.Quasar2DEngine
-import app.quasar.qgl.engine.core.OverlayScreen
+import app.quasar.qgl.engine.core.OverlayScreen1
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -14,8 +14,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.badlogic.gdx.utils.viewport.FitViewport
-import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 
 class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapter() {
@@ -27,7 +25,7 @@ class MapEditorApplication(private val runtime: QuasarRuntime): ApplicationAdapt
     private lateinit var overlayViewport: Viewport
     private lateinit var engine2D: Quasar2DEngine
 
-    private val screen = OverlayScreen(1920f, 1080f)
+    private val screen = OverlayScreen1(1920f, 1080f)
 
     private val config by lazy {
         QuasarEngine2DConfig(

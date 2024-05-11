@@ -2,30 +2,30 @@ package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.engine.core.interfaces.WorldPosition1
 import com.badlogic.gdx.math.Vector3
 
-interface Proximity: WorldPosition
+interface Proximity: WorldPosition1
 
-class ProximityScript: GameNodeUnit(), Proximity {
+class ProximityScript: GameNodeUnit1(), Proximity {
 
     private val position = Vector3(64f, 64f, 0f)
     private var isActive = false
     
     private lateinit var player: Player
 
-    override fun onSetup(context: SetupContext, data: Unit) {
+    override fun onSetup(context: SetupContext1, data: Unit) {
         player = context.engine.requireFindByInterface(Player::class)
     }
 
-    override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
+    override fun onSimulate(context: SimContext1, self: SelfContext1, data: Unit) {
         if(context.clock.tick32) {
             val playerPosition = player.query(Vector3())
             isActive = playerPosition.dst(position) < 32f
         }
     }
 
-    override fun onDraw(context: DrawContext, data: Unit) {
+    override fun onDraw(context: DrawContext1, data: Unit) {
         val tile = if(isActive) CoreTiles.SIGNAL_CLOSE else CoreTiles.SIGNAL_REGULAR
         context.draw.tilePx(tile, position)
     }

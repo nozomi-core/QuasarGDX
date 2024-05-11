@@ -1,25 +1,25 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.engine.core.interfaces.WorldPosition1
 import com.badlogic.gdx.math.Vector3
 import kotlin.reflect.KClass
 
-class NodeGraph: NodeSearchable {
-    private val nodes = mutableListOf<GameNode<*>>()
-    private val callbacks = mutableSetOf<GraphChangedListener>()
+class NodeGraph1: NodeSearchable1 {
+    private val nodes = mutableListOf<GameNode1<*>>()
+    private val callbacks = mutableSetOf<GraphChangedListener1>()
 
     val size: Int get() = nodes.size
 
-    fun addListener(listener: GraphChangedListener) {
+    fun addListener(listener: GraphChangedListener1) {
         callbacks.add(listener)
     }
 
-    fun remove(node: GameNode<*>) {
+    fun remove(node: GameNode1<*>) {
         nodes.remove(node)
         callbacks.forEach { it.onRemoved(node) }
     }
 
-    fun add(node: GameNode<*>) {
+    fun add(node: GameNode1<*>) {
         nodes.add(node)
         callbacks.forEach { it.onAdded(node) }
     }
@@ -28,9 +28,9 @@ class NodeGraph: NodeSearchable {
         return nodes.find { it::class == script } != null
     }
 
-    fun forEach(consumer: (GameNode<*>) -> Unit) = nodes.forEach(consumer)
-    fun first(predicate: (GameNode<*>) -> Boolean) = nodes.first(predicate)
-    fun indexOf(node: GameNode<*>) = nodes.indexOf(node)
+    fun forEach(consumer: (GameNode1<*>) -> Unit) = nodes.forEach(consumer)
+    fun first(predicate: (GameNode1<*>) -> Boolean) = nodes.first(predicate)
+    fun indexOf(node: GameNode1<*>) = nodes.indexOf(node)
 
     override fun <T : Any> requireFindByInterface(nodeInterface: KClass<T>): T {
         checkCastIsInterface(nodeInterface)
@@ -52,13 +52,13 @@ class NodeGraph: NodeSearchable {
         }
     }
 
-    override fun <T : Any> getNearby(target: WorldPosition, distance: Float, nodeInterface: KClass<T>): List<T> {
+    override fun <T : Any> getNearby(target: WorldPosition1, distance: Float, nodeInterface: KClass<T>): List<T> {
         val result = mutableListOf<T>()
         val targetVector = Vector3().apply { target.query(this) }
         val checkVector = Vector3()
 
         nodes.forEach { node ->
-            if(node.isImplemented(nodeInterface) && node is WorldPosition) {
+            if(node.isImplemented(nodeInterface) && node is WorldPosition1) {
                 //check distance
                 node.query(checkVector)
                 if(targetVector.dst(checkVector) < distance) {
@@ -69,7 +69,7 @@ class NodeGraph: NodeSearchable {
         return result
     }
 
-    private fun GameNode<*>.isImplemented(nodeInterface: KClass<*>): Boolean {
+    private fun GameNode1<*>.isImplemented(nodeInterface: KClass<*>): Boolean {
         return nodeInterface.java.isAssignableFrom(this.javaClass)
     }
 
@@ -80,7 +80,7 @@ class NodeGraph: NodeSearchable {
     }
 }
 
-interface GraphChangedListener {
-    fun onAdded(node: GameNode<*>)
-    fun onRemoved(node: GameNode<*>)
+interface GraphChangedListener1 {
+    fun onAdded(node: GameNode1<*>)
+    fun onRemoved(node: GameNode1<*>)
 }

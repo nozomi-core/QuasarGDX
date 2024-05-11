@@ -6,7 +6,7 @@ import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.tiles.UiHooks
 import app.quasar.qgl.engine.Quasar2DEngine
-import app.quasar.qgl.engine.core.OverlayScreen
+import app.quasar.qgl.engine.core.OverlayScreen1
 import app.quasar.qgl.tiles.QuasarEngine2DConfig
 import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.Gdx
@@ -29,7 +29,7 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
     private lateinit var overlayViewport: Viewport
     private lateinit var engine2D: Quasar2DEngine
 
-    private val screen = OverlayScreen(400f, 400f)
+    private val screen = OverlayScreen1(400f, 400f)
 
     private val config by lazy {
         QuasarEngine2DConfig(
@@ -37,7 +37,7 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
             spriteBatch = SpriteBatch(),
             tileset = CoreTileset(),
             layout = TileSheetLayout(tileSize = 16),
-            screen = OverlayScreen(400f, 400f)
+            screen = OverlayScreen1(400f, 400f)
         )
     }
 

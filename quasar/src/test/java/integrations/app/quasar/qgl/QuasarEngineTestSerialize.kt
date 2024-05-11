@@ -1,12 +1,12 @@
 package integrations.app.quasar.qgl
 
 import app.quasar.qgl._fixtures.TestDrawContext
-import app.quasar.qgl.engine.serialize.EngineBinary
+import app.quasar.qgl.engine.serialize.EngineBinary1
 import app.quasar.qgl.serialize.*
-import app.quasar.qgl.engine.core.EngineDeserialized
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.NodeInput
-import app.quasar.qgl.engine.core.QuasarEngineActual
+import app.quasar.qgl.engine.core.EngineDeserialized1
+import app.quasar.qgl.engine.core.GameNode1
+import app.quasar.qgl.engine.core.NodeInput1
+import app.quasar.qgl.engine.core.QuasarEngineActual1
 import org.junit.Assert
 import org.junit.Test
 
@@ -14,9 +14,9 @@ class QuasarEngineTestSerialize {
 
     @Test
     fun testEngineSerialization() {
-        var engineData: EngineDeserialized? = null
+        var engineData: EngineDeserialized1? = null
 
-        val quasarEngine = QuasarEngineActual(
+        val quasarEngine = QuasarEngineActual1(
             drawContext = TestDrawContext.create(),
             onExit = {
                 engineData = it
@@ -35,11 +35,11 @@ class QuasarEngineTestSerialize {
         }.build()
 
         val inMemoryEngine = QGLBinary.createMemoryOut { memOut ->
-            EngineBinary.Out(definitions, memOut, engineData!!)
+            EngineBinary1.Out(definitions, memOut, engineData!!)
         }
 
         val engineIn = QGLBinary.createMemoryIn(inMemoryEngine)
-        val engineInData = EngineBinary.In(engineIn)
+        val engineInData = EngineBinary1.In(engineIn)
 
         Assert.assertEquals(1, engineInData.engineNodes.size)
         engineInData.engineNodes[0].let { node ->
@@ -61,8 +61,8 @@ class QuasarEngineTestSerialize {
 }
 
 @QGLClass(64)
-class SerialScript: GameNode<SerialData>() {
-    override fun onCreate(input: NodeInput): SerialData {
+class SerialScript: GameNode1<SerialData>() {
+    override fun onCreate(input: NodeInput1): SerialData {
         return SerialData(
             title = "BinaryData",
             count = 88

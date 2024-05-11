@@ -1,34 +1,34 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.engine.core.interfaces.GameOverlay
-import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.engine.core.interfaces.GameOverlay1
+import app.quasar.qgl.engine.core.interfaces.WorldPosition1
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class QuasarEngineActual(
-    deserialized: EngineDeserialized?,
-    private val drawContext: DrawContext,
+class QuasarEngineActual1(
+    deserialized: EngineDeserialized1?,
+    private val drawContext: DrawContext1,
     private val frameworkScripts: List<KClass<*>>,
-    private val onExit: (EngineDeserialized) -> Unit,
-): QuasarEngine, NodeSearchable {
-    private val data = deserialized?.toEngineData() ?: EngineData.createDefault()
+    private val onExit: (EngineDeserialized1) -> Unit,
+): QuasarEngine1, NodeSearchable1 {
+    private val data = deserialized?.toEngineData() ?: EngineData1.createDefault()
 
     //Engine accounting variables
-    private val destructionQueue = mutableListOf<GameNode<*>>()
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*>>, Any?>>()
+    private val destructionQueue = mutableListOf<GameNode1<*>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode1<*>>, Any?>>()
 
     private var isRunning = true
     private var engineMarkedToExit = false
 
-    private val drawableNodes = DrawableNodeGraph(this.data.graph)
-    private val overlayNodes = DrawableOverlayGraph()
+    private val drawableNodes = DrawableNodeGraph1(this.data.graph)
+    private val overlayNodes = DrawableOverlayGraph1()
 
-    override val registerOverlay: (GameOverlay) -> Unit = {
+    override val registerOverlay: (GameOverlay1) -> Unit = {
         overlayNodes.add(it)
     }
 
     //Contexts
-    private val simContext = SimContext(
+    private val simContext = SimContext1(
         engine = this,
         clock = this.data.clock
     )
@@ -64,7 +64,7 @@ class QuasarEngineActual(
         overlayNodes.draw(drawContext)
     }
 
-    override fun drawShapes(context: ShapeContext) {
+    override fun drawShapes(context: ShapeContext1) {
         overlayNodes.drawShapes(context)
     }
 
@@ -72,7 +72,7 @@ class QuasarEngineActual(
         engineMarkedToExit = true
     }
 
-    override fun destroyNode(node: GameNode<*>) {
+    override fun destroyNode(node: GameNode1<*>) {
         checkNodeIsCoreScriptThenThrow(node)
         destructionQueue.add(node)
     }
@@ -80,7 +80,7 @@ class QuasarEngineActual(
     private fun doExit() {
         isRunning = false
         onExit(
-            EngineDeserialized(
+            EngineDeserialized1(
                 currentRuntimeId = data.currentRuntimeId,
                 coreScripts = data.coreScripts,
                 graph = data.graph
@@ -115,18 +115,18 @@ class QuasarEngineActual(
 
     override fun generateId() = data.currentRuntimeId++
 
-    override fun <T : GameNode<*>> createNode(node: KClass<T>, argument: Any?) {
+    override fun <T : GameNode1<*>> createNode(node: KClass<T>, argument: Any?) {
         checkNodeIsCoreScriptThenThrow(node)
         creationQueue.add(Pair(node, argument))
     }
 
-    override fun <T : GameNode<*>> createSingleNode(node: KClass<T>, argument: Any?) {
+    override fun <T : GameNode1<*>> createSingleNode(node: KClass<T>, argument: Any?) {
         if(!data.graph.contains(node)) {
             createSingleNode(node, argument)
         }
     }
 
-    override fun <T : GameNode<*>> createStartScripts(scripts: List<KClass<T>>) {
+    override fun <T : GameNode1<*>> createStartScripts(scripts: List<KClass<T>>) {
         //Add quasars own root scripts that will be spawned alongside the game scripts by developer
         val mergeAllScripts = mutableListOf<KClass<*>>().apply {
             addAll(frameworkScripts)
@@ -145,7 +145,7 @@ class QuasarEngineActual(
 
         //If node is a CORE node, we can run data after the initial core is created
         data.graph.forEach {
-            if (it is CoreNode) {
+            if (it is CoreNode1) {
                 it.onCoreCreated()
             }
         }
@@ -164,7 +164,7 @@ class QuasarEngineActual(
         data.graph.forEachInterface(nodeInterface, callback)
     }
 
-    override fun <T : Any> getNearby(target: WorldPosition, distance: Float, nodeInterface: KClass<T>): List<T> {
+    override fun <T : Any> getNearby(target: WorldPosition1, distance: Float, nodeInterface: KClass<T>): List<T> {
         return data.graph.getNearby(target, distance, nodeInterface)
     }
 
@@ -172,7 +172,7 @@ class QuasarEngineActual(
 
     private fun checkScriptOrderIntegrity() {
         data.graph.forEach { currentNode ->
-            if(currentNode is CoreNode) {
+            if(currentNode is CoreNode1) {
                 val shouldBeBefore = currentNode.getShouldRunBefore()
                 val thisNodeIndex = data.graph.indexOf(currentNode)
                 shouldBeBefore.forEach { dependClass ->
@@ -185,7 +185,7 @@ class QuasarEngineActual(
         }
     }
 
-    private fun checkNodeIsCoreScriptThenThrow(node: GameNode<*>) {
+    private fun checkNodeIsCoreScriptThenThrow(node: GameNode1<*>) {
         checkNodeIsCoreScriptThenThrow(node::class)
     }
 

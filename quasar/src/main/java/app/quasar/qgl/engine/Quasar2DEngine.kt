@@ -20,13 +20,13 @@ class Quasar2DEngine(
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
-    private val shapeContext = ShapeContext(ShapeRenderer(), config.screen)
+    private val shapeContext = ShapeContext1(ShapeRenderer(), config.screen)
 
-    private val drawContext = DrawContext(drawableApi, CameraApiActual(uiHooks), config.screen) {
+    private val drawContext = DrawContext1(drawableApi, CameraApiActual(uiHooks), config.screen) {
         it(config.spriteBatch)
     }
 
-    private val engineApi: QuasarEngine = QuasarEngineActual(
+    private val engineApi: QuasarEngine1 = QuasarEngineActual1(
         deserialized = null,
         drawContext = drawContext,
         onExit = {},
@@ -42,7 +42,7 @@ class Quasar2DEngine(
     }
 
     private fun createRootScripts(scripts: List<KClass<*>>) {
-        val rootScripts = scripts.filterIsInstance<KClass<GameNode<*>>>()
+        val rootScripts = scripts.filterIsInstance<KClass<GameNode1<*>>>()
         engineApi.createStartScripts(rootScripts)
     }
 
@@ -83,7 +83,7 @@ class Quasar2DEngine(
         }.build()
     }
 
-    private fun QuasarEngine2DConfig.createDrawApi(): DrawableApi {
+    private fun QuasarEngine2DConfig.createDrawApi(): DrawableApi1 {
         return DrawableApiActual(
             layout,
             createTileTextures(

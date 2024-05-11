@@ -1,5 +1,5 @@
 package app.quasar.qgl.engine.core.interfaces
 
-interface WorldBounded: WorldPosition {
+interface WorldBounded1: WorldPosition1 {
     fun onBoundExceeded()
 }

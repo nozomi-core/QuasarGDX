@@ -1,6 +1,6 @@
 package app.quasar.qgl.tiles
 
-import app.quasar.qgl.engine.core.OverlayScreen
+import app.quasar.qgl.engine.core.OverlayScreen1
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -11,7 +11,7 @@ data class QuasarEngine2DConfig(
     val spriteBatch: SpriteBatch,
     val tileset: GameTileset,
     val layout: TileSheetLayout,
-    val screen: OverlayScreen
+    val screen: OverlayScreen1
 )
 
 interface UiHooks {

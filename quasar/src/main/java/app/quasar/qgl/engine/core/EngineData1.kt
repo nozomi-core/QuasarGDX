@@ -2,19 +2,19 @@ package app.quasar.qgl.engine.core
 
 import kotlin.reflect.KClass
 
-class EngineData(
+class EngineData1(
     var currentRuntimeId: Long,
     var coreScripts: MutableList<KClass<*>>,
-    var graph: NodeGraph,
-    val clock: EngineClock
+    var graph: NodeGraph1,
+    val clock: EngineClock1
 ) {
     companion object {
-        fun createDefault(): EngineData {
-            return EngineData(
+        fun createDefault(): EngineData1 {
+            return EngineData1(
                 currentRuntimeId = 1L,
-                clock = EngineClock(),
+                clock = EngineClock1(),
                 coreScripts =  mutableListOf(),
-                graph = NodeGraph()
+                graph = NodeGraph1()
             )
         }
     }

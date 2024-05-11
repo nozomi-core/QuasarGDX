@@ -1,21 +1,21 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.engine.core.interfaces.GameOverlay
+import app.quasar.qgl.engine.core.interfaces.GameOverlay1
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-class SimContext(
-    val engine: EngineApi,
-    val clock: EngineClock
+class SimContext1(
+    val engine: EngineApi1,
+    val clock: EngineClock1
 )
 
-class SetupContext(
-    val engine: EngineApi,
-    val registerOverlay: (GameOverlay) -> Unit
+class SetupContext1(
+    val engine: EngineApi1,
+    val registerOverlay: (GameOverlay1) -> Unit
 )
 
-class DrawContext(
-    val draw: DrawableApi,
-    val camera: CameraApi,
-    val screen: OverlayScreen,
+class DrawContext1(
+    val draw: DrawableApi1,
+    val camera: CameraApi1,
+    val screen: OverlayScreen1,
     val render: (callback: (SpriteBatch) -> Unit) -> Unit
 )

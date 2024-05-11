@@ -7,7 +7,7 @@ import org.junit.Test
 /** Tests find based operations in the Engine node graph */
 class QuasarEngineTestFindAndCreate {
 
-    private fun createEngine(): QuasarEngine = QuasarEngineActual(
+    private fun createEngine(): QuasarEngine1 = QuasarEngineActual1(
         drawContext = TestDrawContext.create(),
         onExit = {},
         deserialized = null,
@@ -60,8 +60,8 @@ class QuasarEngineTestFindAndCreate {
 
 interface Find
 
-class FindScript: GameNode<FindData>(), Find {
-    override fun onCreate(input: NodeInput): FindData {
+class FindScript: GameNode1<FindData>(), Find {
+    override fun onCreate(input: NodeInput1): FindData {
         return FindData("popcorn")
     }
 

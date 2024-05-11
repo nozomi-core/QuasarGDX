@@ -1,6 +1,6 @@
 package app.quasar.qgl.scripts
 
-import app.quasar.qgl.engine.core.GameNodeUnit
+import app.quasar.qgl.engine.core.GameNodeUnit1
 import kotlin.reflect.KClass
 
 interface ConsoleLog {
@@ -10,7 +10,7 @@ interface ConsoleLog {
     fun addOnLogMessage(callback: LogCallback)
 }
 
-class ConsoleLogScript: GameNodeUnit(), ConsoleLog {
+class ConsoleLogScript: GameNodeUnit1(), ConsoleLog {
     private val callbacks = mutableListOf<LogCallback>()
 
     override fun send(log: EngineLog) {

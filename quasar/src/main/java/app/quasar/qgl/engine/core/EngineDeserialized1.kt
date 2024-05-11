@@ -2,17 +2,17 @@ package app.quasar.qgl.engine.core
 
 import kotlin.reflect.KClass
 
-class EngineDeserialized(
+class EngineDeserialized1(
     val currentRuntimeId: Long,
     val coreScripts: List<KClass<*>>,
-    val graph: NodeGraph
+    val graph: NodeGraph1
 ) {
-    fun toEngineData(): EngineData {
-        return EngineData(
+    fun toEngineData(): EngineData1 {
+        return EngineData1(
             currentRuntimeId = currentRuntimeId,
             coreScripts = coreScripts.toMutableList(),
             graph = graph,
-            clock = EngineClock()
+            clock = EngineClock1()
         )
     }
 }

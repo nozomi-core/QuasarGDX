@@ -2,7 +2,7 @@ package app.quasar.gdx
 
 import app.quasar.gdx.game.scripts.WorldTimeScript
 import app.quasar.gdx.ui.main.MainMap
-import app.quasar.qgl.engine.core.EngineApi
+import app.quasar.qgl.engine.core.EngineApi1
 import app.quasar.qgl.tiles.GameWorld
 import kotlin.reflect.KClass
 
@@ -14,7 +14,7 @@ class CoreWorld: GameWorld() {
         )
     }
 
-    override fun onCreate(engine: EngineApi) {
+    override fun onCreate(engine: EngineApi1) {
         super.onCreate(engine)
         engine.createNode(MainMap::class)
     }

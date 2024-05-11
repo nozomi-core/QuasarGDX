@@ -1,19 +1,19 @@
 package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.CoreAssets
-import app.quasar.qgl.engine.core.GameNodeUnit
-import app.quasar.qgl.engine.core.SetupContext
+import app.quasar.qgl.engine.core.GameNodeUnit1
+import app.quasar.qgl.engine.core.SetupContext1
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Music
 
-class AudioScript: GameNodeUnit() {
+class AudioScript: GameNodeUnit1() {
 
     private val tracks = arrayOf(CoreAssets.Music.PIANO, CoreAssets.Music.AMBIENT_WAVE)
     private var currentIndex = 0
 
     private var music: Music? = null
 
-    override fun onSetup(context: SetupContext, data: Unit) {
+    override fun onSetup(context: SetupContext1, data: Unit) {
         playNextTrack()
     }
 

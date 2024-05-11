@@ -1,10 +1,10 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.engine.core.interfaces.WorldPosition1
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-typealias SimulationTask<D> = (context: SimContext, self: SelfContext, data: D) -> Unit
+typealias SimulationTask<D> = (context: SimContext1, self: SelfContext1, data: D) -> Unit
 
 interface ReadableGameNode {
     val isAlive: Boolean
@@ -12,9 +12,9 @@ interface ReadableGameNode {
     val parent: ReadableGameNode?
 }
 
-abstract class GameNode<D>: ReadableGameNode {
+abstract class GameNode1<D>: ReadableGameNode {
     private var runtimeId: Long = -1L
-    private var parentNode: GameNode<*>? = null
+    private var parentNode: GameNode1<*>? = null
 
     //Data
     private var _data: D? = null
@@ -38,35 +38,35 @@ abstract class GameNode<D>: ReadableGameNode {
     override val id: Long get() = runtimeId
 
     //Node management
-    private val childGraph = NodeGraph()
-    private val drawableNodes = DrawableNodeGraph(childGraph)
+    private val childGraph = NodeGraph1()
+    private val drawableNodes = DrawableNodeGraph1(childGraph)
 
-    private val creationQueue = mutableListOf<Pair<KClass<out GameNode<*>>, Any?>>()
+    private val creationQueue = mutableListOf<Pair<KClass<out GameNode1<*>>, Any?>>()
     private val simulationTasks = mutableListOf<SimulationTask<D>>()
 
     //Engine
-    private val engineApi: EngineApi get() = _engineApi!!
-    private var _engineApi: QuasarEngine? = null
+    private val engineApi: EngineApi1 get() = _engineApi!!
+    private var _engineApi: QuasarEngine1? = null
 
     //Hooks
-    protected abstract fun onCreate(input: NodeInput): D
-    protected open fun onSetup(context: SetupContext, data: D) {}
-    protected open fun onSimulate(context: SimContext, self: SelfContext, data: D) {}
-    protected open fun onDraw(context: DrawContext, data: D){}
+    protected abstract fun onCreate(input: NodeInput1): D
+    protected open fun onSetup(context: SetupContext1, data: D) {}
+    protected open fun onSimulate(context: SimContext1, self: SelfContext1, data: D) {}
+    protected open fun onDraw(context: DrawContext1, data: D){}
     protected open fun onDestroy() {}
 
-    private val selfContext = object: SelfContext {
-        override fun getParent(): GameNode<*> = this@GameNode
+    private val selfContext = object: SelfContext1 {
+        override fun getParent(): GameNode1<*> = this@GameNode1
 
         override fun destroyNode() {
             isObjectedMarkedForDestruction = true
         }
 
-        override fun <T : GameNode<*>> createChild(node: KClass<T>, argument: Any?) {
+        override fun <T : GameNode1<*>> createChild(node: KClass<T>, argument: Any?) {
             creationQueue.add(Pair(node, argument))
         }
 
-        override fun <T : GameNode<*>> createSingleChild(node: KClass<T>, argument: Any?) {
+        override fun <T : GameNode1<*>> createSingleChild(node: KClass<T>, argument: Any?) {
             if(!childGraph.contains(node)) {
                 createChild(node, argument)
             }
@@ -84,7 +84,7 @@ abstract class GameNode<D>: ReadableGameNode {
             return childGraph.forEachInterface(nodeInterface, callback)
         }
 
-        override fun <T : Any> getNearby(target: WorldPosition, distance: Float, nodeInterface: KClass<T>): List<T> {
+        override fun <T : Any> getNearby(target: WorldPosition1, distance: Float, nodeInterface: KClass<T>): List<T> {
             return childGraph.getNearby(target, distance, nodeInterface)
         }
     }
@@ -95,21 +95,21 @@ abstract class GameNode<D>: ReadableGameNode {
 
     /** Engine Module */
 
-    internal fun create(engineApiAdmin: QuasarEngine, argument: Any?) {
+    internal fun create(engineApiAdmin: QuasarEngine1, argument: Any?) {
         this._engineApi = engineApiAdmin
         this.runtimeId = engineApiAdmin.generateId()
-        _data = onCreate(NodeInput(argument))
-        onSetup(SetupContext(engine = engineApi, engineApiAdmin.registerOverlay), _data!!)
+        _data = onCreate(NodeInput1(argument))
+        onSetup(SetupContext1(engine = engineApi, engineApiAdmin.registerOverlay), _data!!)
         doCreationStep()
     }
 
-    internal fun simulate(context: SimContext) {
+    internal fun simulate(context: SimContext1) {
         doSimulationStep(context)
         checkObjectIsBeingDestroyed()
         doCreationStep()
     }
 
-    internal fun draw(context: DrawContext) {
+    internal fun draw(context: DrawContext1) {
         onDraw(context, _data!!)
         drawableNodes.draw(context)
     }
@@ -118,7 +118,7 @@ abstract class GameNode<D>: ReadableGameNode {
 
     /** Engine Steps */
 
-    private fun doSimulationStep(context: SimContext) {
+    private fun doSimulationStep(context: SimContext1) {
         simulationTasks.forEach { it(context, selfContext, _data!!) }
         simulationTasks.clear()
 
@@ -164,7 +164,7 @@ abstract class GameNode<D>: ReadableGameNode {
 
     //Java Interface
     override fun equals(other: Any?): Boolean {
-        return when(other is GameNode<*>) {
+        return when(other is GameNode1<*>) {
             true -> other.runtimeId == this.runtimeId
             false -> false
         }
@@ -179,7 +179,7 @@ abstract class GameNode<D>: ReadableGameNode {
     }
 }
 
-class NodeInput internal constructor(val value: Any?) {
+class NodeInput1 internal constructor(val value: Any?) {
     fun <I,O> map(mapper: (I) -> O): O {
         return mapper(value as I)
     }

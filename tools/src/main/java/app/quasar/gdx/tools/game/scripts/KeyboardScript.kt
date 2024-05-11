@@ -10,7 +10,7 @@ import com.badlogic.gdx.InputAdapter
 
 interface Keyboard: InputNode
 
-class KeyboardScript: GameNodeUnit(), Keyboard {
+class KeyboardScript: GameNodeUnit1(), Keyboard {
     private lateinit var logger: ConsoleLog
     private lateinit var inputFocus: InputStack
 
@@ -18,7 +18,7 @@ class KeyboardScript: GameNodeUnit(), Keyboard {
 
     private var stringBuilder = StringBuilder()
 
-    override fun onSetup(context: SetupContext, data: Unit) {
+    override fun onSetup(context: SetupContext1, data: Unit) {
         logger = context.engine.requireFindByInterface(ConsoleLog::class)
         inputFocus = context.engine.requireFindByInterface(InputStack::class)
 
@@ -37,7 +37,7 @@ class KeyboardScript: GameNodeUnit(), Keyboard {
         }
     }
 
-    override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
+    override fun onSimulate(context: SimContext1, self: SelfContext1, data: Unit) {
         inputFocus.withInputFocus(this) {
             if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 logger.message(this, "UNABLE!!")

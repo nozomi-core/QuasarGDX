@@ -1,17 +1,17 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.engine.core.interfaces.GameOverlay
-import app.quasar.qgl.engine.core.interfaces.GameOverlayShape
+import app.quasar.qgl.engine.core.interfaces.GameOverlay1
+import app.quasar.qgl.engine.core.interfaces.GameOverlayShape1
 
-class DrawableOverlayGraph()  {
+class DrawableOverlayGraph1()  {
 
-    private val nodes = mutableListOf<NodeReference<GameOverlay>>()
+    private val nodes = mutableListOf<NodeReference1<GameOverlay1>>()
 
-    fun add(overlay: GameOverlay) {
+    fun add(overlay: GameOverlay1) {
         val exists = nodes.find { it.get() == overlay } != null
 
         if(!exists) {
-            nodes.add(NodeReference(overlay))
+            nodes.add(NodeReference1(overlay))
         }
     }
 
@@ -20,18 +20,18 @@ class DrawableOverlayGraph()  {
         nodes.removeIf { it.get() == null }
     }
 
-    fun draw(context: DrawContext) {
+    fun draw(context: DrawContext1) {
         clean()
         nodes.forEach {
             it.get()?.onDrawOverlay(context)
         }
     }
 
-    fun drawShapes(context: ShapeContext) {
+    fun drawShapes(context: ShapeContext1) {
         clean()
         nodes.forEach { reference ->
             val overlay = reference.get()
-            if(overlay is GameOverlayShape) {
+            if(overlay is GameOverlayShape1) {
                 overlay.onDrawShape(context)
             }
         }

@@ -1,9 +1,9 @@
 package app.quasar.qgl.scripts
 
-import app.quasar.qgl.engine.core.GameNodeUnit
-import app.quasar.qgl.engine.core.NodeProvider
-import app.quasar.qgl.engine.core.SelfContext
-import app.quasar.qgl.engine.core.SimContext
+import app.quasar.qgl.engine.core.GameNodeUnit1
+import app.quasar.qgl.engine.core.NodeProvider1
+import app.quasar.qgl.engine.core.SelfContext1
+import app.quasar.qgl.engine.core.SimContext1
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
 
@@ -14,9 +14,9 @@ interface InputStack {
     fun withInputFocus(node: InputNode, callback: () -> Unit)
 }
 
-class InputStackScript: GameNodeUnit(), InputStack {
+class InputStackScript: GameNodeUnit1(), InputStack {
 
-    private val provider = NodeProvider<InputNode>()
+    private val provider = NodeProvider1<InputNode>()
 
     override fun setDefault(node: InputNode) {
        provider.setDefault(node)
@@ -36,7 +36,7 @@ class InputStackScript: GameNodeUnit(), InputStack {
         }
     }
 
-    override fun onSimulate(context: SimContext, self: SelfContext, data: Unit) {
+    override fun onSimulate(context: SimContext1, self: SelfContext1, data: Unit) {
         val inputFocus = provider.provide()
         Gdx.input.inputProcessor = inputFocus?.getInputAdapter()
     }

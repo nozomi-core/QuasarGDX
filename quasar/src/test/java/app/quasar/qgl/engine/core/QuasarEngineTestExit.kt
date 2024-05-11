@@ -8,9 +8,9 @@ class QuasarEngineExitTest {
 
     @Test
     fun testEngineExitOnlyMarkedButNoCallToExitCompleted() {
-        var engineData: EngineDeserialized? = null
+        var engineData: EngineDeserialized1? = null
 
-        val engine = QuasarEngineActual(
+        val engine = QuasarEngineActual1(
             drawContext = TestDrawContext.create(),
             onExit = {
                 engineData = it
@@ -27,9 +27,9 @@ class QuasarEngineExitTest {
 
     @Test
     fun testEngineOnlyAfterLastSimulationCall() {
-        var engineData: EngineDeserialized? = null
+        var engineData: EngineDeserialized1? = null
 
-        val engine = QuasarEngineActual(
+        val engine = QuasarEngineActual1(
             drawContext = TestDrawContext.create(),
             onExit = {
                 engineData = it
@@ -48,8 +48,8 @@ class QuasarEngineExitTest {
     }
 }
 
-class BasicScript: GameNode<BasicData>() {
-    override fun onCreate(input: NodeInput): BasicData {
+class BasicScript: GameNode1<BasicData>() {
+    override fun onCreate(input: NodeInput1): BasicData {
         return BasicData("Milo Ramen", 26)
     }
 }

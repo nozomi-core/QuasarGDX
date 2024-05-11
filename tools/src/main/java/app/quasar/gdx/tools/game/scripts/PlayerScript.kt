@@ -1,42 +1,39 @@
 package app.quasar.gdx.tools.game.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
-import app.quasar.gdx.tools.canvas
 import app.quasar.gdx.tools.game.data.PlayerData
 import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.engine.core.interfaces.GameOverlay
-import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.engine.core.interfaces.GameOverlay1
+import app.quasar.qgl.engine.core.interfaces.WorldPosition1
 import app.quasar.qgl.scripts.InputNode
 import app.quasar.qgl.scripts.InputStack
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.math.Vector3
 import kotlin.random.Random
 
-interface Player: GameOverlay, InputNode, WorldPosition
+interface Player: GameOverlay1, InputNode, WorldPosition1
 
-class PlayerScript: GameNode<PlayerData>(), Player {
+class PlayerScript: GameNode1<PlayerData>(), Player {
 
     private lateinit var inputFocus: InputStack
 
-    override fun onSetup(context: SetupContext, data: PlayerData) {
+    override fun onSetup(context: SetupContext1, data: PlayerData) {
         inputFocus = context.engine.requireFindByInterface(InputStack::class)
         inputFocus.setDefault(this)
         context.registerOverlay(this)
     }
 
-    override fun onCreate(input: NodeInput): PlayerData {
+    override fun onCreate(input: NodeInput1): PlayerData {
         return PlayerData(
             position = Vector3(),
             rotate = 2f
         )
     }
 
-    override fun onSimulate(context: SimContext, self: SelfContext, data: PlayerData) {
+    override fun onSimulate(context: SimContext1, self: SelfContext1, data: PlayerData) {
         val engine = context.engine
         val clock = context.clock
 
@@ -47,7 +44,7 @@ class PlayerScript: GameNode<PlayerData>(), Player {
         data.rotate += clock.multiply(ROTATE_SPEED)
     }
 
-    private fun onHandleInput(data: PlayerData, context: SimContext, self: SelfContext) {
+    private fun onHandleInput(data: PlayerData, context: SimContext1, self: SelfContext1) {
         // Move the camera based on input events
         val clock = context.clock
         val engine = context.engine
@@ -88,7 +85,7 @@ class PlayerScript: GameNode<PlayerData>(), Player {
         }
     }
 
-    override fun onDraw(context: DrawContext, data: PlayerData) {
+    override fun onDraw(context: DrawContext1, data: PlayerData) {
         val draw = context.draw
 
         draw.batchWith { api ->
@@ -99,7 +96,7 @@ class PlayerScript: GameNode<PlayerData>(), Player {
         context.camera.setCamera(data.position.x, data.position.y)
     }
 
-    override fun onDrawOverlay(context: DrawContext) {
+    override fun onDrawOverlay(context: DrawContext1) {
         val draw = context.draw
     }
 

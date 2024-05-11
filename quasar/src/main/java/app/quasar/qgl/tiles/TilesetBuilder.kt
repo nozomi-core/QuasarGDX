@@ -1,6 +1,6 @@
 package app.quasar.qgl.tiles
 
-import app.quasar.qgl.engine.core.TileId
+import app.quasar.qgl.engine.core.TileId1
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
@@ -13,7 +13,7 @@ class TilesetBuilder(
 
     private val defaultRegion = TextureRegion(texture, 0, 0, layout.tileSize ,layout.tileSize)
 
-    fun add(ref: TileId, gridX: Int, gridY: Int, width: Int = layout.tileSize, height: Int = layout.tileSize) {
+    fun add(ref: TileId1, gridX: Int, gridY: Int, width: Int = layout.tileSize, height: Int = layout.tileSize) {
         if(ref.id > largestIndex) {
             largestIndex = ref.id
         }
@@ -25,7 +25,7 @@ class TilesetBuilder(
         tileMap[ref.id] = textureRegion
     }
 
-    fun addSpan(ref: TileId, gridX: Int, gridY: Int, spanWidth: Int, spanHeight: Int) {
+    fun addSpan(ref: TileId1, gridX: Int, gridY: Int, spanWidth: Int, spanHeight: Int) {
         return add(ref, gridX, gridY, spanWidth * layout.tileSize, spanHeight * layout.tileSize)
     }
 

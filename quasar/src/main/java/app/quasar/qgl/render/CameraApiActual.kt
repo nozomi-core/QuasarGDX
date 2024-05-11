@@ -1,9 +1,9 @@
 package app.quasar.qgl.render
 
 import app.quasar.qgl.tiles.UiHooks
-import app.quasar.qgl.engine.core.CameraApi
+import app.quasar.qgl.engine.core.CameraApi1
 
-class CameraApiActual(private val hooks: UiHooks): CameraApi {
+class CameraApiActual(private val hooks: UiHooks): CameraApi1 {
 
     override fun setCamera(x: Float, y: Float) {
         val worldCam = hooks.useWorldCamera()

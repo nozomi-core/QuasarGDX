@@ -1,6 +1,6 @@
 package app.quasar.qgl.engine.core
 
-class EngineClock {
+class EngineClock1 {
     internal var frameDeltaTime: Float = 0f
 
     var ticks: Int = 0

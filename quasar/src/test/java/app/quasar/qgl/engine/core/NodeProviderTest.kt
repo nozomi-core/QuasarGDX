@@ -7,20 +7,20 @@ class NodeProviderTest {
 
     @Test
     fun testNodeProvider() {
-        val provider = NodeProvider<String>()
+        val provider = NodeProvider1<String>()
         Assert.assertNull(provider.provide())
     }
 
     @Test
     fun testNodeProviderDefault() {
-        val provider = NodeProvider<String>()
+        val provider = NodeProvider1<String>()
         provider.setDefault("default")
         Assert.assertEquals("default", provider.provide())
     }
 
     @Test
     fun testNodeProviderDefaultAndPush() {
-        val provider = NodeProvider<String>()
+        val provider = NodeProvider1<String>()
         provider.setDefault("default")
         provider.push("push")
         Assert.assertEquals("push", provider.provide())
@@ -28,7 +28,7 @@ class NodeProviderTest {
 
     @Test
     fun testNodeProviderDefaultAndPushPop() {
-        val provider = NodeProvider<String>()
+        val provider = NodeProvider1<String>()
         provider.setDefault("default")
         provider.push("push")
         provider.pop("push")

@@ -1,9 +1,9 @@
 package app.quasar.qgl.engine.core
 
-class NodeProvider<T> {
+class NodeProvider1<T> {
 
     private var default: T? = null
-    private val nodeSet = HashSet<NodeReference<T>>()
+    private val nodeSet = HashSet<NodeReference1<T>>()
 
     private fun cleanCollectedReferences() {
         nodeSet.removeIf {
@@ -25,7 +25,7 @@ class NodeProvider<T> {
     }
 
     fun push(value: T) {
-        nodeSet.add(NodeReference(value))
+        nodeSet.add(NodeReference1(value))
     }
 
     fun pop(node: T) {

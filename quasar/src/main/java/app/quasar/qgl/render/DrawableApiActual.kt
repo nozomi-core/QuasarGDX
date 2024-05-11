@@ -1,7 +1,7 @@
 package app.quasar.qgl.render
 
-import app.quasar.qgl.engine.core.DrawableApi
-import app.quasar.qgl.engine.core.TileId
+import app.quasar.qgl.engine.core.DrawableApi1
+import app.quasar.qgl.engine.core.TileId1
 import app.quasar.qgl.tiles.TileSheetLayout
 import app.quasar.qgl.tiles.TileTextures
 import com.badlogic.gdx.graphics.Color
@@ -12,7 +12,7 @@ class DrawableApiActual(
     private val layout: TileSheetLayout,
     private val textures: TileTextures,
     private val spriteBatch: SpriteBatch
-): DrawableApi {
+): DrawableApi1 {
 
     private val spriteApi = object : SpriteApi {
         override fun setColor(color: Color) {
@@ -25,21 +25,21 @@ class DrawableApiActual(
             spriteBatch.color = color
         }
     }
-    override fun tileGrid(id: TileId, gridX: Int, gridY: Int) {
+    override fun tileGrid(id: TileId1, gridX: Int, gridY: Int) {
         val region = textures.get(id)
         spriteBatch.draw(region, (gridX * layout.tileSize).toFloat(), (gridY * layout.tileSize).toFloat())
     }
 
-    override fun tilePx(id: TileId, x: Float, y: Float) {
+    override fun tilePx(id: TileId1, x: Float, y: Float) {
         val region = textures.get(id)
         spriteBatch.draw(region, x, y)
     }
 
-    override fun tilePx(id: TileId, vector: Vector3) {
+    override fun tilePx(id: TileId1, vector: Vector3) {
         tilePx(id, vector.x, vector.y)
     }
 
-    override fun tilePx(id: TileId, x: Float, y: Float, scale: Float, rotation: Float) {
+    override fun tilePx(id: TileId1, x: Float, y: Float, scale: Float, rotation: Float) {
         val region = textures.get(id)
         spriteBatch.draw(region, x, y, region.regionWidth / 2f, region.regionHeight / 2f,  region.regionWidth.toFloat(), region.regionHeight.toFloat(), scale, scale, rotation)
     }

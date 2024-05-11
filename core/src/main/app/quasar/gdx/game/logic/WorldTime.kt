@@ -2,12 +2,11 @@ package app.quasar.gdx.game.logic
 
 import app.quasar.gdx.game.data.WorldTimeData
 import app.quasar.gdx.game.scripts.WorldTimeScript
-import app.quasar.qgl.engine.core.SimContext
-import app.quasar.qgl.scripts.ConsoleLog
+import app.quasar.qgl.engine.core.SimContext1
 
 fun doWorldTime(
     script: WorldTimeScript,
-    context: SimContext,
+    context: SimContext1,
     data: WorldTimeData
 ) {
     val deltaTime = context.clock.deltaTime

@@ -1,3 +1,3 @@
 package app.quasar.qgl.engine.core
 
-data class TileId(val id: Int)
+data class TileId1(val id: Int)
