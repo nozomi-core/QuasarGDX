@@ -7,12 +7,20 @@ import kotlin.reflect.KClass
  * Primary responsibility of [QuasarEngineActual] is to delegate API calls to the relevant submodules and receive events from them
  * and delegate any calls to the required module.
  */
-class QuasarEngineActual: QuasarEngine {
+class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit): QuasarEngine {
+    private val nodeGraph: NodeGraph
+    private val engineClock: EngineClock
 
-    private val nodeGraph = NodeGraph()
+    private val simContext: SimContext
+    private val drawContext: DrawContext
 
-    override fun simulate() {
-        nodeGraph.simulate()
+    init {
+        val config = QuasarEngineFactory(factory)
+
+        nodeGraph = NodeGraph()
+        engineClock = EngineClock()
+        simContext = SimContext()
+        drawContext = DrawContext(drawableApi = config.requireDrawableApi())
     }
 
     override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
@@ -21,5 +29,14 @@ class QuasarEngineActual: QuasarEngine {
 
     override fun findByTag(tag: String): ReadableGameNode? {
         return nodeGraph.findByTag(tag)
+    }
+
+    internal fun simulate(deltaTime: Float) {
+        engineClock.update(deltaTime)
+        nodeGraph.simulate(simContext)
+    }
+
+    internal fun draw() {
+        nodeGraph.draw(drawContext)
     }
 }

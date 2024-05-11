@@ -7,9 +7,15 @@ class NodeGraph {
 
     private val nodeList = mutableListOf<GameNode<*>>()
 
-    internal fun simulate() {
+    internal fun simulate(simContext: SimContext) {
         nodeList.forEach {
-            it.simulate()
+            it.simulate(simContext)
+        }
+    }
+
+    internal fun draw(context: DrawContext) {
+        nodeList.forEach {
+            it.draw(context)
         }
     }
 
@@ -23,4 +29,6 @@ class NodeGraph {
     internal fun findByTag(tag: String): ReadableGameNode? {
         return nodeList.find { it.tag == tag }
     }
+
+
 }

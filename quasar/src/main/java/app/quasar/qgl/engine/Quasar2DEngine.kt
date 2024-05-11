@@ -3,7 +3,7 @@ package app.quasar.qgl.engine
 import app.quasar.qgl.QuasarRuntime
 import app.quasar.qgl.engine.core1.*
 import app.quasar.qgl.render.CameraApiActual
-import app.quasar.qgl.render.DrawableApiActual
+import app.quasar.qgl.render.DrawableApiActual1
 import app.quasar.qgl.QuasarCoreScripts
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
@@ -16,7 +16,7 @@ import kotlin.reflect.full.createInstance
 class Quasar2DEngine(
     private val runtime: QuasarRuntime,
     private val config: QuasarEngine2DConfig,
-    private val uiHooks: UiHooks,
+    private val uiHooks: GameWindow,
 ): Disposable {
     private val drawableApi = config.createDrawApi()
 
@@ -35,9 +35,9 @@ class Quasar2DEngine(
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
         kClass.createInstance().apply {
-           createRootScripts(useRootScripts())
+           /*createRootScripts(useRootScripts())
            create(engineApi)
-           runtime.sendWorldEngine(engineApi)
+           runtime.sendWorldEngine(engineApi)*/
        }
     }
 
@@ -50,22 +50,22 @@ class Quasar2DEngine(
         val spriteBatch = config.spriteBatch
 
         //Draw world frame
-        uiHooks.useWorldViewport().apply()
-        uiHooks.useWorldCamera().update()
-        spriteBatch.projectionMatrix = uiHooks.useWorldCamera().combined
+        uiHooks.getWorldViewport().apply()
+        uiHooks.getWorldCamera().update()
+        spriteBatch.projectionMatrix = uiHooks.getWorldCamera().combined
         spriteBatch.begin()
         engineApi.simulate(Gdx.graphics.deltaTime)
         engineApi.draw()
         spriteBatch.end()
 
         //Shape renderer
-        shapeContext.shape.projectionMatrix = uiHooks.useOverlayCamera().combined
+        shapeContext.shape.projectionMatrix = uiHooks.getOverlayCamera().combined
         engineApi.drawShapes(shapeContext)
 
         //DrawUI
-        uiHooks.useOverlayViewport().apply()
-        uiHooks.useOverlayCamera().update()
-        spriteBatch.projectionMatrix = uiHooks.useOverlayCamera().combined
+        uiHooks.getOverlayViewport().apply()
+        uiHooks.getOverlayCamera().update()
+        spriteBatch.projectionMatrix = uiHooks.getOverlayCamera().combined
         spriteBatch.begin()
         engineApi.drawOverlay()
         spriteBatch.end()
@@ -77,18 +77,18 @@ class Quasar2DEngine(
         shapeContext.shape.dispose()
     }
 
-    private fun createTileTextures(tileset: GameTileset, tileSheetLayout: TileSheetLayout, texture: Texture): TileTextures {
-        return TilesetBuilder(tileSheetLayout, texture).also { builder ->
+    private fun createTileTextures(tileset: GameTileset, tileSize: Int, texture: Texture): TileTextures {
+        return TilesetBuilder(tileSize, texture).also { builder ->
             tileset.onCreateTiles(builder)
         }.build()
     }
 
     private fun QuasarEngine2DConfig.createDrawApi(): DrawableApi1 {
-        return DrawableApiActual(
-            layout,
+        return DrawableApiActual1(
+            tileSize,
             createTileTextures(
                 tileset,
-                layout,
+                tileSize,
                 texture
             ),
             spriteBatch

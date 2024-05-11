@@ -10,13 +10,13 @@ data class QuasarEngine2DConfig(
     val texture: Texture,
     val spriteBatch: SpriteBatch,
     val tileset: GameTileset,
-    val layout: TileSheetLayout,
+    val tileSize: Int,
     val screen: OverlayScreen1
 )
 
-interface UiHooks {
-    fun useWorldCamera(): Camera
-    fun useOverlayCamera(): Camera
-    fun useWorldViewport(): Viewport
-    fun useOverlayViewport(): Viewport
+interface GameWindow {
+    fun getWorldCamera(): Camera
+    fun getOverlayCamera(): Camera
+    fun getWorldViewport(): Viewport
+    fun getOverlayViewport(): Viewport
 }

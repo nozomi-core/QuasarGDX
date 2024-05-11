@@ -4,11 +4,10 @@ import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.CoreWorld
 import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.QuasarRuntime
-import app.quasar.qgl.tiles.UiHooks
+import app.quasar.qgl.tiles.GameWindow
 import app.quasar.qgl.engine.Quasar2DEngine
 import app.quasar.qgl.engine.core1.OverlayScreen1
 import app.quasar.qgl.tiles.QuasarEngine2DConfig
-import app.quasar.qgl.tiles.TileSheetLayout
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
@@ -36,16 +35,16 @@ class MainScreen(private val runtime: QuasarRuntime): Screen {
             texture = Texture(CoreAssets.Sprites.TILE_SET),
             spriteBatch = SpriteBatch(),
             tileset = CoreTileset(),
-            layout = TileSheetLayout(tileSize = 16),
+            tileSize = 16,
             screen = OverlayScreen1(400f, 400f)
         )
     }
 
-    private val engineCallbacks = object : UiHooks {
-        override fun useWorldCamera() = worldCamera
-        override fun useWorldViewport() = worldViewport
-        override fun useOverlayCamera() = overlayCamera
-        override fun useOverlayViewport() = overlayViewport
+    private val engineCallbacks = object : GameWindow {
+        override fun getWorldCamera() = worldCamera
+        override fun getWorldViewport() = worldViewport
+        override fun getOverlayCamera() = overlayCamera
+        override fun getOverlayViewport() = overlayViewport
     }
 
     override fun show() {

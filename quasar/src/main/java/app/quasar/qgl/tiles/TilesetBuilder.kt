@@ -1,19 +1,19 @@
 package app.quasar.qgl.tiles
 
-import app.quasar.qgl.engine.core1.TileId1
+import app.quasar.qgl.engine.core.TileId
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 class TilesetBuilder(
-    private val layout: TileSheetLayout,
+    private val tileSize: Int,
     private val texture: Texture
 ) {
     private val tileMap = HashMap<Int, TextureRegion>()
     private var largestIndex = -1
 
-    private val defaultRegion = TextureRegion(texture, 0, 0, layout.tileSize ,layout.tileSize)
+    private val defaultRegion = TextureRegion(texture, 0, 0, tileSize ,tileSize)
 
-    fun add(ref: TileId1, gridX: Int, gridY: Int, width: Int = layout.tileSize, height: Int = layout.tileSize) {
+    fun add(ref: TileId, gridX: Int, gridY: Int, width: Int = tileSize, height: Int = tileSize) {
         if(ref.id > largestIndex) {
             largestIndex = ref.id
         }
@@ -25,16 +25,16 @@ class TilesetBuilder(
         tileMap[ref.id] = textureRegion
     }
 
-    fun addSpan(ref: TileId1, gridX: Int, gridY: Int, spanWidth: Int, spanHeight: Int) {
-        return add(ref, gridX, gridY, spanWidth * layout.tileSize, spanHeight * layout.tileSize)
+    fun addSpan(ref: TileId, gridX: Int, gridY: Int, spanWidth: Int, spanHeight: Int) {
+        return add(ref, gridX, gridY, spanWidth * tileSize, spanHeight * tileSize)
     }
 
     private fun mapGridToTextureX(gridX: Int): Int {
-        return gridX * layout.tileSize
+        return gridX * tileSize
     }
 
     private fun mapGridToTextureY(gridY: Int): Int {
-        return gridY * layout.tileSize
+        return gridY * tileSize
     }
 
     fun build(): TileTextures {

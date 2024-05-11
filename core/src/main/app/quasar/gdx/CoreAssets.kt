@@ -1,6 +1,8 @@
 package app.quasar.gdx
 
 object CoreAssets {
+    const val TILE_SIZE = 16
+
     object Sprites {
         const val TILE_SET =            "sprites/QuasarGameTileset.png"
     }
