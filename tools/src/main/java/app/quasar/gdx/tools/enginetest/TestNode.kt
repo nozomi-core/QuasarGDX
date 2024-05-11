@@ -1,14 +1,19 @@
 package app.quasar.gdx.tools.enginetest
 
 import app.quasar.gdx.tiles.CoreTiles
-import app.quasar.qgl.engine.core.DrawContext
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.NodeArgument
+import app.quasar.qgl.engine.core.*
 
 class TestNode: GameNode<Unit>() {
+
+    private var xPos: Float = 0f
+
     override fun onCreate(argument: NodeArgument) {}
 
+    override fun onSimulate(self: SelfContext, context: SimContext, data: Unit) {
+        xPos += 1f
+    }
+
     override fun onDraw(context: DrawContext, data: Unit) {
-        context.drawableApi.tilePx(CoreTiles.SMILE, 0f,0f)
+        context.draw.tilePx(CoreTiles.SMILE, xPos,0f)
     }
 }

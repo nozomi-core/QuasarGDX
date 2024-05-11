@@ -20,7 +20,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit): QuasarEngine 
         nodeGraph = NodeGraph()
         engineClock = EngineClock()
         simContext = SimContext()
-        drawContext = DrawContext(drawableApi = config.requireDrawableApi())
+        drawContext = DrawContext(draw = config.requireDrawableApi())
     }
 
     override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
