@@ -1,7 +1,7 @@
 package app.quasar.qgl.scripts
 
-import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.engine.core.interfaces.WorldBounded1
+import app.quasar.qgl.engine.core1.*
+import app.quasar.qgl.engine.core1.interfaces.WorldBounded1
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 

@@ -1,7 +1,7 @@
 package app.quasar.qgl.engine.serialize
 
-import app.quasar.qgl.engine.core.GameNode1
-import app.quasar.qgl.engine.core.EngineDeserialized1
+import app.quasar.qgl.engine.core1.GameNode1
+import app.quasar.qgl.engine.core1.EngineDeserialized1
 import app.quasar.qgl.serialize.*
 
 class EngineBinary1 {

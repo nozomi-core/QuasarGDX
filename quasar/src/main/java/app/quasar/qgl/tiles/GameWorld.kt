@@ -1,6 +1,6 @@
 package app.quasar.qgl.tiles
 
-import app.quasar.qgl.engine.core.EngineApi1
+import app.quasar.qgl.engine.core1.EngineApi1
 import kotlin.reflect.KClass
 
 abstract class GameWorld {

@@ -1,6 +1,6 @@
 package app.quasar.qgl
 
-import app.quasar.qgl.engine.core.QuasarEngine1
+import app.quasar.qgl.engine.core1.QuasarEngine1
 
 typealias EngineReady = (api: QuasarEngine1) -> Unit
 

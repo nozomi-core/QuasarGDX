@@ -1,9 +1,9 @@
 package app.quasar.qgl.scripts
 
-import app.quasar.qgl.engine.core.GameNodeUnit1
-import app.quasar.qgl.engine.core.NodeProvider1
-import app.quasar.qgl.engine.core.SelfContext1
-import app.quasar.qgl.engine.core.SimContext1
+import app.quasar.qgl.engine.core1.GameNodeUnit1
+import app.quasar.qgl.engine.core1.NodeProvider1
+import app.quasar.qgl.engine.core1.SelfContext1
+import app.quasar.qgl.engine.core1.SimContext1
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
 

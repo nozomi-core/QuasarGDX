@@ -2,7 +2,7 @@ package app.quasar.gdx.game.logic
 
 import app.quasar.gdx.game.data.WorldTimeData
 import app.quasar.gdx.game.scripts.WorldTimeScript
-import app.quasar.qgl.engine.core.SimContext1
+import app.quasar.qgl.engine.core1.SimContext1
 
 fun doWorldTime(
     script: WorldTimeScript,

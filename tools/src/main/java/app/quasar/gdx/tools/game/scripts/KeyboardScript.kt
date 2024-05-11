@@ -1,6 +1,6 @@
 package app.quasar.gdx.tools.game.scripts
 
-import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.engine.core1.*
 import app.quasar.qgl.scripts.ConsoleLog
 import app.quasar.qgl.scripts.InputNode
 import app.quasar.qgl.scripts.InputStack

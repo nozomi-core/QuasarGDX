@@ -1,8 +1,8 @@
 package app.quasar.gdx.tools.mapeditor
 
 import app.quasar.gdx.tiles.CoreTiles
-import app.quasar.qgl.engine.core.DrawContext1
-import app.quasar.qgl.engine.core.GameNodeUnit1
+import app.quasar.qgl.engine.core1.DrawContext1
+import app.quasar.qgl.engine.core1.GameNodeUnit1
 
 interface PublicEditMap {
     fun printMessage(msg: String)

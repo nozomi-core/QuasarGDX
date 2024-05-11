@@ -1,6 +1,6 @@
 package app.quasar.qgl.scripts
 
-import app.quasar.qgl.engine.core.GameNodeUnit1
+import app.quasar.qgl.engine.core1.GameNodeUnit1
 import kotlin.reflect.KClass
 
 interface ConsoleLog {
