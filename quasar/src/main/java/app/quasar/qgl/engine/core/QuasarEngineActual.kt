@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * Primary responsibility of [QuasarEngineActual] is to delegate API calls to the relevant submodules and receive events from them
  * and delegate any calls to the required module.
  */
-class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit): QuasarEngine {
+class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEngine {
     private val nodeGraph: NodeGraph
     private val engineClock: EngineClock
 
@@ -21,10 +21,12 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit): QuasarEngine 
         engineClock = EngineClock()
         simContext = SimContext(
             engine = this,
-            clock = engineClock
+            clock = engineClock,
+            project = config.requireProject()
         )
         drawContext = DrawContext(
-            draw = config.requireDrawableApi()
+            draw = config.requireDrawableApi(),
+            camera = config.requireCamera()
         )
     }
 

@@ -1,8 +1,6 @@
 package app.quasar.gdx.tools
 
-import app.quasar.gdx.tools.console.SwingGameConsole
 import app.quasar.gdx.tools.enginetest.EngineTestApplication
-import app.quasar.qgl.QuasarRuntime
 import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
@@ -22,16 +20,8 @@ fun runKotlinTooling(args: Array<String>) {
         it.contains("-tool=")
     } ?: return println("no tool in CLI specified")
 
-    val toolName = toolArgument.split("=")[1]
-
-    val runtime = QuasarRuntime()
-
-    runtime.onWorldEngine {
-        SwingGameConsole(it)
-    }
-
     //TODO: add command args back
-    val gdxApp: ApplicationListener = when(toolName) {
+    val gdxApp: ApplicationListener = when(toolArgument.split("=")[1]) {
         CommandArgs.MAP_EDITOR -> EngineTestApplication()
         CommandArgs.DEBUG_GAME -> EngineTestApplication()
         else -> null

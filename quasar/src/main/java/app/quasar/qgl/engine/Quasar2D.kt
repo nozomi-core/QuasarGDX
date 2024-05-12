@@ -1,7 +1,9 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.engine.core.QuasarEngineActual
+import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
+import app.quasar.qgl.render.ProjectionApiActual
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
@@ -20,7 +22,9 @@ class Quasar2D(
     private val texture = Texture(textureFile)
 
     private val engine = QuasarEngineActual {
-        drawableApi = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
+        drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
+        camera = CameraApiActual(window)
+        project = ProjectionApiActual(window.getWorldCamera())
     }
 
     fun <T: GameWorld> applyWorld(kClass: KClass<T>) {

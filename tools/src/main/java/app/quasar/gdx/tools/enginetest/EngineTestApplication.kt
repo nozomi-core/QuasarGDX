@@ -3,7 +3,7 @@ package app.quasar.gdx.tools.enginetest
 import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.engine.Quasar2D
-import app.quasar.qgl.engine.core1.OverlayScreen1
+import app.quasar.qgl.engine.core.OverlayScreen
 import app.quasar.qgl.tiles.GameWindow
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -20,7 +20,7 @@ class EngineTestApplication: ApplicationAdapter() {
     private lateinit var overlayViewport: Viewport
     private lateinit var engine2D: Quasar2D
 
-    private val screen = OverlayScreen1(1920f, 1080f)
+    private val screen = OverlayScreen(1920f, 1080f)
 
     private val window = object : GameWindow {
         override fun getWorldCamera() = worldCamera

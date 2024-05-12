@@ -1,6 +1,6 @@
-package app.quasar.qgl.engine.core1
+package app.quasar.qgl.engine.core
 
-class OverlayScreen1(
+class OverlayScreen(
     val width: Float,
     val height: Float
 ) {
