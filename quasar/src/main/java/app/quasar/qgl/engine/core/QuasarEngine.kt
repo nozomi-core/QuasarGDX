@@ -1,3 +1,5 @@
 package app.quasar.qgl.engine.core
 
-interface QuasarEngine: EngineApi
+interface QuasarEngine: EngineApi {
+    fun destroyNode(node: GameNode<*>)
+}

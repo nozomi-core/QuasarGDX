@@ -1,9 +1,9 @@
-package app.quasar.gdx.tools.enginetest
+package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.qgl.engine.core.*
 
-class TestNode: GameNode<Unit>() {
+class MissileScript: GameNode<Unit>() {
 
     private var xPos: Float = 0f
 

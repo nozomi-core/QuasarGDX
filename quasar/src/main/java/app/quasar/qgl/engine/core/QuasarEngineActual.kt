@@ -19,12 +19,21 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit): QuasarEngine 
 
         nodeGraph = NodeGraph()
         engineClock = EngineClock()
-        simContext = SimContext()
-        drawContext = DrawContext(draw = config.requireDrawableApi())
+        simContext = SimContext(
+            engine = this,
+            clock = engineClock
+        )
+        drawContext = DrawContext(
+            draw = config.requireDrawableApi()
+        )
     }
 
     override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
-        nodeGraph.createNode(script, factory)
+        nodeGraph.createNode(this, script, factory)
+    }
+
+    override fun destroyNode(node: GameNode<*>) {
+        nodeGraph.destroyNode(node)
     }
 
     override fun findByTag(tag: String): ReadableGameNode? {
@@ -32,7 +41,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit): QuasarEngine 
     }
 
     internal fun simulate(deltaTime: Float) {
-        engineClock.update(deltaTime)
+        engineClock.deltaTime = deltaTime
         nodeGraph.simulate(simContext)
     }
 

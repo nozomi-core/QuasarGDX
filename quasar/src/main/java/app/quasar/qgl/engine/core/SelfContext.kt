@@ -1,3 +1,5 @@
 package app.quasar.qgl.engine.core
 
-interface SelfContext
+interface SelfContext {
+    fun destroy()
+}
