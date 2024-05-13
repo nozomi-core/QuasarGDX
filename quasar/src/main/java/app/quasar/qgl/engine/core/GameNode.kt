@@ -1,12 +1,18 @@
 package app.quasar.qgl.engine.core
 
 abstract class GameNode<D>: ReadableGameNode {
-    private val record = NodeRecord<D>()
+
+    override val isAlive: Boolean
+        get() = !isDestroyed
 
     internal val tag: String?
         get() = record.tag
 
+    internal var reference: NodeReference<ReadableGameNode>? = NodeReference(this)
+
     private lateinit var engine: QuasarEngine
+    private val record = NodeRecord<D>()
+    private var isDestroyed = false
 
     protected abstract fun onCreate(argument: NodeArgument): D
     protected open fun onDestroy() {}
@@ -26,6 +32,8 @@ abstract class GameNode<D>: ReadableGameNode {
     }
 
     internal fun destroy() {
+        isDestroyed = true
+        reference = null
         onDestroy()
     }
 

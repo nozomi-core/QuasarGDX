@@ -38,8 +38,8 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         nodeGraph.destroyNode(node)
     }
 
-    override fun findByTag(tag: String): ReadableGameNode? {
-        return nodeGraph.findByTag(tag)
+    override fun findNodeByTag(tag: String): NodeReference<ReadableGameNode>? {
+        return nodeGraph.findNodeByTag(tag)
     }
 
     internal fun simulate(deltaTime: Float) {

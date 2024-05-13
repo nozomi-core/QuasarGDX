@@ -1,3 +1,5 @@
 package app.quasar.qgl.engine.core
 
-interface ReadableGameNode
+interface ReadableGameNode {
+    val isAlive: Boolean
+}

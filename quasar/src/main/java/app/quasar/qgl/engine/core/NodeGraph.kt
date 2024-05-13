@@ -41,8 +41,8 @@ class NodeGraph {
         }
     }
 
-    internal fun findByTag(tag: String): ReadableGameNode? {
-        return nodeList.find { it.tag == tag }
+    internal fun findNodeByTag(tag: String): NodeReference<ReadableGameNode>? {
+        return nodeList.find { it.tag == tag }?.reference
     }
 
     private fun scheduleAfterSimulationEvent(action: EngineAction) {
