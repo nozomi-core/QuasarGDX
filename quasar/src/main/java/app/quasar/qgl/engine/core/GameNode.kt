@@ -25,11 +25,11 @@ abstract class GameNode<D>: ReadableGameNode {
     }
 
     internal fun create(factories: List<NodeFactoryCallback>) {
-        NodeFactory(factories).apply {
-            this.engine = engine!!
-            record.nodeId = nodeId
-            record.tag = tag
-            record.data = onCreate(argument)
+        NodeFactory(factories).also { result ->
+            this.engine = result.engine!!
+            record.nodeId = result.nodeId
+            record.tag = result.tag
+            record.data = onCreate(result.argument)
         }
     }
 
