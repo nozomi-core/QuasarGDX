@@ -13,10 +13,9 @@ class NodeGraph {
         nodeList.forEach {
             it.simulate(simContext)
         }
-        //Perform any actions post simulation
+        //Perform any actions after simulation
         while(afterSimulationActions.isNotEmpty()) {
-            val action = afterSimulationActions.remove()
-            action()
+            afterSimulationActions.remove().also { it() }
         }
     }
 
@@ -26,10 +25,10 @@ class NodeGraph {
         }
     }
 
-    internal fun <T : GameNode<*>> createNode(engine: QuasarEngine, script: KClass<T>, factory: (NodeFactory) -> Unit) {
+    internal fun <T : GameNode<*>> createNode(script: KClass<T>, factories: List<NodeFactoryCallback>) {
         scheduleAfterSimulationEvent {
             val newNode = script.createInstance()
-            newNode.create(engine, NodeFactory(factory))
+            newNode.create(factories)
             nodeList.add(newNode)
         }
     }
@@ -42,7 +41,7 @@ class NodeGraph {
     }
 
     internal fun findNodeByTag(tag: String): NodeReference<ReadableGameNode>? {
-        return nodeList.find { it.tag == tag }?.reference
+        return nodeList.find { it.record.tag == tag }?.reference
     }
 
     private fun scheduleAfterSimulationEvent(action: EngineAction) {

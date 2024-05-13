@@ -14,6 +14,12 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     private val simContext: SimContext
     private val drawContext: DrawContext
 
+    private val engineNodeFactory: NodeFactoryCallback = { factory ->
+        //TODO: Implement correct runtime id generation
+        factory.nodeId = System.currentTimeMillis()
+        factory.engine = this
+    }
+
     init {
         val config = QuasarEngineFactory(factory)
 
@@ -31,7 +37,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     }
 
     override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
-        nodeGraph.createNode(this, script, factory)
+        nodeGraph.createNode(script, listOf(engineNodeFactory, factory))
     }
 
     override fun destroyNode(node: GameNode<*>) {

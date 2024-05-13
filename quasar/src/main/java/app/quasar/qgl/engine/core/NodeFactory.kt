@@ -1,10 +1,17 @@
 package app.quasar.qgl.engine.core
 
-class NodeFactory(factory: (NodeFactory) -> Unit) {
+typealias NodeFactoryCallback =(NodeFactory) -> Unit
+
+class NodeFactory(factories: List<NodeFactoryCallback>) {
     var tag: String? = null
     var argument: NodeArgument = NullArgument
 
+    internal var nodeId: Long? = null
+    internal var engine: QuasarEngine? = null
+
     init {
-        factory(this)
+        factories.forEach {
+            it(this)
+        }
     }
 }

@@ -5,13 +5,12 @@ abstract class GameNode<D>: ReadableGameNode {
     override val isAlive: Boolean
         get() = !isDestroyed
 
-    internal val tag: String?
-        get() = record.tag
-
     internal var reference: NodeReference<ReadableGameNode>? = NodeReference(this)
 
+    internal var record = NodeRecord<D>()
+        private set
+
     private lateinit var engine: QuasarEngine
-    private val record = NodeRecord<D>()
     private var isDestroyed = false
 
     protected abstract fun onCreate(argument: NodeArgument): D
@@ -25,10 +24,13 @@ abstract class GameNode<D>: ReadableGameNode {
         }
     }
 
-    internal fun create(engine: QuasarEngine, factory: NodeFactory) {
-        this.engine = engine
-        record.tag = factory.tag
-        record.data = onCreate(factory.argument)
+    internal fun create(factories: List<NodeFactoryCallback>) {
+        NodeFactory(factories).apply {
+            this.engine = engine!!
+            record.nodeId = nodeId
+            record.tag = tag
+            record.data = onCreate(argument)
+        }
     }
 
     internal fun destroy() {
