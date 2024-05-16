@@ -1,15 +1,15 @@
 package app.quasar.gdx.tiles
 
-import app.quasar.qgl.engine.core.TileId
+import app.quasar.qgl.engine.core.SpriteId
 
 object CoreTiles {
-    val TRANSPARENT =               TileId(0)
-    val RED_LIGHT =                 TileId(1)
-    val RED_DARK =                  TileId(2)
-    val GREEN_LIGHT =               TileId(3)
-    val SMILE =                     TileId(4)
-    val TREE =                      TileId(5)
-    val SIGNAL_REGULAR =            TileId(6)
-    val SIGNAL_CLOSE =              TileId(7)
+    val TRANSPARENT =               SpriteId("transparent")
+    val RED_LIGHT =                 SpriteId("red_light")
+    val RED_DARK =                  SpriteId("red_dark")
+    val GREEN_LIGHT =               SpriteId("green_light")
+    val SMILE =                     SpriteId("smile")
+    val TREE =                      SpriteId("tree")
+    val SIGNAL_REGULAR =            SpriteId("signal_regular")
+    val SIGNAL_CLOSE =              SpriteId("signal_close")
 }
 
