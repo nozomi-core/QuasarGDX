@@ -12,5 +12,4 @@ class OverlayScreen(
     fun uiTransform(uiX: Float, uiY: Float, uiWidth: Float, uiHeight: Float, callback: (x: Float, y:Float, width:Float, height:Float) -> Unit) {
         callback(uiX, uiY, uiWidth, -uiHeight)
     }
-
 }
