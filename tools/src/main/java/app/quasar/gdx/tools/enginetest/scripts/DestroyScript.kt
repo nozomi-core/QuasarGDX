@@ -2,7 +2,9 @@ package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.DestroyData
+import app.quasar.gdx.tools.enginetest.mapper.DestroyMapper
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.serialize.QGLMapper
 
 class DestroyScript: GameNode<DestroyData>() {
 
@@ -23,4 +25,6 @@ class DestroyScript: GameNode<DestroyData>() {
     override fun onDraw(context: DrawContext, data: DestroyData) {
         context.draw.tilePx(CoreTiles.SIGNAL_REGULAR, 64f, 64f)
     }
+
+    override fun getMapper() = DestroyMapper
 }

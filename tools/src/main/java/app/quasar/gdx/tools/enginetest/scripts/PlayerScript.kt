@@ -2,7 +2,9 @@ package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.PlayerData
+import app.quasar.gdx.tools.enginetest.mapper.PlayerMapper
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.serialize.QGLMapper
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.math.Vector3
@@ -41,4 +43,6 @@ class PlayerScript: GameNode<PlayerData>() {
         context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y)
         context.camera.setCamera(data.position.x, data.position.y)
     }
+
+    override fun getMapper() = PlayerMapper
 }

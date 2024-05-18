@@ -9,6 +9,10 @@ class NodeGraph {
     private val nodeList = mutableListOf<GameNode<*>>()
     private val afterSimulationActions: Queue<EngineAction> = LinkedList()
 
+    internal fun forEach(callback: (GameNode<*>) -> Unit) {
+        nodeList.forEach(callback)
+    }
+
     internal fun simulate(simContext: SimContext) {
         nodeList.forEach {
             it.simulate(simContext)
