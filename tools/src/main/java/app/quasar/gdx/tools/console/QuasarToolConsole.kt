@@ -1,6 +1,7 @@
 package app.quasar.gdx.tools.console
 
 import app.quasar.qgl.engine.CommonRuntime
+import app.quasar.qgl.engine.core.EngineDeserialize
 import app.quasar.qgl.engine.core.QuasarEngine
 import app.quasar.qgl.engine.core.ReadableGameNode
 import javax.swing.*
@@ -29,7 +30,7 @@ class QuasarToolConsole(
             when(option) {
                 MenuOption.SAVE -> SaveWindow(engine)
                 MenuOption.LOAD -> LoadWindow { filename ->
-                    //TODO: load the engine file
+                    EngineDeserialize(filename)
                 }
                 MenuOption.SHUTDOWN -> engine.shutdown()
                 MenuOption.PAUSE -> engine.pause()
