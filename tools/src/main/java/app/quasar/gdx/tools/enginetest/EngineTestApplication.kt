@@ -25,6 +25,7 @@ class EngineTestApplication(
 
     private val screen = OverlayScreen(1920f, 1080f)
 
+
     private val window = object : GameWindow {
         override fun getWorldCamera() = worldCamera
         override fun getWorldViewport() = worldViewport

@@ -8,7 +8,10 @@ import kotlin.reflect.KClass
  * and delegate any calls to the required module.
  */
 class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEngine {
-    private val nodeGraph: NodeGraph
+    var isRunning = true
+        private set
+
+    internal val nodeGraph: NodeGraph
     private val engineClock: EngineClock
     private val accounting = EngineAccounting()
 
@@ -44,6 +47,22 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         nodeGraph.destroyNode(node)
     }
 
+    override fun saveToFile(filename: String) {
+        EngineSerialize(filename, this)
+    }
+
+    override fun shutdown() {
+        isRunning = false
+    }
+
+    override fun pause() {
+        isRunning = false
+    }
+
+    override fun resume() {
+        isRunning = true
+    }
+
     override fun queryNodeByTag(tag: String): NodeReference<ReadableGameNode>? {
         return nodeGraph.findNodeByTag(tag)
     }
@@ -53,8 +72,10 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     }
 
     internal fun simulate(deltaTime: Float) {
-        engineClock.deltaTime = deltaTime
-        nodeGraph.simulate(simContext)
+        if(isRunning) {
+            engineClock.deltaTime = deltaTime
+            nodeGraph.simulate(simContext)
+        }
     }
 
     internal fun draw() {

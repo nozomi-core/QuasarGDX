@@ -17,7 +17,7 @@ class Quasar2D(
     val tileset: GameTileset,
     private val runtime: CommonRuntime,
     private val tileSize: Int,
-    private val window: GameWindow,
+    private val window: GameWindow
 ): Disposable {
     private val spriteBatch = SpriteBatch()
     private val texture = Texture(textureFile)
