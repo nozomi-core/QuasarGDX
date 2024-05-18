@@ -4,6 +4,7 @@ import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.engine.CommonRuntime
 import app.quasar.qgl.engine.Quasar2D
+import app.quasar.qgl.engine.core.KlassMap
 import app.quasar.qgl.engine.core.OverlayScreen
 import app.quasar.qgl.tiles.GameWindow
 import com.badlogic.gdx.ApplicationAdapter
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
+import java.io.File
 
 class EngineTestApplication(
     private val runtime: CommonRuntime
@@ -24,7 +26,6 @@ class EngineTestApplication(
     private lateinit var engine2D: Quasar2D
 
     private val screen = OverlayScreen(1920f, 1080f)
-
 
     private val window = object : GameWindow {
         override fun getWorldCamera() = worldCamera
@@ -47,7 +48,7 @@ class EngineTestApplication(
             tileSize = CoreAssets.TILE_SIZE,
             runtime = runtime
         )
-        engine2D.applyWorld(EngineTestWorld::class)
+        createOrLoadWorld()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -65,5 +66,22 @@ class EngineTestApplication(
     override fun dispose() {
         super.dispose()
         engine2D.dispose()
+    }
+
+    private fun createOrLoadWorld() {
+        val file = File("engine.qgl")
+        if(file.exists()) {
+            engine2D.loadWorld("engine.qgl", getClassMap())
+        } else {
+            engine2D.applyWorld(EngineTestWorld::class)
+        }
+    }
+
+    private fun getClassMap(): KlassMap {
+        val map = KlassMap()
+        TestScripts.values().forEach { script ->
+            map.add(script.id, script.kClass)
+        }
+        return map
     }
 }

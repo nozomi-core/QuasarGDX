@@ -1,7 +1,7 @@
 package app.quasar.qgl.engine.core
 
-class EngineAccounting {
-    private var runtimeGameId: Long = 10000
-
+class EngineAccounting(
+    private var runtimeGameId: Long
+) {
     fun nextId(): Long = runtimeGameId++
 }

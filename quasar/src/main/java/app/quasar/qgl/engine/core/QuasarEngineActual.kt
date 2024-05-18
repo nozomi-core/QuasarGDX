@@ -13,20 +13,15 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
     internal val nodeGraph: NodeGraph
     private val engineClock: EngineClock
-    private val accounting = EngineAccounting()
+    private val accounting: EngineAccounting
 
     private val simContext: SimContext
     private val drawContext: DrawContext
 
-    private val engineNodeFactory: NodeFactoryCallback = { factory ->
-        factory.nodeId = accounting.nextId()
-        factory.engine = this
-    }
-
     init {
         val config = QuasarEngineFactory(factory)
 
-        nodeGraph = NodeGraph()
+        nodeGraph = createOrLoadGraph(config.nodeGraph)
         engineClock = EngineClock()
         simContext = SimContext(
             engine = this,
@@ -37,10 +32,16 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
             draw = config.requireDrawableApi(),
             camera = config.requireCamera()
         )
+        accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)
+    }
+
+    private val engineNodeFactory: NodeFactoryCallback = { factory ->
+        factory.nodeId = accounting.nextId()
+        factory.engine = this
     }
 
     override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
-        nodeGraph.createNode(script, listOf(engineNodeFactory, factory))
+        nodeGraph.createNode(this, script, listOf(engineNodeFactory, factory))
     }
 
     override fun destroyNode(node: GameNode<*>) {
@@ -80,5 +81,13 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
     internal fun draw() {
         nodeGraph.draw(drawContext)
+    }
+
+    private fun createOrLoadGraph(nodeGraph: NodeGraph?): NodeGraph {
+        val graph = nodeGraph ?: NodeGraph(mutableListOf())
+        graph.forEach {
+            it.attachEngine(this)
+        }
+        return graph
     }
 }

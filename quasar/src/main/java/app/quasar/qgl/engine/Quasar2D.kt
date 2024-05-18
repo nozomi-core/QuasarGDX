@@ -1,5 +1,7 @@
 package app.quasar.qgl.engine
 
+import app.quasar.qgl.engine.core.EngineDeserialize
+import app.quasar.qgl.engine.core.KlassMap
 import app.quasar.qgl.engine.core.QuasarEngineActual
 import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
@@ -22,17 +24,32 @@ class Quasar2D(
     private val spriteBatch = SpriteBatch()
     private val texture = Texture(textureFile)
 
-    private val engine = QuasarEngineActual {
-        drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
-        camera = CameraApiActual(window)
-        project = ProjectionApiActual(window.getWorldCamera())
-    }
+    private lateinit var engine: QuasarEngineActual
 
     fun <T: GameWorld> applyWorld(kClass: KClass<T>) {
+        engine = QuasarEngineActual {
+            drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
+            camera = CameraApiActual(window)
+            project = ProjectionApiActual(window.getWorldCamera())
+        }
+
         kClass.createInstance().apply {
             create(engine)
         }
         runtime.notifyWorld(engine)
+    }
+
+    fun loadWorld(filename: String, classMap: KlassMap) {
+        val engineData = EngineDeserialize(filename, classMap)
+
+        engine = QuasarEngineActual {
+            drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
+            camera = CameraApiActual(window)
+            project = ProjectionApiActual(window.getWorldCamera())
+
+            accounting = engineData.accounting
+            nodeGraph = engineData.nodeGraph
+        }
     }
 
     fun render() {

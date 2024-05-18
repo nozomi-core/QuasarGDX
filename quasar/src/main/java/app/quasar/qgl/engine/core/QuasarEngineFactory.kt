@@ -5,6 +5,9 @@ class QuasarEngineFactory(factory: QuasarEngineFactory.() -> Unit) {
     var camera: CameraApi? = null
     var project: ProjectionApi? = null
 
+    var accounting: EngineAccounting? = null
+    var nodeGraph: NodeGraph? = null
+
     init {
         factory(this)
     }

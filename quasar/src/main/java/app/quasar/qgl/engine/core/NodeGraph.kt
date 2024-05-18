@@ -4,9 +4,9 @@ import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class NodeGraph {
-
-    private val nodeList = mutableListOf<GameNode<*>>()
+class NodeGraph(
+    private val nodeList: MutableList<GameNode<*>>
+) {
     private val afterSimulationActions: Queue<EngineAction> = LinkedList()
 
     internal fun forEach(callback: (GameNode<*>) -> Unit) {
@@ -29,10 +29,11 @@ class NodeGraph {
         }
     }
 
-    internal fun <T : GameNode<*>> createNode(script: KClass<T>, factories: List<NodeFactoryCallback>) {
+    internal fun <T : GameNode<*>> createNode(engine: QuasarEngine, script: KClass<T>, factories: List<NodeFactoryCallback>) {
         scheduleAfterSimulationEvent {
             val newNode = script.createInstance()
             newNode.create(factories)
+            newNode.attachEngine(engine)
             nodeList.add(newNode)
         }
     }

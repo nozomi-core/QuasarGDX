@@ -33,11 +33,14 @@ abstract class GameNode<D>: ReadableGameNode {
 
     internal fun create(factories: List<NodeFactoryCallback>) {
         NodeFactory(factories).also { result ->
-            this.engine = result.engine!!
             record.nodeId = result.nodeId
             record.tag = result.tag
             record.data = onCreate(result.argument)
         }
+    }
+
+    internal fun attachEngine(engine: QuasarEngine) {
+        this.engine = engine
     }
 
     internal fun destroy() {

@@ -30,7 +30,7 @@ class QuasarToolConsole(
             when(option) {
                 MenuOption.SAVE -> SaveWindow(engine)
                 MenuOption.LOAD -> LoadWindow { filename ->
-                    EngineDeserialize(filename)
+                   //EngineDeserialize(filename)
                 }
                 MenuOption.SHUTDOWN -> engine.shutdown()
                 MenuOption.PAUSE -> engine.pause()
