@@ -10,13 +10,13 @@ import kotlin.reflect.KClass
 class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEngine {
     private val nodeGraph: NodeGraph
     private val engineClock: EngineClock
+    private val accounting = EngineAccounting()
 
     private val simContext: SimContext
     private val drawContext: DrawContext
 
     private val engineNodeFactory: NodeFactoryCallback = { factory ->
-        //TODO: Implement correct runtime id generation
-        factory.nodeId = System.currentTimeMillis()
+        factory.nodeId = accounting.nextId()
         factory.engine = this
     }
 
@@ -44,8 +44,12 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         nodeGraph.destroyNode(node)
     }
 
-    override fun findNodeByTag(tag: String): NodeReference<ReadableGameNode>? {
+    override fun queryNodeByTag(tag: String): NodeReference<ReadableGameNode>? {
         return nodeGraph.findNodeByTag(tag)
+    }
+
+    override fun queryAll(): List<NodeReference<ReadableGameNode>> {
+        return nodeGraph.queryAll()
     }
 
     internal fun simulate(deltaTime: Float) {

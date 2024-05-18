@@ -37,6 +37,14 @@ class PlayerScript: GameNode<Unit>() {
         }
     }
 
+    fun move() {
+        position.x += 100f
+    }
+
+    override fun getDebugText(): String {
+        return "(position:$position)"
+    }
+
     override fun onDraw(context: DrawContext, data: Unit) {
         context.draw.tilePx(CoreTiles.SMILE, position.x, position.y)
         context.camera.setCamera(position.x, position.y)

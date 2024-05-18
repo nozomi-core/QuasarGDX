@@ -44,6 +44,8 @@ class NodeGraph {
         return nodeList.find { it.record.tag == tag }?.reference
     }
 
+    internal fun queryAll(): List<NodeReference<ReadableGameNode>> = nodeList.mapNotNull { it.reference }
+
     private fun scheduleAfterSimulationEvent(action: EngineAction) {
         afterSimulationActions.add(action)
     }

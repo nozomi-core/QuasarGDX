@@ -15,6 +15,7 @@ import kotlin.reflect.full.createInstance
 class Quasar2D(
     val textureFile: String,
     val tileset: GameTileset,
+    private val runtime: CommonRuntime,
     private val tileSize: Int,
     private val window: GameWindow,
 ): Disposable {
@@ -31,6 +32,7 @@ class Quasar2D(
         kClass.createInstance().apply {
             create(engine)
         }
+        runtime.notifyWorld(engine)
     }
 
     fun render() {

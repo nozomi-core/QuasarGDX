@@ -4,5 +4,6 @@ import kotlin.reflect.KClass
 
 interface EngineApi {
     fun <T: GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit = {})
-    fun findNodeByTag(tag: String): NodeReference<ReadableGameNode>?
+    fun queryNodeByTag(tag: String): NodeReference<ReadableGameNode>?
+    fun queryAll(): List<NodeReference<ReadableGameNode>>
 }

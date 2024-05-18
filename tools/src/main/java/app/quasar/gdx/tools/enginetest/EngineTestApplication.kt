@@ -2,6 +2,7 @@ package app.quasar.gdx.tools.enginetest
 
 import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.tiles.CoreTileset
+import app.quasar.qgl.engine.CommonRuntime
 import app.quasar.qgl.engine.Quasar2D
 import app.quasar.qgl.engine.core.OverlayScreen
 import app.quasar.qgl.tiles.GameWindow
@@ -11,7 +12,9 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 
-class EngineTestApplication: ApplicationAdapter() {
+class EngineTestApplication(
+    private val runtime: CommonRuntime
+): ApplicationAdapter() {
 
     private lateinit var worldCamera: OrthographicCamera
     private lateinit var overlayCamera: OrthographicCamera
@@ -40,7 +43,8 @@ class EngineTestApplication: ApplicationAdapter() {
             window = window,
             textureFile = CoreAssets.Sprites.TILE_SET,
             tileset = CoreTileset(),
-            tileSize = CoreAssets.TILE_SIZE
+            tileSize = CoreAssets.TILE_SIZE,
+            runtime = runtime
         )
         engine2D.applyWorld(EngineTestWorld::class)
     }

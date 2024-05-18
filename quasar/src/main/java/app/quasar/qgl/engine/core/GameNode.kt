@@ -4,6 +4,10 @@ abstract class GameNode<D>: ReadableGameNode {
 
     override val isAlive: Boolean
         get() = !isDestroyed
+    override val nodeId: Long
+        get() = record.nodeId!!
+    override val tag: String?
+        get() = record.tag
 
     internal var reference: NodeReference<ReadableGameNode>? = NodeReference(this)
 
@@ -17,6 +21,8 @@ abstract class GameNode<D>: ReadableGameNode {
     protected open fun onDestroy() {}
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
+
+    open fun getDebugText(): String = toString()
 
     private val selfContext = object : SelfContext {
         override fun destroy() {
@@ -48,5 +54,9 @@ abstract class GameNode<D>: ReadableGameNode {
 
     internal fun nodeException(): Exception {
         return Exception()
+    }
+
+    override fun toString(): String {
+        return this.javaClass.simpleName
     }
 }
