@@ -22,8 +22,6 @@ abstract class GameNode<D>: ReadableGameNode {
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
 
-    open fun getDebugText(): String = toString()
-
     private val selfContext = object : SelfContext {
         override fun destroy() {
             engine.destroyNode(this@GameNode)
@@ -50,6 +48,10 @@ abstract class GameNode<D>: ReadableGameNode {
     }
     internal fun draw(context: DrawContext) {
         onDraw(context, record.data!!)
+    }
+
+    fun creationException(): Exception {
+        return Exception()
     }
 
     internal fun nodeException(): Exception {

@@ -1,24 +1,26 @@
 package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
+import app.quasar.gdx.tools.enginetest.data.MissileData
 import app.quasar.qgl.engine.core.*
 import com.badlogic.gdx.math.Vector3
 
-class MissileScript: GameNode<Unit>() {
+class MissileScript: GameNode<MissileData>() {
 
-    private lateinit var position: Vector3
-
-    override fun onCreate(argument: NodeArgument) {
-        when(argument) {
-            is AnyNodeArgument -> position = argument.value as Vector3
+    override fun onCreate(argument: NodeArgument): MissileData {
+        return when(argument) {
+            is AnyNodeArgument -> MissileData(
+                position = argument.value as Vector3
+            )
+            else -> throw creationException()
         }
     }
 
-    override fun onSimulate(self: SelfContext, context: SimContext, data: Unit) {
-        position.x += context.clock.mulDeltaTime(30f)
+    override fun onSimulate(self: SelfContext, context: SimContext, data: MissileData) {
+        data.position.x += context.clock.mulDeltaTime(30f)
     }
 
-    override fun onDraw(context: DrawContext, data: Unit) {
-        context.draw.tilePx(CoreTiles.SMILE, position.x,position.y)
+    override fun onDraw(context: DrawContext, data: MissileData) {
+        context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y)
     }
 }

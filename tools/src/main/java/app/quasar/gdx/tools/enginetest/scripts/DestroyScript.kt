@@ -1,23 +1,26 @@
 package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
+import app.quasar.gdx.tools.enginetest.data.DestroyData
 import app.quasar.qgl.engine.core.*
 
-class DestroyScript: GameNode<Unit>() {
+class DestroyScript: GameNode<DestroyData>() {
 
-    private var totalTime = 0f
+    override fun onCreate(argument: NodeArgument): DestroyData {
+        return DestroyData(
+            totalTime = 0f
+        )
+    }
 
-    override fun onCreate(argument: NodeArgument) {}
+    override fun onSimulate(self: SelfContext, context: SimContext, data: DestroyData) {
+        data.totalTime += context.clock.deltaTime
 
-    override fun onSimulate(self: SelfContext, context: SimContext, data: Unit) {
-        totalTime += context.clock.deltaTime
-
-        if(totalTime > 10) {
+        if(data.totalTime > 10) {
             self.destroy()
         }
     }
 
-    override fun onDraw(context: DrawContext, data: Unit) {
+    override fun onDraw(context: DrawContext, data: DestroyData) {
         context.draw.tilePx(CoreTiles.SIGNAL_REGULAR, 64f, 64f)
     }
 }
