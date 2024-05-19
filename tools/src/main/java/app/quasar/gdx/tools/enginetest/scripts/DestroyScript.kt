@@ -17,7 +17,7 @@ class DestroyScript: GameNode<DestroyData>() {
     override fun onSimulate(self: SelfContext, context: SimContext, data: DestroyData) {
         data.totalTime += context.clock.deltaTime
 
-        if(data.totalTime > 10) {
+        if(data.totalTime > 20) {
             self.destroy()
         }
     }
@@ -25,6 +25,4 @@ class DestroyScript: GameNode<DestroyData>() {
     override fun onDraw(context: DrawContext, data: DestroyData) {
         context.draw.tilePx(CoreTiles.SIGNAL_REGULAR, 64f, 64f)
     }
-
-    override fun getMapper() = DestroyMapper
 }

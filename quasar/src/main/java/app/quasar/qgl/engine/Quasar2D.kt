@@ -1,11 +1,11 @@
 package app.quasar.qgl.engine
 
 import app.quasar.qgl.engine.core.EngineDeserialize
-import app.quasar.qgl.engine.core.KlassMap
 import app.quasar.qgl.engine.core.QuasarEngineActual
 import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.render.ProjectionApiActual
+import app.quasar.qgl.serialize.ScriptFactory
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
@@ -19,7 +19,8 @@ class Quasar2D(
     val tileset: GameTileset,
     private val runtime: CommonRuntime,
     private val tileSize: Int,
-    private val window: GameWindow
+    private val window: GameWindow,
+    private val scriptFactory: ScriptFactory,
 ): Disposable {
     private val spriteBatch = SpriteBatch()
     private val texture = Texture(textureFile)
@@ -31,6 +32,7 @@ class Quasar2D(
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
             camera = CameraApiActual(window)
             project = ProjectionApiActual(window.getWorldCamera())
+            scripts = scriptFactory
         }
 
         kClass.createInstance().apply {
@@ -39,8 +41,8 @@ class Quasar2D(
         runtime.notifyWorld(engine)
     }
 
-    fun loadWorld(filename: String, classMap: KlassMap) {
-        val engineData = EngineDeserialize(filename, classMap)
+    fun loadWorld(filename: String) {
+        val engineData = EngineDeserialize(filename, scriptFactory)
 
         engine = QuasarEngineActual {
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
@@ -49,7 +51,9 @@ class Quasar2D(
 
             accounting = engineData.accounting
             nodeGraph = engineData.nodeGraph
+            scripts = scriptFactory
         }
+        runtime.notifyWorld(engine)
     }
 
     fun render() {

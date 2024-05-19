@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.serialize.ScriptFactory
 import kotlin.reflect.KClass
 
 /**
@@ -12,11 +13,13 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         private set
 
     internal val nodeGraph: NodeGraph
-    private val engineClock: EngineClock
-    private val accounting: EngineAccounting
+    internal val accounting: EngineAccounting
 
+    private val engineClock: EngineClock
     private val simContext: SimContext
     private val drawContext: DrawContext
+
+    private val scriptFactory: ScriptFactory
 
     init {
         val config = QuasarEngineFactory(factory)
@@ -33,6 +36,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
             camera = config.requireCamera()
         )
         accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)
+        scriptFactory = config.scripts!!
     }
 
     private val engineNodeFactory: NodeFactoryCallback = { factory ->
@@ -49,7 +53,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     }
 
     override fun saveToFile(filename: String) {
-        EngineSerialize(filename, this)
+        EngineSerialize(this, filename, scriptFactory)
     }
 
     override fun shutdown() {

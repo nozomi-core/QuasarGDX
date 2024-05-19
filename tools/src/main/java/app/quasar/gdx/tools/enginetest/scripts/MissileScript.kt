@@ -25,6 +25,4 @@ class MissileScript: GameNode<MissileData>() {
     override fun onDraw(context: DrawContext, data: MissileData) {
         context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y)
     }
-
-    override fun getMapper() = MissileMapper
 }

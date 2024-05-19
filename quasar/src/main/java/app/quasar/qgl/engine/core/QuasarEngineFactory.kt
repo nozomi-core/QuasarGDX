@@ -1,9 +1,13 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.serialize.ScriptFactory
+
 class QuasarEngineFactory(factory: QuasarEngineFactory.() -> Unit) {
     var drawable: DrawableApi? = null
     var camera: CameraApi? = null
     var project: ProjectionApi? = null
+
+    var scripts: ScriptFactory? = null
 
     var accounting: EngineAccounting? = null
     var nodeGraph: NodeGraph? = null

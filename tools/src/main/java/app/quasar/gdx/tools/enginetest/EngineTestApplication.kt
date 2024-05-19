@@ -46,7 +46,8 @@ class EngineTestApplication(
             textureFile = CoreAssets.Sprites.TILE_SET,
             tileset = CoreTileset(),
             tileSize = CoreAssets.TILE_SIZE,
-            runtime = runtime
+            runtime = runtime,
+            scriptFactory = TestScripts
         )
         createOrLoadWorld()
     }
@@ -71,17 +72,9 @@ class EngineTestApplication(
     private fun createOrLoadWorld() {
         val file = File("engine.qgl")
         if(file.exists()) {
-            engine2D.loadWorld("engine.qgl", getClassMap())
+            engine2D.loadWorld("engine.qgl")
         } else {
             engine2D.applyWorld(EngineTestWorld::class)
         }
-    }
-
-    private fun getClassMap(): KlassMap {
-        val map = KlassMap()
-        TestScripts.values().forEach { script ->
-            map.add(script.id, script.kClass)
-        }
-        return map
     }
 }

@@ -20,7 +20,6 @@ abstract class GameNode<D>: ReadableGameNode {
     private var isDestroyed = false
 
     protected abstract fun onCreate(argument: NodeArgument): D
-    abstract fun getMapper(): QGLMapper<D>
     protected open fun onDestroy() {}
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}

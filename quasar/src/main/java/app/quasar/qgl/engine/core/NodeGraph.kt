@@ -9,6 +9,8 @@ class NodeGraph(
 ) {
     private val afterSimulationActions: Queue<EngineAction> = LinkedList()
 
+    internal val size: Int get() = nodeList.size
+
     internal fun forEach(callback: (GameNode<*>) -> Unit) {
         nodeList.forEach(callback)
     }

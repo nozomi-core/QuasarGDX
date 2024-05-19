@@ -1,40 +1,61 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.serialize.QGLBinary
+import app.quasar.qgl.serialize.*
 import java.io.File
 import kotlin.reflect.full.createInstance
 
 class EngineDeserialize(
     filename: String,
-    classMap: KlassMap
+    scriptFactory: ScriptFactory
 ) {
 
-    lateinit var accounting: EngineAccounting
-    lateinit var nodeGraph: NodeGraph
+    internal var accounting: EngineAccounting
+    internal var nodeGraph: NodeGraph
+
+    private val scripts = ScriptBuilder().apply {
+        applyScripts(scriptFactory)
+    }
 
     init {
         val input = QGLBinary.createFileIn(File(filename))
         accounting = readAccounting(input)
-        nodeGraph = readNodeGraph(input, classMap)
+        nodeGraph = readNodeGraph(input)
     }
 
     private fun readAccounting(binIn: QGLBinary.In): EngineAccounting {
-        return EngineAccounting(runtimeGameId = 40000)
+        val output = BinaryOutput()
+        binIn.read(output)
+        return EngineAccounting(runtimeGameId = output.data as Long)
     }
 
-    private fun readNodeGraph(binIn: QGLBinary.In, classMap: KlassMap): NodeGraph {
+    private fun readNodeGraph(binIn: QGLBinary.In): NodeGraph {
+        val output = BinaryOutput()
+
+        binIn.read(output)
+
+        val nodeSize = output.data as Int
         val nodeList = mutableListOf<GameNode<*>>()
 
-        val playerKClass = classMap.get(3)
+        repeat(nodeSize) {
+            binIn.read(output)
 
-        val player = playerKClass.createInstance() as GameNode<*>
-        nodeList.add(player)
+            val nodeId = output.data as Long
 
-        player.create(listOf { factory ->
-            factory.argument = AnyNodeArgument(Unit)
-            factory.nodeId = 4
-        })
+            binIn.read(output)
 
+            val nodeDef = scripts.getDefinitionById(output.id)
+            val script = nodeDef?.kClass!!
+            val mapper = nodeDef.mapper as QGLMapper<Any>
+
+            val data = mapper.toEntity(output.data as BinaryObject)
+            val gameNode = script.createInstance() as GameNode<Any>
+
+            gameNode.record.data = data
+            gameNode.record.nodeId = nodeId
+
+
+            nodeList.add(gameNode)
+        }
 
         return NodeGraph(nodeList)
     }

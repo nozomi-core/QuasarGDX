@@ -43,6 +43,4 @@ class PlayerScript: GameNode<PlayerData>() {
         context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y)
         context.camera.setCamera(data.position.x, data.position.y)
     }
-
-    override fun getMapper() = PlayerMapper
 }
