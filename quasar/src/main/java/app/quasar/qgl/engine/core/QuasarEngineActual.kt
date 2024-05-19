@@ -1,6 +1,7 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.serialize.ScriptFactory
+import app.quasar.qgl.engine.serialize.EngineSerialize
+import app.quasar.qgl.engine.serialize.ScriptFactory
 import kotlin.reflect.KClass
 
 /**

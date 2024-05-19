@@ -1,6 +1,6 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.serialize.ScriptFactory
+import app.quasar.qgl.engine.serialize.ScriptFactory
 
 class QuasarEngineFactory(factory: QuasarEngineFactory.() -> Unit) {
     var drawable: DrawableApi? = null

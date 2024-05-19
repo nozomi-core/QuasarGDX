@@ -1,6 +1,7 @@
-package app.quasar.qgl.serialize
+package app.quasar.qgl.engine.serialize
 
 import app.quasar.qgl.engine.core.GameNode
+import app.quasar.qgl.serialize.QGLMapper
 import kotlin.reflect.KClass
 
 class ScriptBuilder {

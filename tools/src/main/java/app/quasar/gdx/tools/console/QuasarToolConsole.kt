@@ -1,7 +1,6 @@
 package app.quasar.gdx.tools.console
 
 import app.quasar.qgl.engine.CommonRuntime
-import app.quasar.qgl.engine.core.EngineDeserialize
 import app.quasar.qgl.engine.core.QuasarEngine
 import app.quasar.qgl.engine.core.ReadableGameNode
 import javax.swing.*

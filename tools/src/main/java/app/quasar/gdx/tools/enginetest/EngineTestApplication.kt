@@ -73,7 +73,7 @@ class EngineTestApplication(
         if(file.exists()) {
             engine2D.loadWorld("engine.qgl")
         } else {
-            engine2D.applyWorld(EngineTestWorld::class)
+            engine2D.createWorld(EngineTestWorld::class)
         }
     }
 }

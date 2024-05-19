@@ -6,8 +6,8 @@ import app.quasar.gdx.tools.enginetest.mapper.PlayerMapper
 import app.quasar.gdx.tools.enginetest.scripts.DestroyScript
 import app.quasar.gdx.tools.enginetest.scripts.MissileScript
 import app.quasar.gdx.tools.enginetest.scripts.PlayerScript
-import app.quasar.qgl.serialize.ScriptCallback
-import app.quasar.qgl.serialize.ScriptFactory
+import app.quasar.qgl.engine.serialize.ScriptCallback
+import app.quasar.qgl.engine.serialize.ScriptFactory
 
 object TestScripts: ScriptFactory {
     override val callback: ScriptCallback = {

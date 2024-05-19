@@ -1,7 +1,5 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.serialize.QGLMapper
-
 abstract class GameNode<D>: ReadableGameNode {
 
     override val isAlive: Boolean

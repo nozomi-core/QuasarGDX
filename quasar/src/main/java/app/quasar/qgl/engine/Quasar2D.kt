@@ -1,11 +1,11 @@
 package app.quasar.qgl.engine
 
-import app.quasar.qgl.engine.core.EngineDeserialize
+import app.quasar.qgl.engine.serialize.EngineDeserialize
 import app.quasar.qgl.engine.core.QuasarEngineActual
 import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.render.ProjectionApiActual
-import app.quasar.qgl.serialize.ScriptFactory
+import app.quasar.qgl.engine.serialize.ScriptFactory
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
@@ -27,7 +27,7 @@ class Quasar2D(
 
     private lateinit var engine: QuasarEngineActual
 
-    fun <T: GameWorld> applyWorld(kClass: KClass<T>) {
+    fun <T: GameWorld> createWorld(kClass: KClass<T>) {
         engine = QuasarEngineActual {
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
             camera = CameraApiActual(window)
