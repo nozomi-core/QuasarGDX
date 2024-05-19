@@ -11,6 +11,9 @@ abstract class GameNode<D>: ReadableGameNode {
     override val selfDimension: EngineDimension
         get() = record.dimension
 
+    protected val requireForInterface: D
+        get() = record.data
+
     internal var reference: NodeReference<ReadableGameNode>? = NodeReference(this)
 
     internal lateinit  var record: NodeRecord<D>
