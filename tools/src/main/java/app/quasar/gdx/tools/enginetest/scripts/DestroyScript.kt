@@ -2,9 +2,7 @@ package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.DestroyData
-import app.quasar.gdx.tools.enginetest.mapper.DestroyMapper
 import app.quasar.qgl.engine.core.*
-import app.quasar.qgl.serialize.QGLMapper
 
 class DestroyScript: GameNode<DestroyData>() {
 
