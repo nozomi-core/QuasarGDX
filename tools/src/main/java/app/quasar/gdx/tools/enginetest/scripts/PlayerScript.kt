@@ -37,10 +37,10 @@ class PlayerScript: GameNode<PlayerData>() {
                 it.argument = AnyNodeArgument(data.position.cpy())
             }
         }
+        context.camera.setCamera(data.position.x, data.position.y)
     }
 
     override fun onDraw(context: DrawContext, data: PlayerData) {
         context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y)
-        context.camera.setCamera(data.position.x, data.position.y)
     }
 }

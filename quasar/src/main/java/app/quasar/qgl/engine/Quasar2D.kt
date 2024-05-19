@@ -48,11 +48,12 @@ class Quasar2D(
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
             camera = CameraApiActual(window)
             project = ProjectionApiActual(window.getWorldCamera())
-
             accounting = engineData.accounting
             nodeGraph = engineData.nodeGraph
             scripts = scriptFactory
         }
+        //Simulate 1 frame after reloading to ensure camera are updated
+        engine.simulate(Gdx.graphics.deltaTime)
         runtime.notifyWorld(engine)
     }
 
@@ -61,8 +62,8 @@ class Quasar2D(
         window.getWorldCamera().update()
         spriteBatch.projectionMatrix = window.getWorldCamera().combined
         spriteBatch.begin()
-        engine.simulate(Gdx.graphics.deltaTime)
         engine.draw()
+        engine.simulate(Gdx.graphics.deltaTime)
         spriteBatch.end()
     }
 

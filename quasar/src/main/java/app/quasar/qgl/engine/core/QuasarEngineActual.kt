@@ -29,11 +29,11 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         simContext = SimContext(
             engine = this,
             clock = engineClock,
-            project = config.requireProject()
+            project = config.requireProject(),
+            camera = config.requireCamera()
         )
         drawContext = DrawContext(
-            draw = config.requireDrawableApi(),
-            camera = config.requireCamera()
+            draw = config.requireDrawableApi()
         )
         accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)
         scriptFactory = config.scripts!!
