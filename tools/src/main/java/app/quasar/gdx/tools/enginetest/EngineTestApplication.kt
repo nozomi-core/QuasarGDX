@@ -4,7 +4,6 @@ import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.engine.CommonRuntime
 import app.quasar.qgl.engine.Quasar2D
-import app.quasar.qgl.engine.core.KlassMap
 import app.quasar.qgl.engine.core.OverlayScreen
 import app.quasar.qgl.tiles.GameWindow
 import com.badlogic.gdx.ApplicationAdapter

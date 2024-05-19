@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector3
 class PlayerScript: GameNode<PlayerData>() {
 
     override fun onCreate(argument: NodeArgument): PlayerData {
-        return PlayerData(position = Vector3(0f, 0f,0f))
+        return PlayerData(position = Vector3(0f, 0f,0f), 0f)
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: PlayerData) {
@@ -37,10 +37,15 @@ class PlayerScript: GameNode<PlayerData>() {
                 it.argument = AnyNodeArgument(data.position.cpy())
             }
         }
+
+        if(Gdx.input.isKeyPressed(Keys.SPACE)) {
+            data.rotation += clock.mulDeltaTime(10f)
+        }
+
         context.camera.setCamera(data.position.x, data.position.y)
     }
 
     override fun onDraw(context: DrawContext, data: PlayerData) {
-        context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y)
+        context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y, 1f, data.rotation)
     }
 }

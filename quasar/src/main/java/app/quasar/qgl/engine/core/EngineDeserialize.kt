@@ -37,26 +37,47 @@ class EngineDeserialize(
         val nodeList = mutableListOf<GameNode<*>>()
 
         repeat(nodeSize) {
-            binIn.read(output)
+            val nodeId = readNodeId(binIn, output)
+            val tag = readTag(binIn, output)
 
-            val nodeId = output.data as Long
-
-            binIn.read(output)
-
-            val nodeDef = scripts.getDefinitionById(output.id)
-            val script = nodeDef?.kClass!!
-            val mapper = nodeDef.mapper as QGLMapper<Any>
-
-            val data = mapper.toEntity(output.data as BinaryObject)
-            val gameNode = script.createInstance() as GameNode<Any>
-
-            gameNode.record.data = data
-            gameNode.record.nodeId = nodeId
-
-
-            nodeList.add(gameNode)
+            readGameNode(binIn, output, nodeList, nodeId, tag)
         }
 
         return NodeGraph(nodeList)
+    }
+
+    private fun readNodeId(binIn: QGLBinary.In, output: BinaryOutput): Long {
+        binIn.read(output)
+        return output.data as Long
+    }
+
+    private fun readTag(binIn: QGLBinary.In, output: BinaryOutput): String {
+        binIn.read(output)
+        return output.data as String
+    }
+
+    private fun readGameNode(
+        binIn: QGLBinary.In,
+        output: BinaryOutput,
+        list: MutableList<GameNode<*>>,
+        nodeId: Long,
+        tag: String
+    ) {
+        //Read and create game node
+        binIn.read(output)
+        val nodeDef = scripts.getDefinitionById(output.id)
+        val script = nodeDef?.kClass!!
+        val mapper = nodeDef.mapper as QGLMapper<Any>
+
+        val data = mapper.toEntity(output.data as BinaryObject)
+        val gameNode = script.createInstance() as GameNode<Any>
+
+        gameNode.record = NodeRecord(
+            data = data,
+            nodeId = nodeId,
+            tag = tag
+        )
+
+        list.add(gameNode)
     }
 }

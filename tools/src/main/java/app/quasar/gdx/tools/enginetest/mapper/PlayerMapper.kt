@@ -10,12 +10,14 @@ object PlayerMapper: QGLMapper<PlayerData> {
     private const val ID_X = 1
     private const val ID_Y = 2
     private const val ID_Z = 3
+    private const val ID_ROTATION = 4
 
     override fun toBinary(data: PlayerData): Array<BinaryRecord> {
         return arrayOf(
             BinaryRecord(ID_X, data.position.x),
             BinaryRecord(ID_Y, data.position.y),
-            BinaryRecord(ID_Z, data.position.z)
+            BinaryRecord(ID_Z, data.position.z),
+            BinaryRecord(ID_ROTATION, data.rotation)
         )
     }
 
@@ -24,8 +26,9 @@ object PlayerMapper: QGLMapper<PlayerData> {
             position = Vector3(
                 bin.value(ID_X),
                 bin.value(ID_Y),
-                bin.value(ID_Z)
-            )
+                bin.value(ID_Z),
+            ),
+            bin.value(ID_ROTATION)
         )
     }
 }

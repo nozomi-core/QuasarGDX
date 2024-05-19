@@ -34,7 +34,8 @@ class EngineSerialize(
                 val mapper = definition.mapper as QGLMapper<Any>
                 val binaryRecord = mapper.toBinary(node.record.data!!)
 
-                out.writeLong(0, node.record.nodeId!!)
+                out.writeLong(0, node.nodeId)
+                out.writeString(0, node.tag)
                 out.writeObject(definition.id, BinaryObject(definition.id, binaryRecord))
 
             } else {
