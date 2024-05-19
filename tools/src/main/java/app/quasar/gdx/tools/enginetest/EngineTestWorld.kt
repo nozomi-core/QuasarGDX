@@ -4,13 +4,21 @@ import app.quasar.gdx.tools.enginetest.scripts.DestroyScript
 import app.quasar.gdx.tools.enginetest.scripts.PlayerScript
 import app.quasar.gdx.tools.enginetest.scripts.TilemapScript
 import app.quasar.qgl.engine.core.EngineApi
+import app.quasar.qgl.engine.core.EngineDimension
 import app.quasar.qgl.tiles.GameWorld
 
 class EngineTestWorld: GameWorld() {
 
-    override fun onCreate(engine: EngineApi) {
-        engine.createNode(TilemapScript::class)
-        engine.createNode(PlayerScript::class)
-        engine.createNode(DestroyScript::class)
+    override fun onCreate(engine: EngineApi): EngineDimension {
+        engine.createNode(NextDimen, TilemapScript::class)
+        engine.createNode(MainDimen, PlayerScript::class)
+        engine.createNode(MainDimen, DestroyScript::class)
+
+        return MainDimen
+    }
+
+    companion object {
+        val MainDimen = EngineDimension(1)
+        val NextDimen = EngineDimension(2)
     }
 }

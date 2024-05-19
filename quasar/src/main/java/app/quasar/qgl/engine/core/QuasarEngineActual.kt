@@ -21,6 +21,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     private val drawContext: DrawContext
 
     private val scriptFactory: ScriptFactory
+    private var dimension: EngineDimension = EngineDimension(0)
 
     init {
         val config = QuasarEngineFactory(factory)
@@ -45,8 +46,16 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         factory.engine = this
     }
 
-    override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
-        nodeGraph.createNode(this, script, listOf(engineNodeFactory, factory))
+    override fun setDimension(dimension: EngineDimension) {
+        this.dimension = dimension
+    }
+
+    override fun <T : GameNode<*>> createNode(dimension: EngineDimension, script: KClass<T>, factory: (NodeFactory) -> Unit) {
+        val dimenNodeFactory: NodeFactoryCallback = { local ->
+            local.dimension = dimension
+        }
+
+        nodeGraph.createNode(this, script, listOf(engineNodeFactory, factory, dimenNodeFactory))
     }
 
     override fun destroyNode(node: GameNode<*>) {
@@ -85,7 +94,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     }
 
     internal fun draw() {
-        nodeGraph.draw(drawContext)
+        nodeGraph.draw(dimension, drawContext)
     }
 
     private fun createOrLoadGraph(nodeGraph: NodeGraph?): NodeGraph {

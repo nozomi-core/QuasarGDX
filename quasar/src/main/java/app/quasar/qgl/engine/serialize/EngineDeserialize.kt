@@ -12,6 +12,7 @@ class EngineDeserialize(
 
     internal var accounting: EngineAccounting
     internal var nodeGraph: NodeGraph
+    internal var dimension: EngineDimension
 
     private val scripts = ScriptBuilder().apply {
         applyScripts(scriptFactory)
@@ -21,6 +22,7 @@ class EngineDeserialize(
         val input = QGLBinary.createFileIn(File(filename))
         accounting = readAccounting(input)
         nodeGraph = readNodeGraph(input)
+        dimension = EngineDimension(-1) //TODO: serialise dimension
     }
 
     private fun readAccounting(binIn: QGLBinary.In): EngineAccounting {
@@ -76,7 +78,8 @@ class EngineDeserialize(
         gameNode.record = NodeRecord(
             data = data,
             nodeId = nodeId,
-            tag = tag
+            tag = tag,
+            dimension = TODO()
         )
 
         list.add(gameNode)

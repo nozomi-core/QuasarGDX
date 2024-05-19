@@ -4,4 +4,5 @@ interface ReadableGameNode {
     val isAlive: Boolean
     val nodeId: Long
     val tag: String
+    val selfDimension: EngineDimension
 }

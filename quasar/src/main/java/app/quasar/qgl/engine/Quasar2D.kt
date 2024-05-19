@@ -1,5 +1,6 @@
 package app.quasar.qgl.engine
 
+import app.quasar.qgl.engine.core.EngineDimension
 import app.quasar.qgl.engine.serialize.EngineDeserialize
 import app.quasar.qgl.engine.core.QuasarEngineActual
 import app.quasar.qgl.render.CameraApiActual
@@ -28,16 +29,16 @@ class Quasar2D(
     private lateinit var engine: QuasarEngineActual
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
+        val world = kClass.createInstance()
+
         engine = QuasarEngineActual {
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
             camera = CameraApiActual(window)
             project = ProjectionApiActual(window.getWorldCamera())
             scripts = scriptFactory
         }
-
-        kClass.createInstance().apply {
-            create(engine)
-        }
+        val dimension = world.create(engine)
+        engine.setDimension(dimension)
         runtime.notifyWorld(engine)
     }
 
@@ -53,6 +54,7 @@ class Quasar2D(
             scripts = scriptFactory
         }
         //Simulate 1 frame after reloading to ensure camera are updated
+        engine.setDimension(engineData.dimension)
         engine.simulate(Gdx.graphics.deltaTime)
         runtime.notifyWorld(engine)
     }

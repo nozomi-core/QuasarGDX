@@ -8,6 +8,8 @@ abstract class GameNode<D>: ReadableGameNode {
         get() = record.nodeId
     override val tag: String
         get() = record.tag
+    override val selfDimension: EngineDimension
+        get() = record.dimension
 
     internal var reference: NodeReference<ReadableGameNode>? = NodeReference(this)
 
@@ -22,6 +24,10 @@ abstract class GameNode<D>: ReadableGameNode {
     protected open fun onDraw(context: DrawContext, data: D) {}
 
     private val selfContext = object : SelfContext {
+        override fun setDimension(dimension: EngineDimension) {
+            record.dimension = dimension
+        }
+
         override fun destroy() {
             engine.destroyNode(this@GameNode)
         }
@@ -34,7 +40,8 @@ abstract class GameNode<D>: ReadableGameNode {
             record = NodeRecord(
                 nodeId = result.nodeId!!,
                 tag = result.tag,
-                data = data
+                data = data,
+                dimension = result.dimension!!
             )
         }
     }

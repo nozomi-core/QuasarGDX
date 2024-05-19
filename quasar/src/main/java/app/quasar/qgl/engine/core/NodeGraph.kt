@@ -25,9 +25,11 @@ class NodeGraph(
         }
     }
 
-    internal fun draw(context: DrawContext) {
+    internal fun draw(dimension: EngineDimension, context: DrawContext) {
         nodeList.forEach {
-            it.draw(context)
+            if(dimension.id == it.selfDimension.id) {
+                it.draw(context)
+            }
         }
     }
 

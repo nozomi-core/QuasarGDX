@@ -31,9 +31,19 @@ class PlayerScript: GameNode<PlayerData>() {
         }
 
         if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-            context.engine.createNode(MissileScript::class) {
+            context.engine.createNode(selfDimension, MissileScript::class) {
                 it.argument = AnyNodeArgument(data.position.cpy())
             }
+        }
+
+        if(Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
+            context.engine.setDimension(EngineDimension(1))
+            self.setDimension(EngineDimension(1))
+        }
+
+        if(Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
+            context.engine.setDimension(EngineDimension(2))
+            self.setDimension(EngineDimension(2))
         }
 
         if(Gdx.input.isKeyPressed(Keys.SPACE)) {
