@@ -29,6 +29,6 @@ object PlayerMapper: QGLMapper<PlayerData> {
                 bin.value(ID_Z),
             ),
             bin.value(ID_ROTATION)
-        )
+        , false, 0f) //TODO: serialise
     }
 }

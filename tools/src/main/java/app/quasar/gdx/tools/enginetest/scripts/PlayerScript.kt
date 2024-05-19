@@ -10,12 +10,14 @@ import com.badlogic.gdx.math.Vector3
 class PlayerScript: GameNode<PlayerData>() {
 
     override fun onCreate(argument: NodeArgument): PlayerData {
-        return PlayerData(position = Vector3(0f, 0f,0f), 0f)
+        return PlayerData(position = Vector3(0f, 0f,0f), 0f, false, 0f)
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: PlayerData) {
         val clock = context.clock
         val speed = 50f
+
+        data.rotation += clock.mulDeltaTime(data.rotateSpeed)
 
         if(Gdx.input.isKeyPressed(Keys.W)) {
             data.position.y += clock.mulDeltaTime(speed)
@@ -48,6 +50,22 @@ class PlayerScript: GameNode<PlayerData>() {
 
         if(Gdx.input.isKeyPressed(Keys.SPACE)) {
             data.rotation += clock.mulDeltaTime(10f)
+        }
+
+        if(Gdx.input.isKeyPressed(Keys.L)) {
+            data.isRotating = !data.isRotating
+        }
+
+        if(Gdx.input.isKeyPressed(Keys.EQUALS)) {
+            data.rotateSpeed += 5
+        }
+
+        if(Gdx.input.isKeyPressed(Keys.MINUS)) {
+            data.rotateSpeed -= 5
+        }
+
+        if(Gdx.input.isKeyJustPressed(Keys.R)) {
+            context.engine.replace(this, BigPlayer::class)
         }
 
         context.camera.setCamera(data.position.x, data.position.y)

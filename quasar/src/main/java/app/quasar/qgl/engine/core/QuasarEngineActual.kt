@@ -58,6 +58,10 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         nodeGraph.createNode(this, script, listOf(engineNodeFactory, factory, dimenNodeFactory))
     }
 
+    override fun <T : GameNode<D>, D> replace(node: GameNode<D>, replaceScript: KClass<T>) {
+        nodeGraph.replace(this, node, replaceScript)
+    }
+
     override fun destroyNode(node: GameNode<*>) {
         nodeGraph.destroyNode(node)
     }
@@ -76,6 +80,10 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
     override fun resume() {
         isRunning = true
+    }
+
+    override fun generateId(): Long {
+        return accounting.nextId()
     }
 
     override fun queryNodeByTag(tag: String): NodeReference<ReadableGameNode>? {

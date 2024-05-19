@@ -42,6 +42,22 @@ class NodeGraph(
         }
     }
 
+    internal fun <T : GameNode<D>, D> replace(engine: QuasarEngine, node: GameNode<D>, replaceScript: KClass<T>) {
+        scheduleAfterSimulationEvent {
+            val replaceNode = replaceScript.createInstance()
+            replaceNode.record = NodeRecord(
+                nodeId = engine.generateId(),
+                tag = "",
+                data = node.record.data,
+                dimension = node.selfDimension
+            )
+            replaceNode.attachEngine(engine)
+
+            nodeList.remove(node)
+            nodeList.add(replaceNode)
+        }
+    }
+
     internal fun destroyNode(node: GameNode<*>) {
         scheduleAfterSimulationEvent {
             nodeList.remove(node)
