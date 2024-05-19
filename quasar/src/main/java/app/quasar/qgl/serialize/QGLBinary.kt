@@ -520,11 +520,6 @@ class BinaryObject(
     }
 }
 
-class BinaryRecord(
-    val id: Int,
-    val data: Any
-)
-
 class ByteMatrix(private val matrix: List<ByteArray>) {
     val size: Int get() = matrix.size
     operator fun get(index: Int): ByteArray {

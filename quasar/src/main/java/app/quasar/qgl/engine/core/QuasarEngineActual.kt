@@ -1,5 +1,7 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.serialize.EngineSerialize
+import app.quasar.qgl.engine.serialize.ScriptFactory
 import kotlin.reflect.KClass
 
 /**
@@ -8,40 +10,63 @@ import kotlin.reflect.KClass
  * and delegate any calls to the required module.
  */
 class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEngine {
-    private val nodeGraph: NodeGraph
-    private val engineClock: EngineClock
-    private val accounting = EngineAccounting()
+    var isRunning = true
+        private set
 
+    internal val nodeGraph: NodeGraph
+    internal val accounting: EngineAccounting
+
+    private val engineClock: EngineClock
     private val simContext: SimContext
     private val drawContext: DrawContext
+
+    private val scriptFactory: ScriptFactory
+
+    init {
+        val config = QuasarEngineFactory(factory)
+
+        nodeGraph = createOrLoadGraph(config.nodeGraph)
+        engineClock = EngineClock()
+        simContext = SimContext(
+            engine = this,
+            clock = engineClock,
+            project = config.requireProject(),
+            camera = config.requireCamera()
+        )
+        drawContext = DrawContext(
+            draw = config.requireDrawableApi()
+        )
+        accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)
+        scriptFactory = config.scripts!!
+    }
 
     private val engineNodeFactory: NodeFactoryCallback = { factory ->
         factory.nodeId = accounting.nextId()
         factory.engine = this
     }
 
-    init {
-        val config = QuasarEngineFactory(factory)
-
-        nodeGraph = NodeGraph()
-        engineClock = EngineClock()
-        simContext = SimContext(
-            engine = this,
-            clock = engineClock,
-            project = config.requireProject()
-        )
-        drawContext = DrawContext(
-            draw = config.requireDrawableApi(),
-            camera = config.requireCamera()
-        )
-    }
-
     override fun <T : GameNode<*>> createNode(script: KClass<T>, factory: (NodeFactory) -> Unit) {
-        nodeGraph.createNode(script, listOf(engineNodeFactory, factory))
+        nodeGraph.createNode(this, script, listOf(engineNodeFactory, factory))
     }
 
     override fun destroyNode(node: GameNode<*>) {
         nodeGraph.destroyNode(node)
+    }
+
+    override fun saveToFile(filename: String) {
+        EngineSerialize(this, filename, scriptFactory)
+    }
+
+    override fun shutdown() {
+        isRunning = false
+    }
+
+    override fun pause() {
+        isRunning = false
+    }
+
+    override fun resume() {
+        isRunning = true
     }
 
     override fun queryNodeByTag(tag: String): NodeReference<ReadableGameNode>? {
@@ -53,11 +78,21 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     }
 
     internal fun simulate(deltaTime: Float) {
-        engineClock.deltaTime = deltaTime
-        nodeGraph.simulate(simContext)
+        if(isRunning) {
+            engineClock.deltaTime = deltaTime
+            nodeGraph.simulate(simContext)
+        }
     }
 
     internal fun draw() {
         nodeGraph.draw(drawContext)
+    }
+
+    private fun createOrLoadGraph(nodeGraph: NodeGraph?): NodeGraph {
+        val graph = nodeGraph ?: NodeGraph(mutableListOf())
+        graph.forEach {
+            it.attachEngine(this)
+        }
+        return graph
     }
 }

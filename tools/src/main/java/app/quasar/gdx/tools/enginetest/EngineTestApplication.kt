@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
+import java.io.File
 
 class EngineTestApplication(
     private val runtime: CommonRuntime
@@ -44,9 +45,10 @@ class EngineTestApplication(
             textureFile = CoreAssets.Sprites.TILE_SET,
             tileset = CoreTileset(),
             tileSize = CoreAssets.TILE_SIZE,
-            runtime = runtime
+            runtime = runtime,
+            scriptFactory = TestScripts
         )
-        engine2D.applyWorld(EngineTestWorld::class)
+        createOrLoadWorld()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -64,5 +66,14 @@ class EngineTestApplication(
     override fun dispose() {
         super.dispose()
         engine2D.dispose()
+    }
+
+    private fun createOrLoadWorld() {
+        val file = File("engine.qgl")
+        if(file.exists()) {
+            engine2D.loadWorld("engine.qgl")
+        } else {
+            engine2D.createWorld(EngineTestWorld::class)
+        }
     }
 }

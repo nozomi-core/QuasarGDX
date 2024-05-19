@@ -5,14 +5,13 @@ abstract class GameNode<D>: ReadableGameNode {
     override val isAlive: Boolean
         get() = !isDestroyed
     override val nodeId: Long
-        get() = record.nodeId!!
-    override val tag: String?
+        get() = record.nodeId
+    override val tag: String
         get() = record.tag
 
     internal var reference: NodeReference<ReadableGameNode>? = NodeReference(this)
 
-    internal var record = NodeRecord<D>()
-        private set
+    internal lateinit  var record: NodeRecord<D>
 
     private lateinit var engine: QuasarEngine
     private var isDestroyed = false
@@ -22,8 +21,6 @@ abstract class GameNode<D>: ReadableGameNode {
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
 
-    open fun getDebugText(): String = toString()
-
     private val selfContext = object : SelfContext {
         override fun destroy() {
             engine.destroyNode(this@GameNode)
@@ -32,11 +29,18 @@ abstract class GameNode<D>: ReadableGameNode {
 
     internal fun create(factories: List<NodeFactoryCallback>) {
         NodeFactory(factories).also { result ->
-            this.engine = result.engine!!
-            record.nodeId = result.nodeId
-            record.tag = result.tag
-            record.data = onCreate(result.argument)
+            val data = onCreate(result.argument)
+
+            record = NodeRecord(
+                nodeId = result.nodeId!!,
+                tag = result.tag,
+                data = data
+            )
         }
+    }
+
+    internal fun attachEngine(engine: QuasarEngine) {
+        this.engine = engine
     }
 
     internal fun destroy() {
@@ -50,6 +54,10 @@ abstract class GameNode<D>: ReadableGameNode {
     }
     internal fun draw(context: DrawContext) {
         onDraw(context, record.data!!)
+    }
+
+    fun creationException(): Exception {
+        return Exception()
     }
 
     internal fun nodeException(): Exception {

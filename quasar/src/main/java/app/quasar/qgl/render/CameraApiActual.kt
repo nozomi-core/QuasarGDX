@@ -9,5 +9,6 @@ class CameraApiActual(private val window: GameWindow): CameraApi {
         val worldCam = window.getWorldCamera()
         worldCam.position.x = x
         worldCam.position.y = y
+        worldCam.update()
     }
 }
