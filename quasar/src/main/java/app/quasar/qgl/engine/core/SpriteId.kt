@@ -1,3 +1,14 @@
 package app.quasar.qgl.engine.core
 
-data class SpriteId(val id: String)
+private val spriteMap = HashMap<String, SpriteId>()
+
+class SpriteId(val id: String) {
+
+    init {
+        spriteMap[id] = this
+    }
+
+    companion object {
+        fun find(id: String): SpriteId? = spriteMap[id]
+    }
+}
