@@ -8,6 +8,7 @@ class NodeGraph(
     private val nodeList: MutableList<GameNode<*>>
 ) {
     private val afterSimulationActions: Queue<EngineAction> = LinkedList()
+    private val listeners = mutableListOf<GraphListener>()
 
     internal val size: Int get() = nodeList.size
 
@@ -39,6 +40,7 @@ class NodeGraph(
             newNode.create(factories)
             newNode.attachEngine(engine)
             nodeList.add(newNode)
+            notifyAdded(newNode)
         }
     }
 
@@ -55,12 +57,16 @@ class NodeGraph(
 
             nodeList.remove(node)
             nodeList.add(replaceNode)
+
+            notifyRemoved(node)
+            notifyAdded(replaceNode)
         }
     }
 
     internal fun destroyNode(node: GameNode<*>) {
         scheduleAfterSimulationEvent {
             nodeList.remove(node)
+            notifyRemoved(node)
             node.destroy()
         }
     }
@@ -70,9 +76,19 @@ class NodeGraph(
     }
 
     internal fun queryAll(): List<NodeReference<ReadableGameNode>> = nodeList.mapNotNull { it.reference }
+    internal fun addListener(graphListener: GraphListener) = listeners.add(graphListener)
+
+    private fun notifyAdded(node: GameNode<*>) = listeners.forEach { it.onAdded(node) }
+    private fun notifyRemoved(node: GameNode<*>) = listeners.forEach { it.onAdded(node) }
 
     private fun scheduleAfterSimulationEvent(action: EngineAction) {
         afterSimulationActions.add(action)
     }
 }
+
 typealias EngineAction = () -> Unit
+
+interface GraphListener {
+    fun onAdded(node: GameNode<*>)
+    fun onRemoved(node: GameNode<*>)
+}

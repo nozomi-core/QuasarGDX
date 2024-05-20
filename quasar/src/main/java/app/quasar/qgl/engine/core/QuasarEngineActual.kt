@@ -14,8 +14,10 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         private set
 
     internal val nodeGraph: NodeGraph
+
     internal val accounting: EngineAccounting
 
+    private val worldGraph: WorldGraph
     private val engineClock: EngineClock
     private val simContext: SimContext
     private val drawContext: DrawContext
@@ -39,6 +41,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         )
         accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)
         scriptFactory = config.scripts!!
+        worldGraph = WorldGraph(nodeGraph)
     }
 
     private val engineNodeFactory: NodeFactoryCallback = { factory ->
