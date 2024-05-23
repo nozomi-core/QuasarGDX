@@ -7,10 +7,10 @@ import java.io.File
 class EngineSerialize(
     engine: QuasarEngineActual,
     filename: String,
-    scriptFactory: ScriptFactory,
+    scriptFactory: ClassFactory,
 ) {
     private val scripts = ScriptBuilder().apply {
-        applyScripts(scriptFactory)
+        //applyScripts(scriptFactory)
     }
 
     init {
@@ -25,6 +25,7 @@ class EngineSerialize(
     }
 
     private fun writeNodeGraph(out: QGLBinary.Out, graph: NodeGraph) {
+        /*
         out.writeInt(0, graph.size)
 
         graph.forEach { node ->
@@ -41,6 +42,6 @@ class EngineSerialize(
             } else {
                 //TODO: log no definition for script or throw exception TBA
             }
-        }
+        }*/
     }
 }

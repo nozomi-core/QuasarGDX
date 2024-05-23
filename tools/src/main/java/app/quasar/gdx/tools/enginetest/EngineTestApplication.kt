@@ -5,6 +5,7 @@ import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.engine.CommonRuntime
 import app.quasar.qgl.engine.Quasar2D
 import app.quasar.qgl.engine.core.OverlayScreen
+import app.quasar.qgl.engine.serialize.ClassFactory
 import app.quasar.qgl.tiles.GameWindow
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -46,7 +47,10 @@ class EngineTestApplication(
             tileset = CoreTileset(),
             tileSize = CoreAssets.TILE_SIZE,
             runtime = runtime,
-            scriptFactory = TestScripts
+            scriptFactory = ClassFactory(
+                TestScripts,
+                DataScripts
+            )
         )
         createOrLoadWorld()
     }

@@ -1,12 +1,11 @@
 package app.quasar.qgl.engine
 
-import app.quasar.qgl.engine.core.EngineDimension
 import app.quasar.qgl.engine.serialize.EngineDeserialize
 import app.quasar.qgl.engine.core.QuasarEngineActual
+import app.quasar.qgl.engine.serialize.ClassFactory
 import app.quasar.qgl.render.CameraApiActual
 import app.quasar.qgl.render.DrawableApiActual
 import app.quasar.qgl.render.ProjectionApiActual
-import app.quasar.qgl.engine.serialize.ScriptFactory
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
@@ -21,7 +20,7 @@ class Quasar2D(
     private val runtime: CommonRuntime,
     private val tileSize: Int,
     private val window: GameWindow,
-    private val scriptFactory: ScriptFactory,
+    private val scriptFactory: ClassFactory
 ): Disposable {
     private val spriteBatch = SpriteBatch()
     private val texture = Texture(textureFile)
@@ -35,7 +34,7 @@ class Quasar2D(
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
             camera = CameraApiActual(window)
             project = ProjectionApiActual(window.getWorldCamera())
-            scripts = scriptFactory
+            classes = scriptFactory
         }
         val dimension = world.create(engine)
         engine.setDimension(dimension)
@@ -51,7 +50,7 @@ class Quasar2D(
             project = ProjectionApiActual(window.getWorldCamera())
             accounting = engineData.accounting
             nodeGraph = engineData.nodeGraph
-            scripts = scriptFactory
+            classes = scriptFactory
         }
         //Simulate 1 frame after reloading to ensure camera are updated
         engine.setDimension(engineData.dimension)

@@ -1,7 +1,7 @@
 package app.quasar.qgl.engine.core
 
+import app.quasar.qgl.engine.serialize.ClassFactory
 import app.quasar.qgl.engine.serialize.EngineSerialize
-import app.quasar.qgl.engine.serialize.ScriptFactory
 import kotlin.reflect.KClass
 
 /**
@@ -22,7 +22,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     private val simContext: SimContext
     private val drawContext: DrawContext
 
-    private val scriptFactory: ScriptFactory
+    private val scriptFactory: ClassFactory
     private var dimension: EngineDimension = EngineDimension(0)
 
     init {
@@ -40,7 +40,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
             draw = config.requireDrawableApi()
         )
         accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)
-        scriptFactory = config.scripts!!
+        scriptFactory = config.classes!!
         worldGraph = WorldGraph(nodeGraph)
     }
 

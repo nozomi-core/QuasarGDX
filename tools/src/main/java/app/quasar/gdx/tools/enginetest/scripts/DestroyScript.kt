@@ -7,9 +7,7 @@ import app.quasar.qgl.engine.core.*
 class DestroyScript: GameNode<DestroyData>() {
 
     override fun onCreate(argument: NodeArgument): DestroyData {
-        return DestroyData(
-            totalTime = 0f
-        )
+        return DestroyData()
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: DestroyData) {

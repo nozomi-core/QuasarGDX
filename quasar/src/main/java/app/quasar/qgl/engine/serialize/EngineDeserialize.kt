@@ -7,7 +7,7 @@ import kotlin.reflect.full.createInstance
 
 class EngineDeserialize(
     filename: String,
-    scriptFactory: ScriptFactory
+    classes: ClassFactory
 ) {
 
     internal var accounting: EngineAccounting
@@ -15,7 +15,7 @@ class EngineDeserialize(
     internal var dimension: EngineDimension
 
     private val scripts = ScriptBuilder().apply {
-        applyScripts(scriptFactory)
+        applyScripts(classes.scriptBuilder)
     }
 
     init {
@@ -66,6 +66,7 @@ class EngineDeserialize(
         nodeId: Long,
         tag: String
     ) {
+        /*
         //Read and create game node
         binIn.read(output)
         val nodeDef = scripts.getDefinitionById(output.id)
@@ -82,6 +83,6 @@ class EngineDeserialize(
             dimension = TODO()
         )
 
-        list.add(gameNode)
+        list.add(gameNode)*/
     }
 }

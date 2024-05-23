@@ -9,9 +9,9 @@ class MissileScript: GameNode<MissileData>() {
 
     override fun onCreate(argument: NodeArgument): MissileData {
         return when(argument) {
-            is AnyNodeArgument -> MissileData(
+            is AnyNodeArgument -> MissileData().apply {
                 position = argument.value as Vector3
-            )
+            }
             else -> throw creationException()
         }
     }

@@ -13,7 +13,7 @@ class PlayerScript: GameNode<PlayerData>(), WorldPosition {
     override fun queryPosition(input: Vector3): Vector3 = input.set(requireForInterface.position)
 
     override fun onCreate(argument: NodeArgument): PlayerData {
-        return PlayerData(position = Vector3(0f, 0f,0f), 0f, false, 0f)
+        return PlayerData()
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: PlayerData) {

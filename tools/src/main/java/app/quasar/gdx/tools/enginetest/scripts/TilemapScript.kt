@@ -14,9 +14,9 @@ class TilemapScript: GameNode<TilemapData>() {
     private val grid = Grid(16, 100, 100, 0f,  0f)
 
     override fun onCreate(argument: NodeArgument): TilemapData {
-        return TilemapData(
+        return TilemapData().apply {
             tiles = createRandomTileInfo(100, 100).toMutableList()
-        )
+        }
     }
 
     override fun onDraw(context: DrawContext, data: TilemapData) {
