@@ -2,25 +2,11 @@ package app.quasar.qgl.serialize
 
 import org.junit.Assert
 import org.junit.Test
-import kotlin.reflect.KClass
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.DataInputStream
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.findAnnotation
-
-class KlassMap(klasses: List<KClass<*>>) {
-
-    private val classMap = HashMap<String, KClass<*>>()
-
-    init {
-        klasses.forEach { aClass ->
-            val classDef = aClass.findAnnotation<QGLEntity>() ?: throw Exception("KlassMap classes require @QGLEntity annotation for mapping")
-            classMap[classDef.type] = aClass
-        }
-    }
-
-    fun findById(id: String): KClass<*>? = classMap[id]
-}
-
 
 class QGLAnySerializeTest {
 
@@ -28,7 +14,7 @@ class QGLAnySerializeTest {
     fun notQglEntity() {
         var didThrow = false
         try {
-            KlassMap(listOf(NotSerial::class))
+            KClassMap(listOf(NotSerial::class))
         }catch (e: Exception) {
             didThrow = true
         }
@@ -37,37 +23,47 @@ class QGLAnySerializeTest {
 
     @Test
     fun testSerializeVector() {
-        KlassMap(listOf(NotSerial::class))
+        val vector = MyVector()
+        vector.age = 18
 
+        val stream = StringDataWriter()
+        val binaryOut = QGLBinary().Out(stream)
+        val coffee = CoffeeBin()
 
-        val myVec = MyVector()
-        myVec.age = 18
-
-        convertToBinary(myVec) { id, data ->
-
-        }
+        val out = coffee.Out(binaryOut)
+        out.write(vector)
+        Assert.assertEquals("", stream.toString())
     }
 
-    private fun convertToBinary(data: Any, serialise: (Int, Any) -> Unit) {
-        data::class.declaredMemberProperties.forEach { member ->
-            val prop = member as KProperty1<Any, Any>
-            val propAnnotation = prop.annotations.filterIsInstance<BinProp>().firstOrNull()
+    @Test
+    fun testSerializeAndDeserialize() {
+        val vector = MyVector()
+        vector.age = 22
 
-            if(propAnnotation != null) {
-                val value = prop.get(data)
-                val id = propAnnotation.id
+        val stream = ByteArrayOutputStream()
 
-                serialise(id, value)
-            }
-        }
+        val binaryOut = QGLBinary().Out(BinaryDataWriter(stream))
+        val coffee = CoffeeBin()
+
+        val out = coffee.Out(binaryOut)
+        out.write(vector)
+        //Read back the data
+
+        val qglIn = QGLBinary().In(DataInputStream(ByteArrayInputStream(stream.toByteArray())))
+
+        val coffeeIn = coffee.In(KClassMap.of(MyVector::class), qglIn)
+        val readBackVector = coffeeIn.read() as MyVector
+
+        Assert.assertEquals(22, readBackVector.age)
+        Assert.assertNotEquals(vector.notSerial, readBackVector.notSerial)
     }
 }
 
 @QGLEntity("my_vector")
 class MyVector {
 
-    @BinProp(id = 0)        var name = ""
-    @BinProp(id = 1)        var age: Int = 99
+    @BinProp(typeId = 0)        var name = ""
+    @BinProp(typeId = 1)        var age: Int = 99
 
     var notSerial: Long = System.currentTimeMillis()
 }

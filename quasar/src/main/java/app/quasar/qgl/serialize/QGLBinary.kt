@@ -206,9 +206,7 @@ class QGLBinary {
 
         @Throws(IOException::class)
         fun writeAny(id: Int, data: Any) {
-            validateId(id)
-            out.writeInt(id)
-            out.write(TYPE_ANY)
+            writeRecord(BinaryRecord(id, data))
         }
 
         @Throws(IOException::class)
