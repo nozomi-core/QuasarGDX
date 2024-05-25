@@ -2,6 +2,7 @@ package app.quasar.qgl.serialize
 
 import com.badlogic.gdx.math.Vector3
 
+//TODO: implement proper data mapping system
 class BinaryMap {
 
     fun toBinary(value: Any): Any {
