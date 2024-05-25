@@ -25,16 +25,16 @@ class PlayerScript: GameNode<PlayerData>(), WorldPosition {
         data.rotation += clock.mulDeltaTime(data.rotateSpeed)
 
         if(Gdx.input.isKeyPressed(Keys.W)) {
-            data.y += clock.mulDeltaTime(speed)
+            data.position.y += clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.A)) {
-            data.x -= clock.mulDeltaTime(speed)
+            data.position.x -= clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.S)) {
-            data.y -= clock.mulDeltaTime(speed)
+            data.position.y -= clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.D)) {
-            data.x += clock.mulDeltaTime(speed)
+            data.position.x += clock.mulDeltaTime(speed)
         }
 
         if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {

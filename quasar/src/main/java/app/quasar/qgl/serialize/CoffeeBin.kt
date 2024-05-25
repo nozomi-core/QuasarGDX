@@ -6,7 +6,7 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaField
 
-class CoffeeBin {
+class CoffeeBin(private val binaryMap: BinaryMap = BinaryMap()) {
 
     inner class Out(private val dataOut: QGLBinary.Out) {
 
@@ -40,7 +40,9 @@ class CoffeeBin {
                     val propValue = prop.get(value)
                     val idProp = propAnnotation.typeId
 
-                    propList.add(BinaryRecord(id = idProp, data =  propValue))
+                    val mappedProp = binaryMap.toBinary(propValue)
+
+                    propList.add(BinaryRecord(id = idProp, data =  mappedProp))
                 }
             }
             if(propList.isNotEmpty()) {
@@ -103,9 +105,14 @@ class CoffeeBin {
                 propAnno.any { it.typeId == record.id    }
             }
 
+            val mappedProp = if(record.data is BinaryObject)
+                binaryMap.toObject(record.data)
+            else
+                record.data
+
             settableProperty?.let {
                 it.isAccessible = true
-                it.javaField?.set(theObject,record.data)
+                it.javaField?.set(theObject, mappedProp)
             }
         }
     }

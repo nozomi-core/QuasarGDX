@@ -6,5 +6,5 @@ import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("missile_data")
 class MissileData {
-          var position: Vector3 = Vector3()
+   @BinProp(0)      var position: Vector3 = Vector3()
 }
