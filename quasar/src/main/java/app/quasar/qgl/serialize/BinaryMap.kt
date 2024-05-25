@@ -1,29 +1,31 @@
 package app.quasar.qgl.serialize
 
+import app.quasar.qgl.serializers.VectorMapper
 import com.badlogic.gdx.math.Vector3
+import kotlin.reflect.KClass
 
 //TODO: implement proper data mapping system
 class BinaryMap {
 
+    private val classMapper = HashMap<KClass<*>, QGLMapper<*>>()
+    private val binaryMapper = HashMap<String, QGLMapper<*>>()
+
+    init {
+        classMapper[Vector3::class] = VectorMapper
+        binaryMapper["vector"] = VectorMapper
+    }
+
     fun toBinary(value: Any): Any {
-        return if(value is Vector3) {
-            BinaryObject("3",
-                arrayOf(
-                    BinaryRecord(1, value.x),
-                    BinaryRecord(2, value.y),
-                    BinaryRecord(3, value.z)
-                )
-            )
-        } else {
-            value
-        }
+        val mapper = classMapper[value::class] as? QGLMapper<Any>
+
+        return mapper?.let {
+            val classId = binaryMapper.filterValues { it == mapper }.keys.first()
+            BinaryObject(classId, it.toBinary(value))
+        } ?: value
     }
 
     fun toObject(bin: BinaryObject): Any {
-        return Vector3(
-            bin.value(1),
-            bin.value(2),
-            bin.value(3)
-        )
+        val mapper = binaryMapper[bin.classId]!!
+        return mapper.toObject(bin) as Any
     }
 }
