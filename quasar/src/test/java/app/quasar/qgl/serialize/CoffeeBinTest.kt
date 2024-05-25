@@ -46,4 +46,56 @@ class CoffeeBinTest {
         Assert.assertEquals(readBack.y, 801f)
         Assert.assertEquals(readBack.z, 802f)
     }
+
+    @Test
+    fun testCoffeeSerializeEmpty() {
+        val empty = EmptyData()
+
+        val memOut = QGLBinary.createMemoryOut { out ->
+            val bin = CoffeeBin().Out(out)
+            bin.write(listOf(empty))
+        }
+
+        val input = QGLBinary.createMemoryIn(memOut)
+
+        val coffeeBin = CoffeeBin().In(KClassMap.of(EmptyData::class), input)
+        val objectList = coffeeBin.read()
+        Assert.assertEquals(1, objectList.size)
+        Assert.assertEquals(EmptyData::class, objectList.first()::class)
+    }
+
+    @Test
+    fun testCoffeeSerialize() {
+        val coffee = CoffeeData()
+        coffee.name = "magic"
+        coffee.size = 9
+
+        val memOut = QGLBinary.createMemoryOut { out ->
+            val bin = CoffeeBin().Out(out)
+            bin.write(listOf(coffee))
+        }
+
+        val input = QGLBinary.createMemoryIn(memOut)
+
+        val coffeeBin = CoffeeBin().In(KClassMap.of(CoffeeData::class), input)
+        val objectList = coffeeBin.read()
+
+        Assert.assertEquals(1, objectList.size)
+
+
+        val myCoffee = objectList.first() as CoffeeData
+        Assert.assertEquals("magic", myCoffee.name)
+        Assert.assertEquals(9, myCoffee.size)
+    }
+}
+
+@QGLEntity("coffee")
+class CoffeeData {
+    @BinProp(0)         var name: String = "flat white"
+    @BinProp(1)         var size = 4
+}
+
+@QGLEntity("empty")
+class EmptyData {
+
 }

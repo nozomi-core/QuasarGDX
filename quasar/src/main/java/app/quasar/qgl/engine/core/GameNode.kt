@@ -1,6 +1,9 @@
 package app.quasar.qgl.engine.core
 
-abstract class GameNode<D>: ReadableGameNode {
+import app.quasar.qgl.serialize.QGLEntity
+
+@QGLEntity("f")
+abstract class GameNode<D: GameData>: ReadableGameNode {
 
     override val isAlive: Boolean
         get() = !isDestroyed

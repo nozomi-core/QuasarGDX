@@ -3,7 +3,6 @@ package app.quasar.qgl.engine.serialize
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.serialize.*
 import java.io.File
-import kotlin.reflect.full.createInstance
 
 class EngineDeserialize(
     filename: String,
@@ -15,7 +14,7 @@ class EngineDeserialize(
     internal var dimension: EngineDimension
 
     private val scripts = ScriptBuilder().apply {
-        applyScripts(classes.scriptBuilder)
+        applyScripts(classes.scriptFactory)
     }
 
     init {

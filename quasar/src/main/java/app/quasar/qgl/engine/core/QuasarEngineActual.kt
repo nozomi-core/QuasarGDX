@@ -61,7 +61,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         nodeGraph.createNode(this, script, listOf(engineNodeFactory, factory, dimenNodeFactory))
     }
 
-    override fun <T : GameNode<D>, D> replace(node: GameNode<D>, replaceScript: KClass<T>) {
+    override fun <T : GameNode<D>, D: GameData> replace(node: GameNode<D>, replaceScript: KClass<T>) {
         nodeGraph.replace(this, node, replaceScript)
     }
 

@@ -44,7 +44,7 @@ class NodeGraph(
         }
     }
 
-    internal fun <T : GameNode<D>, D> replace(engine: QuasarEngine, node: GameNode<D>, replaceScript: KClass<T>) {
+    internal fun <T : GameNode<D>, D: GameData> replace(engine: QuasarEngine, node: GameNode<D>, replaceScript: KClass<T>) {
         scheduleAfterSimulationEvent {
             val replaceNode = replaceScript.createInstance()
             replaceNode.record = NodeRecord(

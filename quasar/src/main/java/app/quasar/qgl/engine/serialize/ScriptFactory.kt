@@ -5,12 +5,12 @@ import app.quasar.qgl.engine.core.GameNode
 import kotlin.reflect.KClass
 
 class ClassFactory(
-    val scriptBuilder: ScriptFactory,
-    val dataBuilder: DataFactory
+    val scriptFactory: ScriptFactory,
+    val dataFactory: DataFactory
 )
 
 class ScriptBuilder {
-    private val scripts = mutableListOf<KClass<*>>()
+    private val scripts = mutableSetOf<KClass<*>>()
 
     fun <G : GameNode<*>> add(kClass: KClass<G>) {
         scripts.add(kClass)
@@ -19,14 +19,22 @@ class ScriptBuilder {
     fun applyScripts(factory: ScriptFactory) {
         factory.scripts(this)
     }
+
+    fun getList() = scripts.toList()
 }
 
 class DataBuilder {
-    private val scripts = mutableListOf<KClass<*>>()
+    private val scripts = mutableSetOf<KClass<*>>()
 
     fun <G : GameData> add(kClass: KClass<G>) {
         scripts.add(kClass)
     }
+
+    fun applyScripts(factory: DataFactory) {
+        factory.data(this)
+    }
+
+    fun getList() = scripts.toList()
 }
 
 typealias ScriptCallback = ScriptBuilder.() -> Unit

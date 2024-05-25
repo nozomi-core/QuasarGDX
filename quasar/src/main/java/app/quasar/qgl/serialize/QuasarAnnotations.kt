@@ -4,5 +4,6 @@ package app.quasar.qgl.serialize
 @Retention(AnnotationRetention.RUNTIME)
 annotation class BinProp(val typeId: Int)
 
+@Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class QGLEntity(val typeId: String)
+annotation class QGLEntity(val typeId: String, val classId: Int = 0)

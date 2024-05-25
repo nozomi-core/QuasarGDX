@@ -3,17 +3,31 @@ package app.quasar.qgl.engine.serialize
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.serialize.*
 import java.io.File
+import kotlin.reflect.KClass
 
 class EngineSerialize(
     engine: QuasarEngineActual,
     filename: String,
-    scriptFactory: ClassFactory,
+    classFactory: ClassFactory
 ) {
-    private val scripts = ScriptBuilder().apply {
-        //applyScripts(scriptFactory)
-    }
+
+    private val kClassMap: KClassMap
+
 
     init {
+        val nodeScripts = ScriptBuilder().apply {
+            applyScripts(classFactory.scriptFactory)
+        }
+
+        val dataScripts = DataBuilder().apply {
+            applyScripts(classFactory.dataFactory)
+        }
+
+        kClassMap = KClassMap(mutableListOf<KClass<*>>().apply {
+            addAll(nodeScripts.getList())
+            addAll(dataScripts.getList())
+        })
+
         QGLBinary.createFileOut(File("${filename}.qgl")) { out ->
             writeAccounting(out, engine.accounting)
             writeNodeGraph(out, engine.nodeGraph)
@@ -25,23 +39,19 @@ class EngineSerialize(
     }
 
     private fun writeNodeGraph(out: QGLBinary.Out, graph: NodeGraph) {
-        /*
         out.writeInt(0, graph.size)
 
         graph.forEach { node ->
-            val definition = scripts.getDefinitionByClass(node::class)
+            writeScriptClass(node)
+            writeScriptData(node.record.data)
+        }
+    }
 
-            if(definition != null) {
-                val mapper = definition.mapper as QGLMapper<Any>
-                val binaryRecord = mapper.toBinary(node.record.data!!)
+    private fun writeScriptClass(node: GameNode<*>) {
 
-                out.writeLong(0, node.nodeId)
-                out.writeString(0, node.tag)
-                out.writeObject(definition.id, BinaryObject(definition.id, binaryRecord))
+    }
 
-            } else {
-                //TODO: log no definition for script or throw exception TBA
-            }
-        }*/
+    private fun writeScriptData(gameData: GameData) {
+
     }
 }

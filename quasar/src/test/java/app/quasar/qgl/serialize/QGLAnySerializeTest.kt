@@ -5,8 +5,6 @@ import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberProperties
 
 class QGLAnySerializeTest {
 
@@ -31,7 +29,7 @@ class QGLAnySerializeTest {
         val coffee = CoffeeBin()
 
         val out = coffee.Out(binaryOut)
-        out.write(vector)
+        out.write(listOf(vector))
         Assert.assertEquals("", stream.toString())
     }
 
@@ -46,13 +44,13 @@ class QGLAnySerializeTest {
         val coffee = CoffeeBin()
 
         val out = coffee.Out(binaryOut)
-        out.write(vector)
+        out.write(listOf(vector))
         //Read back the data
 
         val qglIn = QGLBinary().In(DataInputStream(ByteArrayInputStream(stream.toByteArray())))
 
         val coffeeIn = coffee.In(KClassMap.of(MyVector::class), qglIn)
-        val readBackVector = coffeeIn.read() as MyVector
+        val readBackVector = coffeeIn.read().first() as MyVector
 
         Assert.assertEquals(22, readBackVector.age)
         Assert.assertNotEquals(vector.notSerial, readBackVector.notSerial)
