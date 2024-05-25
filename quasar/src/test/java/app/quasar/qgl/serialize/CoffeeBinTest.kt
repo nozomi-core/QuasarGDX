@@ -9,7 +9,7 @@ class CoffeeBinTest {
     fun testSerial3rdLibraryVector() {
         val propVector = 2
 
-        val classIdVector = 3
+        val classIdVector = 900
 
         val vector = Vector3(800f,801f,802f)
 
