@@ -35,6 +35,10 @@ class StringDataWriter: DataWriter {
         builder.append("boolean:${value};")
     }
 
+    override fun writeString(value: String) {
+        builder.append("$value;")
+    }
+
     override fun close() {}
 
     override fun toString(): String {

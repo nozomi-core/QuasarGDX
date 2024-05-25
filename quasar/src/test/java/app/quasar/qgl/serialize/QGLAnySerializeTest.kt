@@ -30,7 +30,7 @@ class QGLAnySerializeTest {
 
         val out = coffee.Out(binaryOut)
         out.write(listOf(vector))
-        Assert.assertEquals("int:1;byte:1;int:1;int:3;byte:15;int:9;bytes:[-110,-122,-96,-119,-102,-100,-117,-112,-115,];int:2;byte:17;int:0;int:2;int:1;byte:1;int:18;int:0;byte:15;int:0;bytes:[];", stream.toString())
+        Assert.assertEquals("int:1;byte:1;int:1;int:3;byte:15;int:9;bytes:[-110,-122,-96,-119,-102,-100,-117,-112,-115,];int:2;byte:17;my_vector;int:2;int:1;byte:1;int:18;int:0;byte:15;int:0;bytes:[];", stream.toString())
     }
 
     @Test

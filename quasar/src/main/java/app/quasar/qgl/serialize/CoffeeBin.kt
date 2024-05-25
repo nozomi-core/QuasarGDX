@@ -46,7 +46,7 @@ class CoffeeBin(private val binaryMap: BinaryMap = BinaryMap()) {
                 }
             }
             if(propList.isNotEmpty()) {
-                dataOut.writeObject(ID_OBJECT, BinaryObject(entity.classId, propList.toTypedArray()))
+                dataOut.writeObject(ID_OBJECT, BinaryObject(entity.typeId, propList.toTypedArray()))
             } else {
                 dataOut.writeString(ID_EMPTY_OBJECT, "")
             }

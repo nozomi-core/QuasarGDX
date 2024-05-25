@@ -34,6 +34,10 @@ class BinaryDataWriter(outputStream: OutputStream): DataWriter {
         out.writeBoolean(value)
     }
 
+    override fun writeString(value: String) {
+        out.writeUTF(value)
+    }
+
     override fun close() {
         out.close()
     }
