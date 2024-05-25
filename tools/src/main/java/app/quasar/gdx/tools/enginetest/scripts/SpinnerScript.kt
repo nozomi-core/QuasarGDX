@@ -4,8 +4,10 @@ import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.SpinnerData
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.math.Vector3
 
+@QGLEntity("spinner")
 class SpinnerScript: GameNode<SpinnerData>() {
     private var position = Vector3(64f, 64f, 0f)
     private var rotation: Float = 0f

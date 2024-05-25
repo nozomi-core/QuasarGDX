@@ -14,18 +14,27 @@ class QGLBinaryTest {
 
     //WARNING! Do not change these ever (You may add to the list), these ensure you don't break the file type format
     private object TestBinaryType {
-        const val INT = 1
-        const val INT_ARRAY = 2
-        const val LONG = 3
-        const val LONG_ARRAY = 4
-        const val DOUBLE = 7
-        const val DOUBLE_ARRAY = 8
-        const val BOOLEAN = 9
-        const val BOOLEAN_ARRAY = 10
-        const val STRING = 15
-        const val STRING_MATRIX = 16
-        const val OBJECT = 17
-        const val FRAME = 20
+        const val INT: Int =                   1
+        const val INT_ARRAY: Int =             2
+        const val LONG: Int =                  3
+        const val LONG_ARRAY: Int =            4
+        const val FLOAT: Int =                 5
+        const val FLOAT_ARRAY =                6
+        const val DOUBLE: Int =                7
+        const val DOUBLE_ARRAY: Int =          8
+        const val BOOLEAN: Int =               9
+        const val BOOLEAN_ARRAY: Int =         10
+        const val CHAR: Int =                  11
+        const val CHAR_ARRAY: Int =            12
+        const val BYTES: Int =                 13
+        const val BYTE_MATRIX: Int =           14
+        const val STRING: Int =                15
+        const val STRING_MATRIX: Int =         16
+        const val BINARY_OBJECT: Int =         17
+        const val BINARY_OBJECT_ARRAY: Int =   18
+        const val FRAME_START: Int =           19
+        const val FRAME_END: Int =             20
+        const val ANY: Int =                   21
     }
 
     @Test
@@ -212,7 +221,7 @@ class QGLBinaryTest {
         assertEquals(8.2, theObject[0].data)
         assertEquals("tennis", theObject[1].data)
         assertEquals(true, theObject[2].data)
-        assertEquals(TestBinaryType.OBJECT, output.type)
+        assertEquals(TestBinaryType.BINARY_OBJECT, output.type)
     }
 
     @Test
@@ -242,7 +251,7 @@ class QGLBinaryTest {
     @Test
     fun testFrame() {
         val inMemory = QGLBinary.createMemoryOut { out ->
-            out.writeFrameStart(89)
+            out.writeFrame(89){}
         }
 
         val output = BinaryOutput()
@@ -251,12 +260,54 @@ class QGLBinaryTest {
         streamIn.read(output)
         assertEquals(Unit, output.data)
         assertEquals(89, output.id)
-        assertEquals(TestBinaryType.FRAME, output.type)
+        assertEquals(TestBinaryType.FRAME_START, output.type)
     }
 
     @Test
-    fun testGuid() {
-        val customerGuid = ClientGuid.create()
-        //assertEquals("", customerGuid.first.guid)
+    fun testWriteInt() {
+        val debug = StringDataWriter()
+        val out = QGLBinary().Out(debug)
+        out.writeInt(8,98)
+        assertEquals("int:8;byte:1;int:98;", debug.toString())
+    }
+
+    @Test
+    fun testWriteIntArray() {
+        val debug = StringDataWriter()
+        val out = QGLBinary().Out(debug)
+        out.writeIntArray(7, intArrayOf(5,8,9))
+        assertEquals("int:7;byte:2;int:3;int:5;int:8;int:9;", debug.toString())
+    }
+
+    @Test
+    fun testWriteLong() {
+        val debug = StringDataWriter()
+        val out = QGLBinary().Out(debug)
+        out.writeLong(3,743L)
+        assertEquals("int:3;byte:3;long:743;", debug.toString())
+    }
+
+    @Test
+    fun testWriteLongArray() {
+        val debug = StringDataWriter()
+        val out = QGLBinary().Out(debug)
+        out.writeLongArray(87, longArrayOf(5,1,2, 9))
+        assertEquals("int:87;byte:4;int:4;long:5;long:1;long:2;long:9;", debug.toString())
+    }
+
+    @Test
+    fun testWriteFrameEmpty() {
+        val debug = StringDataWriter()
+        val out = QGLBinary().Out(debug)
+        out.writeFrame(77,) {}
+        assertEquals("int:77;byte:19;int:77;byte:20;", debug.toString())
+    }
+
+    @Test
+    fun testWriteString() {
+        val debug = StringDataWriter()
+        val out = QGLBinary().Out(debug)
+        out.writeString(55, "hey")
+        assertEquals("int:55;byte:15;int:3;bytes:[-105,-102,-122,];", debug.toString())
     }
 }

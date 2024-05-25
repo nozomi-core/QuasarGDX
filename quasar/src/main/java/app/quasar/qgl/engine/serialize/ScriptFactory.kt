@@ -1,28 +1,48 @@
 package app.quasar.qgl.engine.serialize
 
 import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.serialize.QGLMapper
 import kotlin.reflect.KClass
 
+class ClassFactory(
+    val scriptFactory: ScriptFactory,
+    val dataFactory: DataFactory
+)
+
 class ScriptBuilder {
-    private val scripts = mutableListOf<ScriptDef>()
+    private val scripts = mutableSetOf<KClass<*>>()
 
-    fun <G : GameNode<D>, D> add(id: Int, kClass: KClass<G>, mapper: QGLMapper<D>) {
-        scripts.add(ScriptDef(id, kClass, mapper))
+    fun <G : GameNode<*>> add(kClass: KClass<G>) {
+        scripts.add(kClass)
     }
-
-    fun getDefinitionById(id: Int): ScriptDef? = scripts.find { it.id == id }
-    fun getDefinitionByClass(kClass: KClass<*>): ScriptDef? = scripts.find { it.kClass == kClass }
 
     fun applyScripts(factory: ScriptFactory) {
-        factory.callback(this)
+        factory.scripts(this)
     }
+
+    fun getList() = scripts.toList()
+}
+
+class DataBuilder {
+    private val scripts = mutableSetOf<KClass<*>>()
+
+    fun <G : Any> add(kClass: KClass<G>) {
+        scripts.add(kClass)
+    }
+
+    fun applyScripts(factory: DataFactory) {
+        factory.data(this)
+    }
+
+    fun getList() = scripts.toList()
 }
 
 typealias ScriptCallback = ScriptBuilder.() -> Unit
+typealias DataCallback = DataBuilder.() -> Unit
 
 interface ScriptFactory {
-    val callback: ScriptCallback
+    val scripts: ScriptCallback
 }
 
-class ScriptDef(val id: Int, val kClass: KClass<*>, val mapper: QGLMapper<*>)
+interface DataFactory {
+    val data: DataCallback
+}

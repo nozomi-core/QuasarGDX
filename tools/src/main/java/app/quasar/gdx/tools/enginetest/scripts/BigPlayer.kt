@@ -3,13 +3,14 @@ package app.quasar.gdx.tools.enginetest.scripts
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.PlayerData
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.math.Vector3
 
+@QGLEntity("big_player")
 class BigPlayer: GameNode<PlayerData>() {
     override fun onCreate(argument: NodeArgument): PlayerData {
-        return PlayerData(position = Vector3(), 0f, false, 0f)
+        return PlayerData()
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: PlayerData) {

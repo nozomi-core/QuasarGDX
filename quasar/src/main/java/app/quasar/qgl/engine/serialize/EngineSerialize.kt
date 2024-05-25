@@ -2,45 +2,41 @@ package app.quasar.qgl.engine.serialize
 
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.serialize.*
-import java.io.File
 
 class EngineSerialize(
     engine: QuasarEngineActual,
-    filename: String,
-    scriptFactory: ScriptFactory,
+    factory: () -> QGLBinary.Out
 ) {
-    private val scripts = ScriptBuilder().apply {
-        applyScripts(scriptFactory)
-    }
+    private val dataOut: QGLBinary.Out
+    private val coffeeBin: CoffeeBin.Out
 
     init {
-        QGLBinary.createFileOut(File("${filename}.qgl")) { out ->
-            writeAccounting(out, engine.accounting)
-            writeNodeGraph(out, engine.nodeGraph)
-        }
+        dataOut = factory()
+        coffeeBin = CoffeeBin().Out(dataOut)
+        writeDimension(engine.current)
+        writeAccounting(engine.accounting)
+        writeNodeGraph(engine.nodeGraph)
+        dataOut.close()
     }
 
-    private fun writeAccounting(out: QGLBinary.Out, accounting: EngineAccounting) {
-        out.writeLong(0, accounting.runtimeGameId)
+    private fun writeDimension(dimension: EngineDimension) {
+        dataOut.writeInt(0, dimension.id)
     }
 
-    private fun writeNodeGraph(out: QGLBinary.Out, graph: NodeGraph) {
-        out.writeInt(0, graph.size)
+    private fun writeAccounting(accounting: EngineAccounting) {
+        dataOut.writeLong(0, accounting.runtimeGameId)
+    }
+
+    private fun writeNodeGraph(graph: NodeGraph) {
+        dataOut.writeInt(0, graph.size)
 
         graph.forEach { node ->
-            val definition = scripts.getDefinitionByClass(node::class)
+            dataOut.writeLong(0, node.record.nodeId)
+            dataOut.writeString(0, node.record.tag)
+            dataOut.writeInt(0, node.record.dimension.id)
 
-            if(definition != null) {
-                val mapper = definition.mapper as QGLMapper<Any>
-                val binaryRecord = mapper.toBinary(node.record.data!!)
-
-                out.writeLong(0, node.nodeId)
-                out.writeString(0, node.tag)
-                out.writeObject(definition.id, BinaryObject(definition.id, binaryRecord))
-
-            } else {
-                //TODO: log no definition for script or throw exception TBA
-            }
+            coffeeBin.writeObjectRecord(node)
+            coffeeBin.writeObjectRecord(node.record.data!!)
         }
     }
 }

@@ -3,15 +3,17 @@ package app.quasar.gdx.tools.enginetest.scripts
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.MissileData
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.math.Vector3
 
+@QGLEntity("missile")
 class MissileScript: GameNode<MissileData>() {
 
     override fun onCreate(argument: NodeArgument): MissileData {
         return when(argument) {
-            is AnyNodeArgument -> MissileData(
+            is AnyNodeArgument -> MissileData().apply {
                 position = argument.value as Vector3
-            )
+            }
             else -> throw creationException()
         }
     }
