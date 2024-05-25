@@ -35,21 +35,15 @@ class EngineDeserialize(
 
         dataIn = factory()
         coffeeBin = CoffeeBin().In(kClassMap, dataIn)
+        dimension = readDimension(BinaryOutput())
         accounting = readAccounting()
         nodeGraph = readNodeGraph()
-        dimension = readDimension()
     }
 
     private fun readAccounting(): EngineAccounting {
         val output = BinaryOutput()
         dataIn.read(output)
         return EngineAccounting(runtimeGameId = output.data as Long)
-    }
-
-    private fun readDimension(): EngineDimension {
-        val output = BinaryOutput()
-        dataIn.read(output)
-        return EngineDimension.create(id = output.data as Int)
     }
 
     private fun readNodeGraph(): NodeGraph {
