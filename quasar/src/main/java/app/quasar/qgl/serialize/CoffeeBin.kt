@@ -30,7 +30,7 @@ class CoffeeBin {
                 if(propAnnotation != null) {
                     val propValue = prop.get(value)
                     val id = propAnnotation.typeId
-                    dataOut.writeAny(id, propValue)
+                    //dataOut.writeAny(id, propValue)
                 }
             }
         }

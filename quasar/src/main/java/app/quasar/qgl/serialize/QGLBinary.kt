@@ -205,11 +205,6 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeAny(id: Int, data: Any) {
-            writeRecord(BinaryRecord(id, data))
-        }
-
-        @Throws(IOException::class)
         private fun writeFrameStart(id: Int) {
             validateId(id)
             out.writeInt(id)
@@ -231,6 +226,20 @@ class QGLBinary {
             writeFrameEnd(id)
         }
 
+        @Throws(IOException::class)
+        private fun writeObjectBlob(id: Int, value: BinaryObject) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_OBJECT_BLOB)
+            out.writeInt(value.classId)
+            out.writeInt(value.size)
+
+            for(i in 0 until value.size) {
+                writeRecord(value[i])
+            }
+        }
+
+
         private fun writeRecord(record: BinaryRecord) {
             when(record.data) {
                 is Int -> writeInt(record.id, record.data)
@@ -249,7 +258,7 @@ class QGLBinary {
                 is ByteMatrix -> writeByteMatrix(record.id, record.data)
                 is String -> writeString(record.id, record.data)
                 is StringMatrix -> writeStringMatrix(record.id, record.data)
-                is BinaryObject,
+                is BinaryObject -> writeObjectBlob(record.id, record.data)
                 is BinaryObjectMatrix -> throw Exception("for now we don't support records having objects, the idea is flat structure")
 
                 else -> throw Exception("Type in record not supported")
@@ -432,9 +441,20 @@ class QGLBinary {
                 TYPE_FRAME_END -> {
                     record.data = Unit
                 }
-                TYPE_ANY -> {
+                TYPE_OBJECT_BLOB -> {
+                    val recordList = mutableListOf<BinaryRecord>()
+
                     val output = BinaryOutput()
-                    read(output)
+
+                    val typeSize = inp.readInt()
+                    val classId = inp.readInt()
+                    for(i in 0 until typeSize) {
+                        read(output)
+                        recordList.add(
+                            BinaryRecord(output.id, output.data)
+                        )
+                    }
+                    record.data = BinaryObject(classId, recordList.toTypedArray())
                 }
 
                 else -> throw Exception("type id not supported")
@@ -472,7 +492,7 @@ class QGLBinary {
         const val TYPE_BINARY_OBJECT_ARRAY: Int =   18
         const val TYPE_FRAME_START: Int =           19
         const val TYPE_FRAME_END: Int =             20
-        const val TYPE_ANY: Int =                   21
+        const val TYPE_OBJECT_BLOB: Int =           21
 
         const val ID_NO_DATA_READ = -50
         const val ID_END_OF_DATA = -100

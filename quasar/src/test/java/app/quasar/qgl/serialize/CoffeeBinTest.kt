@@ -3,31 +3,47 @@ package app.quasar.qgl.serialize
 import com.badlogic.gdx.math.Vector3
 import org.junit.Assert
 import org.junit.Test
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.DataInputStream
-
 class CoffeeBinTest {
 
     @Test
     fun testSerial3rdLibraryVector() {
-        val vector = Vector3()
-        vector.x = 455f
+        val propVector = 2
 
-        val stream = ByteArrayOutputStream()
+        val classIdVector = 3
 
-        val binaryOut = QGLBinary().Out(BinaryDataWriter(stream))
-        val coffee = CoffeeBin()
+        val vector = Vector3(800f,801f,802f)
 
-        val out = coffee.Out(binaryOut)
-        out.write(vector)
-        //Read back the data
+        val binaryVector = BinaryObject(classIdVector, arrayOf(
+            BinaryRecord(4, vector.x),
+            BinaryRecord(5, vector.y),
+            BinaryRecord(6, vector.z)
+        ))
 
-        val qglIn = QGLBinary().In(DataInputStream(ByteArrayInputStream(stream.toByteArray())))
+        val records = arrayOf(
+            BinaryRecord(propVector, binaryVector)
+        )
 
-        val coffeeIn = coffee.In(KClassMap.of(MyVector::class), qglIn)
-        val readBackVector = coffeeIn.read() as MyVector
+        val memIn = QGLBinary.createMemoryOut { out ->
+            out.writeObject(77, BinaryObject(111, records))
+        }
 
-        Assert.assertEquals(22, readBackVector.age)
+        val input = QGLBinary.createMemoryIn(memIn)
+        val output = BinaryOutput()
+
+        input.read(output)
+        val rootObject = output.data as BinaryObject
+
+        val vectorRecord = rootObject.findId(propVector)!!
+
+        val vectorBinaryObject = vectorRecord.data as BinaryObject
+
+        val readBack = Vector3(
+            vectorBinaryObject.value(4),
+            vectorBinaryObject.value(5),
+            vectorBinaryObject.value(6)
+        )
+        Assert.assertEquals(readBack.x, 800f)
+        Assert.assertEquals(readBack.y, 801f)
+        Assert.assertEquals(readBack.z, 802f)
     }
 }
