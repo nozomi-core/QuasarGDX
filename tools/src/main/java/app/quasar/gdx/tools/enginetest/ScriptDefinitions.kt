@@ -15,6 +15,7 @@ object TestScripts: ScriptFactory {
         add(TilemapScript::class)
         add(BigPlayer::class)
         add(SpinnerScript::class)
+        add(LogScript::class)
     }
 }
 
@@ -25,5 +26,6 @@ object DataScripts: DataFactory {
         add(DestroyData::class)
         add(TilemapData::class)
         add(SpinnerData::class)
+        add(UnitData::class)
     }
 }
