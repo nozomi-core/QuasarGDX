@@ -26,6 +26,6 @@ object DataScripts: DataFactory {
         add(DestroyData::class)
         add(TilemapData::class)
         add(SpinnerData::class)
-        add(UnitData::class)
+        add(LogData::class)
     }
 }
