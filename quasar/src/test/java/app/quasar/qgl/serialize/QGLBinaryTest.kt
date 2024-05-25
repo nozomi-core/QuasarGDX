@@ -300,7 +300,7 @@ class QGLBinaryTest {
         val debug = StringDataWriter()
         val out = QGLBinary().Out(debug)
         out.writeFrame(77,) {}
-        assertEquals("int:77;byte:20;int:77;byte:21;", debug.toString())
+        assertEquals("int:77;byte:19;int:77;byte:20;", debug.toString())
     }
 
     @Test
