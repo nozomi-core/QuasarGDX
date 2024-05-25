@@ -44,13 +44,13 @@ class PlayerScript: GameNode<PlayerData>(), WorldPosition {
         }
 
         if(Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
-            context.engine.setDimension(EngineDimension(1))
-            self.setDimension(EngineDimension(1))
+            context.engine.setDimension(EngineDimension.create(1))
+            self.setDimension(EngineDimension.create(1))
         }
 
         if(Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
-            context.engine.setDimension(EngineDimension(2))
-            self.setDimension(EngineDimension(2))
+            context.engine.setDimension(EngineDimension.create(2))
+            self.setDimension(EngineDimension.create(2))
         }
 
         if(Gdx.input.isKeyPressed(Keys.SPACE)) {

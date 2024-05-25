@@ -20,7 +20,7 @@ class EngineTestWorld: GameWorld() {
     }
 
     companion object {
-        val MainDimen = EngineDimension(1)
-        val NextDimen = EngineDimension(2)
+        val MainDimen = EngineDimension.create(0)
+        val NextDimen = EngineDimension.create(0)
     }
 }

@@ -27,7 +27,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     private val drawContext: DrawContext
 
     private val scriptFactory: ClassFactory
-    private var dimension: EngineDimension = EngineDimension(0)
+    private var dimension: EngineDimension = EngineDimension.create(0)
     override val current: EngineDimension
         get() = dimension
 

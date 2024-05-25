@@ -8,5 +8,5 @@ import app.quasar.qgl.serialize.QGLEntity
 
 @QGLEntity("tilemap_data")
 class TilemapData {
-       var tiles: MutableList<TileInfo> = createRandomTileInfo(2048, 2048).toMutableList()
+       var tiles: MutableList<TileInfo> = createRandomTileInfo(100, 100).toMutableList()
 }

@@ -37,13 +37,19 @@ class EngineDeserialize(
         coffeeBin = CoffeeBin().In(kClassMap, dataIn)
         accounting = readAccounting()
         nodeGraph = readNodeGraph()
-        dimension = EngineDimension(-1) //TODO: serialise dimension
+        dimension = readDimension()
     }
 
     private fun readAccounting(): EngineAccounting {
         val output = BinaryOutput()
         dataIn.read(output)
         return EngineAccounting(runtimeGameId = output.data as Long)
+    }
+
+    private fun readDimension(): EngineDimension {
+        val output = BinaryOutput()
+        dataIn.read(output)
+        return EngineDimension.create(id = output.data as Int)
     }
 
     private fun readNodeGraph(): NodeGraph {
@@ -71,11 +77,17 @@ class EngineDeserialize(
         return output.data as String
     }
 
+    private fun readDimension(output: BinaryOutput): EngineDimension {
+        dataIn.read(output)
+        return EngineDimension.create(output.data as Int)
+    }
+
     private fun readGameNode(
         output: BinaryOutput
     ): GameNode<*> {
         val nodeId = readNodeId(output)
         val tag = readTag(output)
+        val dimension = readDimension(output)
 
         val nodeScript = coffeeBin.readObjectRecord() as GameNode<Any>
         val nodeData = coffeeBin.readObjectRecord()
@@ -84,7 +96,7 @@ class EngineDeserialize(
             data = nodeData,
             nodeId = nodeId,
             tag = tag,
-            dimension = EngineDimension(-1) //TODO: implement dimension serialization
+            dimension = dimension
         )
         return nodeScript
     }
