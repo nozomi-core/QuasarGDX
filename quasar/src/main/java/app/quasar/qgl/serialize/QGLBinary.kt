@@ -10,6 +10,7 @@ interface DataWriter {
     fun writeDouble(value: Double)
     fun writeBoolean(value: Boolean)
     fun write(value: ByteArray)
+    fun writeString(value: String)
     fun close()
 }
 
@@ -185,22 +186,10 @@ class QGLBinary {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_BINARY_OBJECT)
-            out.writeInt(data.classId)
+            out.writeString(data.classId)
             out.writeInt(data.size)
             for(index in 0 until data.size) {
                 writeRecord(data[index])
-            }
-        }
-
-        @Throws(IOException::class)
-        fun writeObjectMatrix(id: Int, data: BinaryObjectMatrix) {
-            validateId(id)
-            out.writeInt(id)
-            out.write(TYPE_BINARY_OBJECT_ARRAY)
-            out.writeInt(data.size)
-            for(index in 0 until data.size) {
-                val item = data[index]
-                writeObject(item.classId, item)
             }
         }
 
@@ -231,7 +220,7 @@ class QGLBinary {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_OBJECT_BLOB)
-            out.writeInt(value.classId)
+            out.writeString(value.classId)
             out.writeInt(value.size)
 
             for(i in 0 until value.size) {
@@ -409,7 +398,7 @@ class QGLBinary {
                     record.data = StringMatrix(stringList)
                 }
                 TYPE_BINARY_OBJECT -> {
-                    val classId = inp.readInt()
+                    val classId = inp.readUTF()
 
                     val typeSize = inp.readInt()
                     val objectList = mutableListOf<BinaryRecord>()
@@ -446,8 +435,9 @@ class QGLBinary {
 
                     val output = BinaryOutput()
 
+                    val classId = inp.readUTF()
                     val typeSize = inp.readInt()
-                    val classId = inp.readInt()
+
                     for(i in 0 until typeSize) {
                         read(output)
                         recordList.add(
@@ -532,7 +522,7 @@ class BinaryOutput {
 class InlineBinaryFormat(val byteData: ByteArray)
 
 class BinaryObject(
-    val classId: Int,
+    val classId: String,
     private val matrix: Array<BinaryRecord>
 ): FastIterator<BinaryRecord> {
     override val size: Int get() = matrix.size

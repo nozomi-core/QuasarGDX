@@ -7,7 +7,7 @@ class BinaryMap {
 
     fun toBinary(value: Any): Any {
         return if(value is Vector3) {
-            BinaryObject(3,
+            BinaryObject("3",
                 arrayOf(
                     BinaryRecord(1, value.x),
                     BinaryRecord(2, value.y),

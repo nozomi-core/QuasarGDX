@@ -9,7 +9,7 @@ class CoffeeBinTest {
     fun testSerial3rdLibraryVector() {
         val propVector = 2
 
-        val classIdVector = 3
+        val classIdVector = "3"
 
         val vector = Vector3(800f,801f,802f)
 
@@ -24,7 +24,7 @@ class CoffeeBinTest {
         )
 
         val memIn = QGLBinary.createMemoryOut { out ->
-            out.writeObject(77, BinaryObject(111, records))
+            out.writeObject(77, BinaryObject("111", records))
         }
 
         val input = QGLBinary.createMemoryIn(memIn)

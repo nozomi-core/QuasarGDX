@@ -198,7 +198,7 @@ class QGLBinaryTest {
     @Test
     fun testObject() {
         val inMemory = QGLBinary.createMemoryOut { out ->
-            val binOb = BinaryObject(83,
+            val binOb = BinaryObject("83",
                 arrayOf(
                     BinaryRecord(4, 8.2),
                     BinaryRecord(67, "tennis"),
@@ -227,7 +227,7 @@ class QGLBinaryTest {
     @Test
     fun testObjectClassAndId() {
         val inMemory = QGLBinary.createMemoryOut { out ->
-            val binOb = BinaryObject(569,
+            val binOb = BinaryObject("569",
                 arrayOf(
                     BinaryRecord(2, "Hello Object"),
                     BinaryRecord(9, false)
@@ -245,7 +245,7 @@ class QGLBinaryTest {
 
         val binObject = output.data as BinaryObject
 
-        assertEquals(569, binObject.classId)
+        assertEquals("569", binObject.classId)
     }
 
     @Test
