@@ -4,10 +4,12 @@ import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.PlayerData
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.math.Vector3
 
+@QGLEntity("player")
 class PlayerScript: GameNode<PlayerData>(), WorldPosition {
 
     override fun queryPosition(input: Vector3): Vector3 = input.set(requireForInterface.position)
@@ -23,16 +25,16 @@ class PlayerScript: GameNode<PlayerData>(), WorldPosition {
         data.rotation += clock.mulDeltaTime(data.rotateSpeed)
 
         if(Gdx.input.isKeyPressed(Keys.W)) {
-            data.position.y += clock.mulDeltaTime(speed)
+            data.y += clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.A)) {
-            data.position.x -= clock.mulDeltaTime(speed)
+            data.x -= clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.S)) {
-            data.position.y -= clock.mulDeltaTime(speed)
+            data.y -= clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.D)) {
-            data.position.x += clock.mulDeltaTime(speed)
+            data.x += clock.mulDeltaTime(speed)
         }
 
         if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {

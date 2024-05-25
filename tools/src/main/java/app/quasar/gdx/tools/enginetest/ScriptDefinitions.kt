@@ -1,9 +1,6 @@
 package app.quasar.gdx.tools.enginetest
 
-import app.quasar.gdx.tools.enginetest.data.DestroyData
-import app.quasar.gdx.tools.enginetest.data.MissileData
-import app.quasar.gdx.tools.enginetest.data.PlayerData
-import app.quasar.gdx.tools.enginetest.data.TilemapData
+import app.quasar.gdx.tools.enginetest.data.*
 import app.quasar.gdx.tools.enginetest.scripts.*
 import app.quasar.qgl.engine.serialize.DataCallback
 import app.quasar.qgl.engine.serialize.DataFactory
@@ -17,6 +14,7 @@ object TestScripts: ScriptFactory {
         add(DestroyScript::class)
         add(TilemapScript::class)
         add(BigPlayer::class)
+        add(SpinnerScript::class)
     }
 }
 
@@ -26,5 +24,6 @@ object DataScripts: DataFactory {
         add(MissileData::class)
         add(DestroyData::class)
         add(TilemapData::class)
+        add(SpinnerData::class)
     }
 }

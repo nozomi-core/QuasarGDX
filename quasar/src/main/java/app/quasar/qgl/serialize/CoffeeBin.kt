@@ -17,7 +17,7 @@ class CoffeeBin {
             }
         }
 
-        private fun writeObjectRecord(value: Any) {
+        fun writeObjectRecord(value: Any) {
             val classEntity = writeClassType(value)
             writeObjectRecord(classEntity, value)
         }

@@ -1,6 +1,5 @@
 package app.quasar.qgl.engine.serialize
 
-import app.quasar.qgl.engine.core.GameData
 import app.quasar.qgl.engine.core.GameNode
 import kotlin.reflect.KClass
 
@@ -26,7 +25,7 @@ class ScriptBuilder {
 class DataBuilder {
     private val scripts = mutableSetOf<KClass<*>>()
 
-    fun <G : GameData> add(kClass: KClass<G>) {
+    fun <G : Any> add(kClass: KClass<G>) {
         scripts.add(kClass)
     }
 

@@ -2,56 +2,35 @@ package app.quasar.qgl.engine.serialize
 
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.serialize.*
-import java.io.File
-import kotlin.reflect.KClass
 
 class EngineSerialize(
     engine: QuasarEngineActual,
-    filename: String,
-    classFactory: ClassFactory
+    factory: () -> QGLBinary.Out
 ) {
-
-    private val kClassMap: KClassMap
-
+    private val dataOut: QGLBinary.Out
+    private val coffeeBin: CoffeeBin.Out
 
     init {
-        val nodeScripts = ScriptBuilder().apply {
-            applyScripts(classFactory.scriptFactory)
-        }
-
-        val dataScripts = DataBuilder().apply {
-            applyScripts(classFactory.dataFactory)
-        }
-
-        kClassMap = KClassMap(mutableListOf<KClass<*>>().apply {
-            addAll(nodeScripts.getList())
-            addAll(dataScripts.getList())
-        })
-
-        QGLBinary.createFileOut(File("${filename}.qgl")) { out ->
-            writeAccounting(out, engine.accounting)
-            writeNodeGraph(out, engine.nodeGraph)
-        }
+        dataOut = factory()
+        coffeeBin = CoffeeBin().Out(dataOut)
+        writeAccounting(engine.accounting)
+        writeNodeGraph(engine.nodeGraph)
+        dataOut.close()
     }
 
-    private fun writeAccounting(out: QGLBinary.Out, accounting: EngineAccounting) {
-        out.writeLong(0, accounting.runtimeGameId)
+    private fun writeAccounting(accounting: EngineAccounting) {
+        dataOut.writeLong(0, accounting.runtimeGameId)
     }
 
-    private fun writeNodeGraph(out: QGLBinary.Out, graph: NodeGraph) {
-        out.writeInt(0, graph.size)
+    private fun writeNodeGraph(graph: NodeGraph) {
+        dataOut.writeInt(0, graph.size)
 
         graph.forEach { node ->
-            writeScriptClass(node)
-            writeScriptData(node.record.data)
+            dataOut.writeLong(0, node.record.nodeId)
+            dataOut.writeString(0, node.record.tag)
+
+            coffeeBin.writeObjectRecord(node)
+            coffeeBin.writeObjectRecord(node.record.data!!)
         }
-    }
-
-    private fun writeScriptClass(node: GameNode<*>) {
-
-    }
-
-    private fun writeScriptData(gameData: GameData) {
-
     }
 }

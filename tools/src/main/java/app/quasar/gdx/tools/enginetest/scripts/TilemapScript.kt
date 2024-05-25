@@ -8,7 +8,9 @@ import app.quasar.qgl.engine.core.DrawContext
 import app.quasar.qgl.engine.core.GameNode
 import app.quasar.qgl.engine.core.NodeArgument
 import app.quasar.qgl.engine.core.SpriteId
+import app.quasar.qgl.serialize.QGLEntity
 
+@QGLEntity("tilemap")
 class TilemapScript: GameNode<TilemapData>() {
 
     private val grid = Grid(16, 100, 100, 0f,  0f)

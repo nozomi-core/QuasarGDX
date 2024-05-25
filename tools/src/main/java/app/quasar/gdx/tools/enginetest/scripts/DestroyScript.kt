@@ -3,7 +3,9 @@ package app.quasar.gdx.tools.enginetest.scripts
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.DestroyData
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.serialize.QGLEntity
 
+@QGLEntity("destroy")
 class DestroyScript: GameNode<DestroyData>() {
 
     override fun onCreate(argument: NodeArgument): DestroyData {

@@ -2,6 +2,10 @@ package app.quasar.qgl.engine.core
 
 import app.quasar.qgl.engine.serialize.ClassFactory
 import app.quasar.qgl.engine.serialize.EngineSerialize
+import app.quasar.qgl.serialize.BinaryDataWriter
+import app.quasar.qgl.serialize.QGLBinary
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.reflect.KClass
 
 /**
@@ -24,6 +28,8 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
     private val scriptFactory: ClassFactory
     private var dimension: EngineDimension = EngineDimension(0)
+    override val current: EngineDimension
+        get() = dimension
 
     init {
         val config = QuasarEngineFactory(factory)
@@ -61,7 +67,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         nodeGraph.createNode(this, script, listOf(engineNodeFactory, factory, dimenNodeFactory))
     }
 
-    override fun <T : GameNode<D>, D: GameData> replace(node: GameNode<D>, replaceScript: KClass<T>) {
+    override fun <T : GameNode<D>, D> replace(node: GameNode<D>, replaceScript: KClass<T>) {
         nodeGraph.replace(this, node, replaceScript)
     }
 
@@ -70,7 +76,9 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     }
 
     override fun saveToFile(filename: String) {
-        EngineSerialize(this, filename, scriptFactory)
+        EngineSerialize(this) {
+            QGLBinary().Out(BinaryDataWriter(FileOutputStream(File(filename))))
+        }
     }
 
     override fun shutdown() {
