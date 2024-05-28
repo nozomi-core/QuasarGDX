@@ -32,6 +32,7 @@ class EngineTestApplication(
         override fun getWorldViewport() = worldViewport
         override fun getOverlayCamera() = overlayCamera
         override fun getOverlayViewport() = overlayViewport
+        override fun getWindow()= screen
     }
 
     override fun create() {

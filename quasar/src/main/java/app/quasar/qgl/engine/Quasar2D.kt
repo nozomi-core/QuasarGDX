@@ -69,7 +69,7 @@ class Quasar2D(
         window.getWorldCamera().update()
         spriteBatch.projectionMatrix = window.getWorldCamera().combined
         spriteBatch.begin()
-        engine.draw()
+        engine.draw(window.getWindow())
         engine.simulate(Gdx.graphics.deltaTime)
         spriteBatch.end()
     }

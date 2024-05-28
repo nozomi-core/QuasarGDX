@@ -6,6 +6,7 @@ import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.math.Vector3
 
@@ -71,6 +72,10 @@ class PlayerScript: GameNode<PlayerData>(), WorldPosition {
 
         if(Gdx.input.isKeyJustPressed(Keys.R)) {
             context.engine.replace(this, BigPlayer::class)
+        }
+
+        if(Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+            println("x: ${Gdx.input.x}, y: ${Gdx.input.y}")
         }
 
         context.camera.setCamera(data.position.x, data.position.y)

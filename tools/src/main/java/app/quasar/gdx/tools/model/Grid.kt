@@ -1,7 +1,7 @@
 package app.quasar.gdx.tools.model
 
 class Grid(
-    tileSize: Int,
+    val tileSize: Int,
     rows: Int,
     columns: Int,
     originX: Float,
@@ -24,6 +24,13 @@ class Grid(
     }
 
     fun getLocation(rowX: Int, columnY: Int): GridItem? = gridMap[getKey(rowX, columnY)]
+
+    fun getGridForPixel(x: Float, y: Float): GridItem? {
+        val rowX = (x / tileSize).toInt()
+        val rowY = (y / tileSize).toInt()
+
+        return getLocation(rowX, rowY)
+    }
 
     fun forEach(callback:(GridItem) -> Unit) {
         gridMap.forEach { t, u ->

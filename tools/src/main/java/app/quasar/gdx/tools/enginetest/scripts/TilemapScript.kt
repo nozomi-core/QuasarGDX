@@ -13,20 +13,20 @@ import app.quasar.qgl.serialize.QGLEntity
 @QGLEntity("tilemap")
 class TilemapScript: GameNode<TilemapData>() {
 
-    private val grid = Grid(16, 100, 100, 0f,  0f)
+    private val grid = Grid(16, 2048, 2048, 0f,  0f)
 
     override fun onCreate(argument: NodeArgument): TilemapData {
         return TilemapData()
     }
 
     override fun onDraw(context: DrawContext, data: TilemapData) {
-        grid.forEach {
-            context.draw.tilePx(CoreTiles.RED_DARK, it.x, it.y)
-        }
+        for(x in context.minWorldX until context.maxWorldX step 16) {
+            for(y in context.minWorldY until context.maxWorldY step 16) {
 
-        data.tiles.forEach { info ->
-            val gridPlace = grid.getLocation(info.rowX, info.columnY)
-            context.draw.tilePx(SpriteId.find(info.spriteId)!!, gridPlace!!.x, gridPlace.y)
+                grid.getGridForPixel(x.toFloat(), y.toFloat())?.let {
+                    context.draw.tilePx(CoreTiles.RED_DARK, it.x, it.y)
+                }
+            }
         }
     }
 }
