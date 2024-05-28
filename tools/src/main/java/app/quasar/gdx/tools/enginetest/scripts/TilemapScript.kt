@@ -8,6 +8,8 @@ import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.Input.Buttons
+import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("tilemap")
 class TilemapScript: GameNode<TilemapData>() {
@@ -20,8 +22,14 @@ class TilemapScript: GameNode<TilemapData>() {
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: TilemapData) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
-            data.tiles.set(2,2, 1)
+        if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
+            val mouse = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
+            val world = context.project.screenToWorld(mouse)
+
+           val gridX = (world.x / tileSize).toInt()
+            val gridY = (world.y / tileSize).toInt()
+
+            data.tiles.set(gridX, gridY, 1)
         }
     }
 
