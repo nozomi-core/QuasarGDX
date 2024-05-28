@@ -3,6 +3,7 @@ package app.quasar.qgl.serialize
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaField
 
@@ -32,7 +33,7 @@ class CoffeeBin(private val binaryMap: BinaryMap = BinaryMap()) {
         private fun writeObjectRecord(entity: QGLEntity, value: Any) {
             val propList = mutableListOf<BinaryRecord>()
 
-            value::class.declaredMemberProperties.forEach { member ->
+            value::class.memberProperties.forEach { member ->
                 val prop = member as KProperty1<Any, Any>
                 val propAnnotation = prop.annotations.filterIsInstance<BinProp>().firstOrNull()
 
@@ -98,7 +99,7 @@ class CoffeeBin(private val binaryMap: BinaryMap = BinaryMap()) {
         }
 
         private fun setObjectRecord(theObject: Any, record: BinaryRecord) {
-            val settableProperty = theObject::class.declaredMemberProperties.find { kProp ->
+            val settableProperty = theObject::class.memberProperties.find { kProp ->
                 /* 1. For each property, filter out the BinProp
                    2. find if the list has any BinProp that matches the id */
                 val propAnno = kProp.annotations.filterIsInstance<BinProp>()

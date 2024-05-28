@@ -4,6 +4,7 @@ import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.PlayerData
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
+import app.quasar.qgl.engine.core.model.VectorNode
 import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
@@ -11,9 +12,7 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("player")
-class PlayerScript: GameNode<PlayerData>(), WorldPosition {
-
-    override fun queryPosition(input: Vector3): Vector3 = input.set(requireForInterface.position)
+class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
 
     override fun onCreate(argument: NodeArgument): PlayerData {
         return PlayerData()
@@ -26,21 +25,21 @@ class PlayerScript: GameNode<PlayerData>(), WorldPosition {
         data.rotation += clock.mulDeltaTime(data.rotateSpeed)
 
         if(Gdx.input.isKeyPressed(Keys.W)) {
-            data.position.y += clock.mulDeltaTime(speed)
+            position.y += clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.A)) {
-            data.position.x -= clock.mulDeltaTime(speed)
+            position.x -= clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.S)) {
-            data.position.y -= clock.mulDeltaTime(speed)
+            position.y -= clock.mulDeltaTime(speed)
         }
         if(Gdx.input.isKeyPressed(Keys.D)) {
-            data.position.x += clock.mulDeltaTime(speed)
+            position.x += clock.mulDeltaTime(speed)
         }
 
-        if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+        if(Gdx.input.isKeyPressed(Keys.ENTER)) {
             context.engine.createNode(selfDimension, MissileScript::class) {
-                it.argument = AnyNodeArgument(data.position.cpy())
+                it.argument = AnyNodeArgument(position.cpy())
             }
         }
 
@@ -78,10 +77,10 @@ class PlayerScript: GameNode<PlayerData>(), WorldPosition {
             println("x: ${Gdx.input.x}, y: ${Gdx.input.y}")
         }
 
-        context.camera.setCamera(data.position.x, data.position.y)
+        context.camera.setCamera(position.x, position.y)
     }
 
     override fun onDraw(context: DrawContext, data: PlayerData) {
-        context.draw.tilePx(CoreTiles.SMILE, data.position.x, data.position.y, 1f, data.rotation)
+        context.draw.tilePx(CoreTiles.SMILE, position.x, position.y, 1f, data.rotation)
     }
 }

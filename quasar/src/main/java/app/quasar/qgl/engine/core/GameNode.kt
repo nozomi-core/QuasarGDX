@@ -62,7 +62,7 @@ abstract class GameNode<D>: ReadableGameNode {
     internal fun simulate(context: SimContext) {
         onSimulate(selfContext, context, record.data!!)
     }
-    internal fun draw(context: DrawContext) {
+    internal open fun draw(context: DrawContext) {
         onDraw(context, record.data!!)
     }
 

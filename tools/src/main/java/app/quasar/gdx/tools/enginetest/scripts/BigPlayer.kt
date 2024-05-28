@@ -6,6 +6,7 @@ import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("big_player")
 class BigPlayer: GameNode<PlayerData>() {
@@ -22,6 +23,6 @@ class BigPlayer: GameNode<PlayerData>() {
     }
 
     override fun onDraw(context: DrawContext, data: PlayerData) {
-        context.draw.tilePx(CoreTiles.SMILE, data.position, 4f, 0f)
+        context.draw.tilePx(CoreTiles.SMILE, Vector3(), 4f, 0f)
     }
 }

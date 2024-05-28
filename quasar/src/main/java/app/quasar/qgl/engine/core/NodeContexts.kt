@@ -18,6 +18,8 @@ class DrawContext(
     private val worldRect = Rectangle()
     private var query = Vector3()
 
+    fun inside(vector3: Vector3): Boolean = worldRect.contains(vector3.x, vector3.y)
+
     //Set the current draw context window so engine knows what sections of the world it should draw
     fun update(screen: OverlayScreen, project: ProjectionApi) {
         query.x = 0f - RENDER_BUFFER

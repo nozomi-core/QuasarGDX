@@ -14,5 +14,5 @@ class PlayerData {
     //@BinProp(5)         var y = 0f
     //@BinProp(6)         var z = 0f
 
-    @BinProp(7) var position = Vector3()
+    //@BinProp(7) var position = Vector3()
 }
