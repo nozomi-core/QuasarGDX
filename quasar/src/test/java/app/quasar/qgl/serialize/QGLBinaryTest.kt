@@ -178,14 +178,14 @@ class QGLBinaryTest {
     @Test
     fun testStringMatrix() {
         val inMemory = QGLBinary.createMemoryOut { out ->
-            out.writeStringMatrix(56, StringMatrix(listOf("name", "customer", "end")))
+            out.writeStringMatrix(56, StringCodex(listOf("name", "customer", "end")))
         }
 
         val output = BinaryOutput()
         val streamIn = QGLBinary.createMemoryIn(inMemory)
         streamIn.read(output)
 
-        val matrix = output.data as StringMatrix
+        val matrix = output.data as StringCodex
 
 
         assertEquals("name", matrix[0])
