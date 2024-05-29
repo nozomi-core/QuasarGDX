@@ -112,7 +112,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         }
     }
 
-    internal fun draw(overlayScreen: OverlayScreen) {
+    internal fun draw(overlayScreen: WindowScreen) {
         drawContext.update(overlayScreen, simContext.project)
 
         nodeGraph.draw(dimension, drawContext)
