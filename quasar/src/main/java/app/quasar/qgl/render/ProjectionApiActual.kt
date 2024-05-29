@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.math.Vector3
 
 class ProjectionApiActual(
-    private val world: Camera
+    private val world: Camera,
+    private val overlay: Camera
 ): ProjectionApi {
 
     override fun screenToWorld(screenVector: Vector3): Vector3 {
@@ -14,5 +15,9 @@ class ProjectionApiActual(
 
     override fun worldToScreen(worldVector: Vector3): Vector3 {
         return world.project(worldVector)
+    }
+
+    override fun screenToOverlay(screenVector: Vector3): Vector3 {
+        return overlay.unproject(screenVector)
     }
 }

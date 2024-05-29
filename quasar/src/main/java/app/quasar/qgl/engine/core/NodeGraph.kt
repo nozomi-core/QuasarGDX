@@ -76,10 +76,13 @@ class NodeGraph(
     }
 
     internal fun queryAll(): List<NodeReference<ReadableGameNode>> = nodeList.mapNotNull { it.reference }
-    internal fun addListener(graphListener: GraphListener) = listeners.add(graphListener)
+    internal fun addListener(graphListener: GraphListener) {
+        nodeList.forEach { graphListener.onAdded(it) }
+        listeners.add(graphListener)
+    }
 
     private fun notifyAdded(node: GameNode<*>) = listeners.forEach { it.onAdded(node) }
-    private fun notifyRemoved(node: GameNode<*>) = listeners.forEach { it.onAdded(node) }
+    private fun notifyRemoved(node: GameNode<*>) = listeners.forEach { it.onRemoved(node) }
 
     private fun scheduleAfterSimulationEvent(action: EngineAction) {
         afterSimulationActions.add(action)

@@ -4,7 +4,8 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
 
 class DrawContext(
-    val draw: DrawableApi
+    val draw: DrawableApi,
+    val project: ProjectionApi
 ) {
     var minWorldX = 0
         private set
@@ -21,7 +22,7 @@ class DrawContext(
     fun inside(vector3: Vector3): Boolean = worldRect.contains(vector3.x, vector3.y)
 
     //Set the current draw context window so engine knows what sections of the world it should draw
-    fun update(screen: WindowScreen, project: ProjectionApi) {
+    fun update(screen: WindowScreen) {
         query.x = 0f - RENDER_BUFFER
         query.y = screen.height + RENDER_BUFFER
         project.screenToWorld(query)

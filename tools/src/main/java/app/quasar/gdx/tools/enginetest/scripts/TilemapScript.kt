@@ -5,14 +5,16 @@ import app.quasar.gdx.tools.enginetest.data.TilemapData
 import app.quasar.gdx.tools.model.Grid
 import app.quasar.gdx.tools.model.createRandomTileInfo
 import app.quasar.qgl.engine.core.*
+import app.quasar.qgl.engine.core.interfaces.GameOverlay
 import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.Input.Buttons
+import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("tilemap")
-class TilemapScript: GameNode<TilemapData>() {
+class TilemapScript: GameNode<TilemapData>(), GameOverlay {
     private val tileSize = 16
 
     private val grid = Grid(tileSize, 100, 100, 0f,  0f)
@@ -30,6 +32,10 @@ class TilemapScript: GameNode<TilemapData>() {
             val gridY = (world.y / tileSize).toInt()
 
             data.tiles.set(gridX, gridY, 1)
+        }
+
+        if(Gdx.input.isKeyPressed(Keys.END)) {
+            self.destroy()
         }
     }
 
@@ -59,5 +65,15 @@ class TilemapScript: GameNode<TilemapData>() {
             1 -> CoreTiles.SIGNAL_REGULAR
             else -> CoreTiles.TRANSPARENT
         }
+    }
+
+    override fun onDrawOverlay(context: DrawContext) {
+        val proj = Vector3()
+        proj.x = Gdx.input.x.toFloat()
+        proj.y = Gdx.input.y.toFloat()
+
+        context.project.screenToOverlay(proj)
+
+        context.draw.tilePx(CoreTiles.RED_DARK, proj.x, proj.y, 5f, 0f)
     }
 }

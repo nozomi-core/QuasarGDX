@@ -37,7 +37,7 @@ class Quasar2D(
         engine = QuasarEngineActual {
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
             camera = CameraApiActual(window)
-            project = ProjectionApiActual(window.getWorldCamera())
+            project = ProjectionApiActual(window.getWorldCamera(), window.getOverlayCamera())
             classes = scriptFactory
         }
         val dimension = world.create(engine)
@@ -53,7 +53,7 @@ class Quasar2D(
         engine = QuasarEngineActual {
             drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
             camera = CameraApiActual(window)
-            project = ProjectionApiActual(window.getWorldCamera())
+            project = ProjectionApiActual(window.getWorldCamera(), window.getOverlayCamera())
             accounting = engineData.accounting
             nodeGraph = engineData.nodeGraph
             classes = scriptFactory
@@ -71,6 +71,12 @@ class Quasar2D(
         spriteBatch.begin()
         engine.draw(window.getWindow())
         engine.simulate(Gdx.graphics.deltaTime)
+
+
+        window.getOverlayViewport().apply()
+        window.getOverlayCamera().update()
+        spriteBatch.projectionMatrix = window.getOverlayCamera().combined
+        engine.drawOverlay()
         spriteBatch.end()
     }
 

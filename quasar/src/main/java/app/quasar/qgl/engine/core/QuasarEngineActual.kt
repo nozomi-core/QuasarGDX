@@ -28,26 +28,33 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
     private val scriptFactory: ClassFactory
     private var dimension: EngineDimension = EngineDimension.create(0)
+
+    private val overlayGraph: OverlayGraph
+
     override val current: EngineDimension
         get() = dimension
 
     init {
         val config = QuasarEngineFactory(factory)
 
+        val project = config.requireProject()
+
         nodeGraph = createOrLoadGraph(config.nodeGraph)
         engineClock = EngineClock()
         simContext = SimContext(
             engine = this,
             clock = engineClock,
-            project = config.requireProject(),
+            project = project,
             camera = config.requireCamera()
         )
         drawContext = DrawContext(
-            draw = config.requireDrawableApi()
+            draw = config.requireDrawableApi(),
+            project = project
         )
         accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)
         scriptFactory = config.classes!!
         worldGraph = WorldGraph(nodeGraph)
+        overlayGraph = OverlayGraph(nodeGraph)
     }
 
     private val engineNodeFactory: NodeFactoryCallback = { factory ->
@@ -113,9 +120,12 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     }
 
     internal fun draw(overlayScreen: WindowScreen) {
-        drawContext.update(overlayScreen, simContext.project)
-
+        drawContext.update(overlayScreen)
         nodeGraph.draw(dimension, drawContext)
+    }
+
+    internal fun drawOverlay() {
+        overlayGraph.draw(current, drawContext)
     }
 
     private fun createOrLoadGraph(nodeGraph: NodeGraph?): NodeGraph {

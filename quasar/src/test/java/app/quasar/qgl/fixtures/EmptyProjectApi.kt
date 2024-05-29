@@ -11,4 +11,8 @@ class EmptyProjectApi: ProjectionApi {
     override fun worldToScreen(worldVector: Vector3): Vector3 {
         return Vector3()
     }
+
+    override fun screenToOverlay(screenVector: Vector3): Vector3 {
+        return Vector3()
+    }
 }
