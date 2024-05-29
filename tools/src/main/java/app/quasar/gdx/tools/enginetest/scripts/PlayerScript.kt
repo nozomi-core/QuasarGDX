@@ -9,7 +9,6 @@ import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
-import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("player")
 class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
@@ -37,7 +36,7 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
             position.x += clock.mulDeltaTime(speed)
         }
 
-        if(Gdx.input.isKeyPressed(Keys.ENTER)) {
+        if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
             context.engine.createNode(selfDimension, MissileScript::class) {
                 it.argument = AnyNodeArgument(position.cpy())
             }

@@ -1,5 +1,7 @@
 package app.quasar.qgl.engine.core
 
+import kotlin.reflect.KClass
+
 abstract class GameNode<D>: ReadableGameNode {
 
     override val isAlive: Boolean
@@ -21,12 +23,25 @@ abstract class GameNode<D>: ReadableGameNode {
     private lateinit var engine: QuasarEngine
     private var isDestroyed = false
 
+    private var parent: ReadableGameNode? = null
+
     protected abstract fun onCreate(argument: NodeArgument): D
     protected open fun onDestroy() {}
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
 
     private val selfContext = object : SelfContext {
+        override fun <T : GameNode<*>> spawnChild(
+            dimension: EngineDimension,
+            script: KClass<T>,
+            factory: (NodeFactory) -> Unit
+        ) {
+            engine.createNode(dimension, script) {
+                it.parent = this@GameNode
+                factory(it)
+            }
+        }
+
         override fun setDimension(dimension: EngineDimension) {
             record.dimension = dimension
         }
@@ -39,6 +54,7 @@ abstract class GameNode<D>: ReadableGameNode {
     internal fun create(factories: List<NodeFactoryCallback>) {
         NodeFactory(factories).also { result ->
             val data = onCreate(result.argument)
+            parent = result.parent
 
             record = NodeRecord(
                 nodeId = result.nodeId!!,
@@ -53,13 +69,17 @@ abstract class GameNode<D>: ReadableGameNode {
         this.engine = engine
     }
 
-    internal fun destroy() {
+    internal fun doDestroy() {
         isDestroyed = true
         reference = null
         onDestroy()
     }
 
     internal fun simulate(context: SimContext) {
+        if(parent != null && !parent!!.isAlive) {
+            parent = null
+            return selfContext.destroy()
+        }
         onSimulate(selfContext, context, record.data!!)
     }
     internal open fun draw(context: DrawContext) {
