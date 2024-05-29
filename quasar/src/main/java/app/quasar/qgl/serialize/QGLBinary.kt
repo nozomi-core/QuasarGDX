@@ -140,7 +140,7 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeByteMatrix(id: Int, data: ByteMatrix) {
+        fun writeByteMatrix(id: Int, data: ByteCodex) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_BYTE_MATRIX)
@@ -168,7 +168,7 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeStringMatrix(id: Int, data: StringMatrix) {
+        fun writeStringMatrix(id: Int, data: StringCodex) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_STRING_MATRIX)
@@ -228,6 +228,27 @@ class QGLBinary {
             }
         }
 
+        @Throws(IOException::class)
+        private fun writeIntMatrix(id: Int, value: IntMatrix) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_INT_MATRIX)
+            //Column size
+            val columns = value.matrix.size
+            val rows = value.matrix[0].size
+
+            out.writeInt(columns)
+            out.writeInt(rows)
+
+            for(x in 0 until columns) {
+                val nextColumn = value.matrix[x]
+
+                for(y in 0 until rows) {
+                    val matrixValue = nextColumn[y]
+                    out.writeInt(matrixValue)
+                }
+            }
+        }
 
         private fun writeRecord(record: BinaryRecord) {
             when(record.data) {
@@ -244,11 +265,12 @@ class QGLBinary {
                 is Char -> writeChar(record.id, record.data)
                 is CharArray -> writeCharArray(record.id, record.data)
                 is ByteArray -> writeBytes(record.id, record.data)
-                is ByteMatrix -> writeByteMatrix(record.id, record.data)
+                is ByteCodex -> writeByteMatrix(record.id, record.data)
                 is String -> writeString(record.id, record.data)
-                is StringMatrix -> writeStringMatrix(record.id, record.data)
+                is StringCodex -> writeStringMatrix(record.id, record.data)
                 is BinaryObject -> writeObjectBlob(record.id, record.data)
-                is BinaryObjectMatrix -> throw Exception("for now we don't support records having objects, the idea is flat structure")
+                is IntMatrix -> writeIntMatrix(record.id, record.data)
+                is BinaryObjectCodex -> throw Exception("for now we don't support records having objects, the idea is flat structure")
 
                 else -> throw Exception("Type in record not supported")
             }
@@ -378,7 +400,7 @@ class QGLBinary {
                         inp.read(childBytes)
                         bytesArray.add(childBytes)
                     }
-                    record.data = ByteMatrix(bytesArray)
+                    record.data = ByteCodex(bytesArray)
                 }
                 TYPE_STRING -> {
                     record.data = readStringType()
@@ -395,7 +417,7 @@ class QGLBinary {
                         stringList.add(String(decodedBytes))
                     }
 
-                    record.data = StringMatrix(stringList)
+                    record.data = StringCodex(stringList)
                 }
                 TYPE_BINARY_OBJECT -> {
                     val classId = inp.readUTF()
@@ -446,6 +468,20 @@ class QGLBinary {
                     }
                     record.data = BinaryObject(classId, recordList.toTypedArray())
                 }
+                TYPE_INT_MATRIX -> {
+                    val columns = inp.readInt()
+                    val rows = inp.readInt()
+
+                    val matrix = IntMatrix(rows, columns)
+
+                    for(x in 0 until columns) {
+                        for(y in 0 until rows) {
+                            val nextValue = inp.readInt()
+                            matrix.set(x, y, nextValue)
+                        }
+                    }
+                    record.data = matrix
+                }
 
                 else -> throw Exception("type id not supported")
             }
@@ -483,6 +519,7 @@ class QGLBinary {
         const val TYPE_FRAME_START: Int =           19
         const val TYPE_FRAME_END: Int =             20
         const val TYPE_OBJECT_BLOB: Int =           21
+        const val TYPE_INT_MATRIX: Int =            22
 
         const val ID_NO_DATA_READ = -50
         const val ID_END_OF_DATA = -100
@@ -542,25 +579,34 @@ class BinaryObject(
     }
 }
 
-class ByteMatrix(private val matrix: List<ByteArray>) {
-    val size: Int get() = matrix.size
+class ByteCodex(private val list: List<ByteArray>) {
+    val size: Int get() = list.size
     operator fun get(index: Int): ByteArray {
-        return matrix[index]
+        return list[index]
     }
 }
 
-class StringMatrix(private val matrix: List<String>) {
-    val size: Int get() = matrix.size
+class StringCodex(private val list: List<String>) {
+    val size: Int get() = list.size
     operator fun get(index: Int): String {
-        return matrix[index]
+        return list[index]
     }
 }
 
-class BinaryObjectMatrix(private val matrix: List<BinaryObject>) {
-    val size: Int get() = matrix.size
+class BinaryObjectCodex(private val list: List<BinaryObject>) {
+    val size: Int get() = list.size
     operator fun get(index: Int): BinaryObject {
-        return matrix[index]
+        return list[index]
     }
+}
+
+class IntMatrix(row: Int, column: Int) {
+    internal val matrix = Array(column) { IntArray(row) { 0 } }
+
+    fun set(x: Int, y: Int, value: Int) {
+        matrix[x][y] = value
+    }
+    fun get(x: Int, y: Int): Int = matrix[x][y]
 }
 
 interface FastIterator<T> {

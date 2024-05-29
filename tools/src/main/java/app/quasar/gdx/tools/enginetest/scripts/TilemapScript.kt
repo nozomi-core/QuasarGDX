@@ -4,29 +4,60 @@ import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.TilemapData
 import app.quasar.gdx.tools.model.Grid
 import app.quasar.gdx.tools.model.createRandomTileInfo
-import app.quasar.qgl.engine.core.DrawContext
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.NodeArgument
-import app.quasar.qgl.engine.core.SpriteId
+import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.serialize.QGLEntity
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.Input.Buttons
+import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("tilemap")
 class TilemapScript: GameNode<TilemapData>() {
+    private val tileSize = 16
 
-    private val grid = Grid(16, 2048, 2048, 0f,  0f)
+    private val grid = Grid(tileSize, 100, 100, 0f,  0f)
 
     override fun onCreate(argument: NodeArgument): TilemapData {
         return TilemapData()
     }
 
-    override fun onDraw(context: DrawContext, data: TilemapData) {
-        for(x in context.minWorldX until context.maxWorldX step 16) {
-            for(y in context.minWorldY until context.maxWorldY step 16) {
+    override fun onSimulate(self: SelfContext, context: SimContext, data: TilemapData) {
+        if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
+            val mouse = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
+            val world = context.project.screenToWorld(mouse)
 
-                grid.getGridForPixel(x.toFloat(), y.toFloat())?.let {
-                    context.draw.tilePx(CoreTiles.RED_DARK, it.x, it.y)
+           val gridX = (world.x / tileSize).toInt()
+            val gridY = (world.y / tileSize).toInt()
+
+            data.tiles.set(gridX, gridY, 1)
+        }
+    }
+
+    override fun onDraw(context: DrawContext, data: TilemapData) {
+        for(x in context.minWorldX until context.maxWorldX step tileSize) {
+            for(y in context.minWorldY until context.maxWorldY step tileSize) {
+
+                val gridX = x / tileSize
+                val gridY = y / tileSize
+
+                if(gridX >= 0 && gridY >= 0) {
+                    val tileId = data.tiles.get(gridX, gridY)
+                    val sprite = getView(tileId)
+
+
+                    grid.getLocation(gridX, gridY)?.let {
+                        context.draw.tilePx(sprite, it.x, it.y)
+                    }
                 }
             }
+        }
+    }
+
+    private fun getView(id: Int): SpriteId {
+        return when(id) {
+            0 -> CoreTiles.SIGNAL_CLOSE
+            1 -> CoreTiles.SIGNAL_REGULAR
+            else -> CoreTiles.TRANSPARENT
         }
     }
 }

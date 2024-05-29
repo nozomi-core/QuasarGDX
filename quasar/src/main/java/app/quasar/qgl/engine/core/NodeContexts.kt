@@ -24,14 +24,14 @@ class DrawContext(
     fun update(screen: OverlayScreen, project: ProjectionApi) {
         query.x = 0f - RENDER_BUFFER
         query.y = screen.height + RENDER_BUFFER
-        project.unprojectWorld(query)
+        project.screenToWorld(query)
 
         minWorldX = query.x.toInt()
         minWorldY = query.y.toInt()
 
         query.x = screen.width + RENDER_BUFFER
         query.y = 0f - RENDER_BUFFER
-        project.unprojectWorld(query)
+        project.screenToWorld(query)
         maxWorldX = query.x.toInt()
         maxWorldY = query.y.toInt()
 

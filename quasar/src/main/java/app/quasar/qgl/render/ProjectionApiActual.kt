@@ -8,7 +8,11 @@ class ProjectionApiActual(
     private val world: Camera
 ): ProjectionApi {
 
-    override fun unprojectWorld(screenVector: Vector3): Vector3 {
+    override fun screenToWorld(screenVector: Vector3): Vector3 {
         return world.unproject(screenVector)
+    }
+
+    override fun worldToScreen(worldVector: Vector3): Vector3 {
+        return world.project(worldVector)
     }
 }
