@@ -4,7 +4,7 @@ import app.quasar.gdx.CoreAssets
 import app.quasar.gdx.tiles.CoreTileset
 import app.quasar.qgl.engine.CommonRuntime
 import app.quasar.qgl.engine.Quasar2D
-import app.quasar.qgl.engine.core.OverlayScreen
+import app.quasar.qgl.engine.core.WindowScreen
 import app.quasar.qgl.engine.serialize.ClassFactory
 import app.quasar.qgl.tiles.GameWindow
 import com.badlogic.gdx.ApplicationAdapter
@@ -25,7 +25,7 @@ class EngineTestApplication(
     private lateinit var overlayViewport: Viewport
     private lateinit var engine2D: Quasar2D
 
-    private val screen = OverlayScreen(1920f, 1080f)
+    private val screen = WindowScreen(1920f, 1080f)
 
     private val window = object : GameWindow {
         override fun getWorldCamera() = worldCamera
