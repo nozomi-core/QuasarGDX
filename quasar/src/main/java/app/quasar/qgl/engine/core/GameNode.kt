@@ -23,12 +23,14 @@ abstract class GameNode<D>: ReadableGameNode {
     private lateinit var engine: QuasarEngine
     private var isDestroyed = false
 
-    private var parent: ReadableGameNode? = null
+    private var parent: GameNode<*>? = null
 
     protected abstract fun onCreate(argument: NodeArgument): D
     protected open fun onDestroy() {}
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
+
+    private val childList = mutableListOf<GameNode<*>>()
 
     private val selfContext = object : SelfContext {
         override fun <T : GameNode<*>> spawnChild(
@@ -54,7 +56,7 @@ abstract class GameNode<D>: ReadableGameNode {
     internal fun create(factories: List<NodeFactoryCallback>) {
         NodeFactory(factories).also { result ->
             val data = onCreate(result.argument)
-            parent = result.parent
+            parent = result.parent as? GameNode<*>
 
             record = NodeRecord(
                 nodeId = result.nodeId!!,
@@ -62,6 +64,8 @@ abstract class GameNode<D>: ReadableGameNode {
                 data = data,
                 dimension = result.dimension!!
             )
+            //call attach child to parent if this child was created from a parent node
+            parent?.attachChild(this)
         }
     }
 
@@ -69,17 +73,28 @@ abstract class GameNode<D>: ReadableGameNode {
         this.engine = engine
     }
 
+    private fun attachChild(childNode: GameNode<*>) {
+        childList.add(childNode)
+    }
+
+    private fun detachChild(childNode: GameNode<*>) {
+        childList.remove(childNode)
+    }
+
     internal fun doDestroy() {
         isDestroyed = true
         reference = null
         onDestroy()
+        childList.forEach {
+            it.selfContext.destroy()
+        }
+        childList.clear()
+
+        parent?.detachChild(this)
+        parent = null
     }
 
     internal fun simulate(context: SimContext) {
-        if(parent != null && !parent!!.isAlive) {
-            parent = null
-            return selfContext.destroy()
-        }
         onSimulate(selfContext, context, record.data!!)
     }
     internal open fun draw(context: DrawContext) {
