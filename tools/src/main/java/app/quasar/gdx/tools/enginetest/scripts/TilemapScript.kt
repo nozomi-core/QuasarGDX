@@ -25,13 +25,19 @@ class TilemapScript: GameNode<TilemapData>(), GameOverlay {
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: TilemapData) {
         if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-            val mouse = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
-            val world = context.project.screenToWorld(mouse)
+            try {
+                val mouse = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
+                val world = context.project.screenToWorld(mouse)
 
-           val gridX = (world.x / tileSize).toInt()
-            val gridY = (world.y / tileSize).toInt()
+                val gridX = (world.x / tileSize).toInt()
+                val gridY = (world.y / tileSize).toInt()
 
-            data.tiles.set(gridX, gridY, 1)
+                data.tiles.set(gridX, gridY, 1)
+            }catch (e: Exception) {
+
+            }
+
+
         }
 
         if(Gdx.input.isKeyPressed(Keys.END)) {

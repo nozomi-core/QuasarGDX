@@ -20,7 +20,10 @@ class NodeGraph(
         nodeList.forEach {
             it.simulate(simContext)
         }
-        //Perform any actions after simulation
+        afterSimulation()
+    }
+
+    private fun afterSimulation() {
         while(afterSimulationActions.isNotEmpty()) {
             afterSimulationActions.remove().also { it() }
         }
@@ -67,7 +70,7 @@ class NodeGraph(
         scheduleAfterSimulationEvent {
             nodeList.remove(node)
             notifyRemoved(node)
-            node.destroy()
+            node.doDestroy()
         }
     }
 

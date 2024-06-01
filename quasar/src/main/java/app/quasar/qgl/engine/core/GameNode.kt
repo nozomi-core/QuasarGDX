@@ -1,5 +1,7 @@
 package app.quasar.qgl.engine.core
 
+import kotlin.reflect.KClass
+
 abstract class GameNode<D>: ReadableGameNode {
 
     override val isAlive: Boolean
@@ -21,12 +23,27 @@ abstract class GameNode<D>: ReadableGameNode {
     private lateinit var engine: QuasarEngine
     private var isDestroyed = false
 
+    private var parent: GameNode<*>? = null
+
     protected abstract fun onCreate(argument: NodeArgument): D
     protected open fun onDestroy() {}
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
 
+    private val childList = mutableListOf<GameNode<*>>()
+
     private val selfContext = object : SelfContext {
+        override fun <T : GameNode<*>> spawnChild(
+            dimension: EngineDimension,
+            script: KClass<T>,
+            factory: (NodeFactory) -> Unit
+        ) {
+            engine.createNode(dimension, script) {
+                it.parent = this@GameNode
+                factory(it)
+            }
+        }
+
         override fun setDimension(dimension: EngineDimension) {
             record.dimension = dimension
         }
@@ -39,6 +56,7 @@ abstract class GameNode<D>: ReadableGameNode {
     internal fun create(factories: List<NodeFactoryCallback>) {
         NodeFactory(factories).also { result ->
             val data = onCreate(result.argument)
+            parent = result.parent as? GameNode<*>
 
             record = NodeRecord(
                 nodeId = result.nodeId!!,
@@ -46,6 +64,8 @@ abstract class GameNode<D>: ReadableGameNode {
                 data = data,
                 dimension = result.dimension!!
             )
+            //call attach child to parent if this child was created from a parent node
+            parent?.attachChild(this)
         }
     }
 
@@ -53,10 +73,25 @@ abstract class GameNode<D>: ReadableGameNode {
         this.engine = engine
     }
 
-    internal fun destroy() {
+    private fun attachChild(childNode: GameNode<*>) {
+        childList.add(childNode)
+    }
+
+    private fun detachChild(childNode: GameNode<*>) {
+        childList.remove(childNode)
+    }
+
+    internal fun doDestroy() {
         isDestroyed = true
         reference = null
         onDestroy()
+        childList.forEach {
+            it.selfContext.destroy()
+        }
+        childList.clear()
+
+        parent?.detachChild(this)
+        parent = null
     }
 
     internal fun simulate(context: SimContext) {
