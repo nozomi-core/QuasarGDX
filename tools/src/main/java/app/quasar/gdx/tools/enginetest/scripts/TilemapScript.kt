@@ -6,15 +6,17 @@ import app.quasar.gdx.tools.model.Grid
 import app.quasar.gdx.tools.model.createRandomTileInfo
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
+import app.quasar.qgl.engine.core.interfaces.ShapeOverlay
 import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector3
 
 @QGLEntity("tilemap")
-class TilemapScript: GameNode<TilemapData>(), GameOverlay {
+class TilemapScript: GameNode<TilemapData>(), GameOverlay, ShapeOverlay {
     private val tileSize = 16
 
     private val grid = Grid(tileSize, 100, 100, 0f,  0f)
@@ -81,5 +83,12 @@ class TilemapScript: GameNode<TilemapData>(), GameOverlay {
         context.project.screenToOverlay(proj)
 
         context.draw.tilePx(CoreTiles.RED_DARK, proj.x, proj.y, 5f, 0f)
+    }
+
+    override fun onShape(shape: ShapeApi) {
+        val draw = shape.getRender()
+
+        draw.color = Color.LIGHT_GRAY
+        draw.rect(300f,0f, 400f, 400f)
     }
 }

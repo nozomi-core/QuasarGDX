@@ -6,6 +6,7 @@ class QuasarEngineFactory(factory: QuasarEngineFactory.() -> Unit) {
     var drawable: DrawableApi? = null
     var camera: CameraApi? = null
     var project: ProjectionApi? = null
+    var shapes: ShapeApi? = null
 
     var classes: ClassFactory? = null
 
@@ -19,4 +20,5 @@ class QuasarEngineFactory(factory: QuasarEngineFactory.() -> Unit) {
     fun requireDrawableApi() = drawable!!
     fun requireCamera() = camera!!
     fun requireProject() = project!!
+    fun requireShapes() = shapes!!
 }
