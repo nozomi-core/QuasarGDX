@@ -11,6 +11,7 @@ import app.quasar.qgl.serialize.QGLBinary
 import app.quasar.qgl.tiles.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.Disposable
@@ -32,13 +33,15 @@ class Quasar2D(
     private val texture = Texture(textureFile)
     private val renderer = ShapeRenderer()
 
+    private val font = BitmapFont(Gdx.files.internal("fonts/basic.fnt"))
+
     private lateinit var engine: QuasarEngineActual
 
     fun <T: GameWorld> createWorld(kClass: KClass<T>) {
         val world = kClass.createInstance()
 
         engine = QuasarEngineActual {
-            drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
+            drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch, font, renderer)
             camera = CameraApiActual(window)
             project = ProjectionApiActual(window.getWorldCamera(), window.getOverlayCamera())
             classes = scriptFactory
@@ -55,7 +58,7 @@ class Quasar2D(
         }
 
         engine = QuasarEngineActual {
-            drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch)
+            drawable = DrawableApiActual(createTileTextures(texture, tileset, tileSize), spriteBatch, font, renderer)
             camera = CameraApiActual(window)
             project = ProjectionApiActual(window.getWorldCamera(), window.getOverlayCamera())
             accounting = engineData.accounting

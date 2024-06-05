@@ -13,19 +13,37 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
+import com.badlogic.gdx.utils.Align
 
 @QGLEntity("tilemap")
 class TilemapScript: GameNode<TilemapData>(), GameOverlay, ShapeOverlay {
     private val tileSize = 16
 
+    private val textLayout = GlyphLayout()
+
     private val grid = Grid(tileSize, 100, 100, 0f,  0f)
+
+    private var scroll = 0f
+    private val clipRect = Rectangle()
 
     override fun onCreate(argument: NodeArgument): TilemapData {
         return TilemapData()
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: TilemapData) {
+        if(Gdx.input.isKeyJustPressed(Keys.PAGE_UP)) {
+            scroll += 100
+        }
+
+        if(Gdx.input.isKeyJustPressed(Keys.PAGE_DOWN)) {
+            scroll -= 100
+        }
+
+
         if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
             try {
                 val mouse = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f)
@@ -82,13 +100,34 @@ class TilemapScript: GameNode<TilemapData>(), GameOverlay, ShapeOverlay {
 
         context.project.screenToOverlay(proj)
 
+
+
+        val query = Vector3(300f, 0f, 0f)
+
+        context.project.overlayToScreen(query)
+
+        context.draw.shape { shape ->
+            shape.color = Color.WHITE
+            shape.rect(300f,0f, 500f, -800f)
+        }
+
+
+        textLayout.setText(context.draw.defaultFont,"Lorem\nIpsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
+        Color.BLACK, 500f, Align.left, true)
+
+        clipRect.set(query.x, query.y, 800f, -200f) // x, y, width, height
+
+        // Push the clipping rectangle to the ScissorStack
+        ScissorStack.pushScissors(clipRect)
+
+        context.draw.text(textLayout, 300f, scroll)
+        ScissorStack.popScissors()
         context.draw.tilePx(CoreTiles.RED_DARK, proj.x, proj.y, 5f, 0f)
     }
 
     override fun onShape(shape: ShapeApi) {
         val draw = shape.getRender()
 
-        draw.color = Color.LIGHT_GRAY
-        draw.rect(300f,0f, 400f, 400f)
+
     }
 }

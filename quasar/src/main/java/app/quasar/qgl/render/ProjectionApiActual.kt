@@ -17,6 +17,10 @@ class ProjectionApiActual(
         return world.project(worldVector)
     }
 
+    override fun overlayToScreen(overlayVector: Vector3): Vector3 {
+        return overlay.project(overlayVector)
+    }
+
     override fun screenToOverlay(screenVector: Vector3): Vector3 {
         return overlay.unproject(screenVector)
     }
