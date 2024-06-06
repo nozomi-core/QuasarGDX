@@ -77,23 +77,17 @@ class Quasar2D(
         window.getWorldViewport().apply()
         window.getWorldCamera().update()
         spriteBatch.projectionMatrix = window.getWorldCamera().combined
+        renderer.projectionMatrix = window.getWorldCamera().combined
         spriteBatch.begin()
         engine.draw(window.getWindow())
         engine.simulate(Gdx.graphics.deltaTime)
         spriteBatch.end()
 
-        //Draw Overlay shapes
-        window.getOverlayViewport().apply()
-        window.getOverlayCamera().update()
-        renderer.projectionMatrix = window.getOverlayCamera().combined
-        renderer.begin(ShapeRenderer.ShapeType.Filled)
-        engine.drawOverlayShapes()
-        renderer.end()
-
         //Draw overlays
         window.getOverlayViewport().apply()
         window.getOverlayCamera().update()
         spriteBatch.projectionMatrix = window.getOverlayCamera().combined
+        renderer.projectionMatrix = window.getOverlayCamera().combined
         spriteBatch.begin()
         engine.drawOverlay()
         spriteBatch.end()

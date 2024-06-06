@@ -130,10 +130,6 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         overlayGraph.draw(current, drawContext)
     }
 
-    internal fun drawOverlayShapes() {
-        overlayGraph.drawOverlayShapes(dimension, shapes)
-    }
-
     private fun createOrLoadGraph(nodeGraph: NodeGraph?): NodeGraph {
         val graph = nodeGraph ?: NodeGraph(mutableListOf())
         graph.forEach {

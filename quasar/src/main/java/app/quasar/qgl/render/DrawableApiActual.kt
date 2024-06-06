@@ -52,6 +52,5 @@ class DrawableApiActual(
         callback(shapeRenderer)
         shapeRenderer.end()
         spriteBatch.begin()
-
     }
 }

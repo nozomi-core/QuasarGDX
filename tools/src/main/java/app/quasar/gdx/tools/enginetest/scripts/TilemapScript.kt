@@ -3,13 +3,11 @@ package app.quasar.gdx.tools.enginetest.scripts
 import app.quasar.gdx.tiles.CoreTiles
 import app.quasar.gdx.tools.enginetest.data.TilemapData
 import app.quasar.gdx.tools.model.Grid
-import app.quasar.gdx.tools.model.createRandomTileInfo
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.GameOverlay
-import app.quasar.qgl.engine.core.interfaces.ShapeOverlay
+import app.quasar.qgl.extensions.setTextBounds
 import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
@@ -20,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.Align
 
 @QGLEntity("tilemap")
-class TilemapScript: GameNode<TilemapData>(), GameOverlay, ShapeOverlay {
+class TilemapScript: GameNode<TilemapData>(), GameOverlay {
     private val tileSize = 16
 
     private val textLayout = GlyphLayout()
@@ -111,23 +109,17 @@ class TilemapScript: GameNode<TilemapData>(), GameOverlay, ShapeOverlay {
             shape.rect(300f,0f, 500f, -800f)
         }
 
+        val lorem = "Lorem\nIpsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500"
 
-        textLayout.setText(context.draw.defaultFont,"Lorem\nIpsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500",
-        Color.BLACK, 500f, Align.left, true)
+        textLayout.setTextBounds(context.draw.defaultFont, lorem, Color.BLACK, 200f, 800f)
 
         clipRect.set(query.x, query.y, 800f, -200f) // x, y, width, height
 
         // Push the clipping rectangle to the ScissorStack
-        ScissorStack.pushScissors(clipRect)
+        //ScissorStack.pushScissors(clipRect)
 
         context.draw.text(textLayout, 300f, scroll)
-        ScissorStack.popScissors()
+        //ScissorStack.popScissors()
         context.draw.tilePx(CoreTiles.RED_DARK, proj.x, proj.y, 5f, 0f)
-    }
-
-    override fun onShape(shape: ShapeApi) {
-        val draw = shape.getRender()
-
-
     }
 }
