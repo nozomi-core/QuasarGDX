@@ -23,15 +23,15 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
 
         data.rotation += clock.mulDeltaTime(data.rotateSpeed)
 
-        if(Gdx.input.isKeyPressed(Keys.W)) {
+        /*if(Gdx.input.isKeyPressed(Keys.W)) {
             position.y += clock.mulDeltaTime(speed)
-        }
+        } */
         if(Gdx.input.isKeyPressed(Keys.A)) {
             position.x -= clock.mulDeltaTime(speed)
         }
-        if(Gdx.input.isKeyPressed(Keys.S)) {
+        /*if(Gdx.input.isKeyPressed(Keys.S)) {
             position.y -= clock.mulDeltaTime(speed)
-        }
+        }*/
         if(Gdx.input.isKeyPressed(Keys.D)) {
             position.x += clock.mulDeltaTime(speed)
         }
@@ -76,7 +76,7 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
             println("x: ${Gdx.input.x}, y: ${Gdx.input.y}")
         }
 
-        context.camera.setCamera(position.x, position.y)
+        context.camera.setCamera(position.x, position.y + (144 /2))
     }
 
     override fun onDraw(context: DrawContext, data: PlayerData) {

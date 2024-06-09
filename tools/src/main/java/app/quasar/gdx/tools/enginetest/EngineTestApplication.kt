@@ -39,7 +39,7 @@ class EngineTestApplication(
         super.create()
         worldCamera = OrthographicCamera()
         overlayCamera = OrthographicCamera()
-        worldViewport = ExtendViewport(320f, 180f, worldCamera)
+        worldViewport = ExtendViewport(256f, 144f, worldCamera)
         overlayViewport = ExtendViewport(screen.width, screen.height, overlayCamera)
 
         engine2D = Quasar2D(
