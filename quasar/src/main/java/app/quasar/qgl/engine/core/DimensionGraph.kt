@@ -4,8 +4,7 @@ import app.quasar.qgl.engine.core.interfaces.StaticPosition
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.math.Vector3
 
-//TODO: Consider naming this `DimensionGraph` that implements same functions as `NodeGraph`
-class DrawableZGraph(node: NodeGraph): GraphListener {
+class DimensionGraph(node: NodeGraph): GraphListener {
     private val drawableNodes = mutableListOf<GameNode<*>>()
     private var currentDrawDimension = EngineDimension.default()
 
@@ -18,20 +17,26 @@ class DrawableZGraph(node: NodeGraph): GraphListener {
     override fun onAdded(node: GameNode<*>) {
         if(node.selfDimension.id == currentDrawDimension.id) {
             drawableNodes.add(node)
+            node.enter()
         }
     }
 
     override fun onRemoved(node: GameNode<*>) {
         if(node.selfDimension.id == currentDrawDimension.id) {
             drawableNodes.remove(node)
+            node.exit()
         }
     }
 
     internal fun notifyDimensionChanged(node: GameNode<*>) {
         if(node.selfDimension.id == currentDrawDimension.id) {
+            node.exit()
             drawableNodes.add(node)
         } else {
-            drawableNodes.remove(node)
+            val wasRemoved = drawableNodes.remove(node)
+            if(wasRemoved) {
+                node.exit()
+            }
         }
     }
 
@@ -44,8 +49,10 @@ class DrawableZGraph(node: NodeGraph): GraphListener {
 
     internal fun setDimension(dimen: EngineDimension, graph: NodeGraph) {
         currentDrawDimension = dimen
+        drawableNodes.forEach { it.exit() }
         drawableNodes.clear()
         drawableNodes.addAll(graph.getNodesWithDimension(currentDrawDimension))
+        drawableNodes.forEach { it.enter() }
     }
 
     //TODO: test optimisation so minimise sort calls per frame

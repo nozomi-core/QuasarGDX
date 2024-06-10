@@ -15,18 +15,14 @@ import com.badlogic.gdx.audio.Sound
 @QGLEntity("player")
 class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
 
-    private lateinit var sound: Sound
+
 
     override fun onCreate(argument: NodeArgument): PlayerData {
         return PlayerData()
     }
 
     override fun onAttach(self: SelfContext, engine: EngineApi, data: PlayerData) {
-        // Load the sound file
-        sound = Gdx.audio.newSound(Gdx.files.internal("music/park_ambient.wav"));
 
-        // Play the sound
-        sound.play(1.0f);
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: PlayerData) {
@@ -64,6 +60,10 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
             context.engine.createNode(selfDimension, MissileScript::class) {
                 it.argument = AnyNodeArgument(position.cpy())
             }
+        }
+
+        if(Gdx.input.isKeyJustPressed(Keys.M)) {
+            context.engine.createNode(selfDimension, AmbientScript::class)
         }
 
         if(Gdx.input.isKeyJustPressed(Keys.NUM_1)) {

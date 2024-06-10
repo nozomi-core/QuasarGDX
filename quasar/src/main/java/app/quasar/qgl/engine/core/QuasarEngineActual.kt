@@ -33,7 +33,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     private val shapes: ShapeApi
 
     //TODO: consider calling this dimension graph. Have NodeGraph and DimensionGraph have same graph/search operators
-    private val drawableZGraph: DrawableZGraph
+    private val drawableZGraph: DimensionGraph
 
     override val current: EngineDimension
         get() = dimension
@@ -63,7 +63,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         worldGraph = WorldGraph(nodeGraph)
         overlayGraph = OverlayGraph(nodeGraph)
         shapes = config.requireShapes()
-        drawableZGraph = DrawableZGraph(nodeGraph)
+        drawableZGraph = DimensionGraph(nodeGraph)
     }
 
     private val engineNodeFactory: NodeFactoryCallback = { factory ->

@@ -31,6 +31,9 @@ abstract class GameNode<D>: ReadableGameNode {
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
 
+    protected open fun onEnter(){}
+    protected open fun onExit() {}
+
     private val childList = mutableListOf<GameNode<*>>()
 
     private val selfContext = object : SelfContext {
@@ -53,6 +56,14 @@ abstract class GameNode<D>: ReadableGameNode {
         override fun destroy() {
             engine.destroyNode(this@GameNode)
         }
+    }
+
+    internal fun enter() {
+        onEnter()
+    }
+
+    internal fun exit() {
+        onExit()
     }
 
     internal fun create(factories: List<NodeFactoryCallback>) {
