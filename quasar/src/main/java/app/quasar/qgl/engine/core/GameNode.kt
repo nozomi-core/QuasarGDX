@@ -46,6 +46,7 @@ abstract class GameNode<D>: ReadableGameNode {
 
         override fun setDimension(dimension: EngineDimension) {
             record.dimension = dimension
+            engine.notifyDimensionChanged(this@GameNode)
         }
 
         override fun destroy() {

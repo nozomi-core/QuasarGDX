@@ -88,6 +88,10 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         nodeGraph.replace(this, node, replaceScript)
     }
 
+    override fun notifyDimensionChanged(node: GameNode<*>) {
+        drawableZGraph.notifyDimensionChanged(node)
+    }
+
     override fun destroyNode(node: GameNode<*>) {
         nodeGraph.destroyNode(node)
     }

@@ -26,6 +26,14 @@ class DrawableZGraph(node: NodeGraph): GraphListener {
         }
     }
 
+    internal fun notifyDimensionChanged(node: GameNode<*>) {
+        if(node.selfDimension.id == currentDrawDimension.id) {
+            drawableNodes.add(node)
+        } else {
+            drawableNodes.remove(node)
+        }
+    }
+
     internal fun draw(context: DrawContext) {
         sortZIndex()
         drawableNodes.forEach {
