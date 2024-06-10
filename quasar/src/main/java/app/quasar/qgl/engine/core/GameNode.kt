@@ -49,8 +49,11 @@ abstract class GameNode<D>: ReadableGameNode {
         }
 
         override fun setDimension(dimension: EngineDimension) {
+            //Only notifiy the engine when the dimension changes. Its possible to call setDimension with same id
+            if(dimension.id != selfDimension.id) {
+                engine.notifyDimensionChanged(this@GameNode)
+            }
             record.dimension = dimension
-            engine.notifyDimensionChanged(this@GameNode)
         }
 
         override fun destroy() {

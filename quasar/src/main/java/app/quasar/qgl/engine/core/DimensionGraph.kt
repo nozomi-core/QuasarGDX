@@ -30,7 +30,7 @@ class DimensionGraph(node: NodeGraph): GraphListener {
 
     internal fun notifyDimensionChanged(node: GameNode<*>) {
         if(node.selfDimension.id == currentDrawDimension.id) {
-            node.exit()
+            node.enter()
             drawableNodes.add(node)
         } else {
             val wasRemoved = drawableNodes.remove(node)
