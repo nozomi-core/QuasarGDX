@@ -4,6 +4,7 @@ import app.quasar.qgl.engine.core.interfaces.StaticPosition
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.math.Vector3
 
+//TODO: Consider naming this `DimensionGraph` that implements same functions as `NodeGraph`
 class DrawableZGraph(node: NodeGraph): GraphListener {
     private val drawableNodes = mutableListOf<GameNode<*>>()
     private var currentDrawDimension = EngineDimension.default()
@@ -53,6 +54,7 @@ class DrawableZGraph(node: NodeGraph): GraphListener {
     }
 }
 
+//TODO: Consider m oving this and adding a proper test to ensure z index are ordered in a stable manner
 class ZIndexComparator(private val drawableNodes: List<GameNode<*>>): Comparator<GameNode<*>> {
     private val query = Vector3()
 
