@@ -10,12 +10,23 @@ import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
+import com.badlogic.gdx.audio.Sound
 
 @QGLEntity("player")
 class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
 
+    private lateinit var sound: Sound
+
     override fun onCreate(argument: NodeArgument): PlayerData {
         return PlayerData()
+    }
+
+    override fun onAttach(self: SelfContext, engine: EngineApi, data: PlayerData) {
+        // Load the sound file
+        sound = Gdx.audio.newSound(Gdx.files.internal("music/park_ambient.wav"));
+
+        // Play the sound
+        sound.play(1.0f);
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: PlayerData) {

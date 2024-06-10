@@ -26,6 +26,7 @@ abstract class GameNode<D>: ReadableGameNode {
     private var parent: GameNode<*>? = null
 
     protected abstract fun onCreate(argument: NodeArgument): D
+    protected open fun onAttach(self: SelfContext,engine: EngineApi, data: D) {}
     protected open fun onDestroy() {}
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
@@ -71,6 +72,7 @@ abstract class GameNode<D>: ReadableGameNode {
 
     internal fun attachEngine(engine: QuasarEngine) {
         this.engine = engine
+        onAttach(selfContext, engine, record.data)
     }
 
     private fun attachChild(childNode: GameNode<*>) {
