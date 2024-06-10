@@ -1,6 +1,7 @@
 package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
+import app.quasar.gdx.tools.enginetest.EngineTestWorld
 import app.quasar.gdx.tools.enginetest.data.PlayerData
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
@@ -23,15 +24,21 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
 
         data.rotation += clock.mulDeltaTime(data.rotateSpeed)
 
-        if(Gdx.input.isKeyPressed(Keys.W)) {
-            position.y += clock.mulDeltaTime(speed)
+        if(Gdx.input.isKeyJustPressed(Keys.TAB)) {
+            context.engine.setDimension(EngineTestWorld.DessertDimen)
+            self.setDimension(EngineTestWorld.DessertDimen)
+            context.engine.createNode(selfDimension, DimensionTransition::class)
         }
+
+        /*if(Gdx.input.isKeyPressed(Keys.W)) {
+            position.y += clock.mulDeltaTime(speed)
+        } */
         if(Gdx.input.isKeyPressed(Keys.A)) {
             position.x -= clock.mulDeltaTime(speed)
         }
-        if(Gdx.input.isKeyPressed(Keys.S)) {
+        /*if(Gdx.input.isKeyPressed(Keys.S)) {
             position.y -= clock.mulDeltaTime(speed)
-        }
+        }*/
         if(Gdx.input.isKeyPressed(Keys.D)) {
             position.x += clock.mulDeltaTime(speed)
         }
@@ -76,7 +83,7 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
             println("x: ${Gdx.input.x}, y: ${Gdx.input.y}")
         }
 
-        context.camera.setCamera(position.x, position.y)
+        context.camera.setCamera(position.x, position.y + (144 /2))
     }
 
     override fun onDraw(context: DrawContext, data: PlayerData) {

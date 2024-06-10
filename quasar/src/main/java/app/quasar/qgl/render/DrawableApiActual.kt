@@ -3,6 +3,7 @@ package app.quasar.qgl.render
 import app.quasar.qgl.engine.core.DrawableApi
 import app.quasar.qgl.engine.core.SpriteId
 import app.quasar.qgl.tiles.TileTextures
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -52,5 +53,13 @@ class DrawableApiActual(
         callback(shapeRenderer)
         shapeRenderer.end()
         spriteBatch.begin()
+    }
+
+    override fun texture(texture: Texture, x: Float, y: Float) {
+        spriteBatch.draw(texture, x,  y)
+    }
+
+    override fun setAlpha(alpha: Float) {
+        spriteBatch.setColor(spriteBatch.color.r, spriteBatch.color.g, spriteBatch.color.b, alpha)
     }
 }

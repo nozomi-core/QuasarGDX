@@ -1,11 +1,16 @@
 package app.quasar.qgl.engine.core
 
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 
-interface DrawableApi {
+interface RenderApi {
+    fun setAlpha(alpha: Float)
+}
+
+interface DrawableApi: RenderApi {
     val defaultFont: BitmapFont
 
     fun tilePx(id: SpriteId, x: Float, y: Float)
@@ -15,4 +20,5 @@ interface DrawableApi {
 
     fun text(layout: GlyphLayout, x: Float, y: Float)
     fun shape(callback: (ShapeRenderer) -> Unit)
+    fun texture(texture: Texture, x: Float, y: Float)
 }
