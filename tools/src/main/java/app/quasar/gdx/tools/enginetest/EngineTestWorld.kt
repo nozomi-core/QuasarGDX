@@ -9,7 +9,7 @@ class EngineTestWorld: GameWorld() {
 
     override fun onCreate(engine: EngineApi): EngineDimension {
         engine.createNode(NextDimen, TilemapScript::class)
-        //engine.createNode(MainDimen, DestroyScript::class)
+        engine.createNode(MainDimen, DestroyScript::class)
         engine.createNode(MainDimen, SpinnerScript::class)
         engine.createNode(MainDimen, BackgroundScript::class)
         engine.createNode(MainDimen, PlayerScript::class)
