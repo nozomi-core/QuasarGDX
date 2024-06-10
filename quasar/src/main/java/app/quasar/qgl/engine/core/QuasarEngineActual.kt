@@ -27,10 +27,13 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
     private val drawContext: DrawContext
 
     private val scriptFactory: ClassFactory
-    private var dimension: EngineDimension = EngineDimension.create(0)
+    private var dimension: EngineDimension = EngineDimension.default()
 
     private val overlayGraph: OverlayGraph
     private val shapes: ShapeApi
+
+    //TODO: consider calling this dimension graph. Have NodeGraph and DimensionGraph have same graph/search operators
+    private val drawableZGraph: DrawableZGraph
 
     override val current: EngineDimension
         get() = dimension
@@ -60,6 +63,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
         worldGraph = WorldGraph(nodeGraph)
         overlayGraph = OverlayGraph(nodeGraph)
         shapes = config.requireShapes()
+        drawableZGraph = DrawableZGraph(nodeGraph)
     }
 
     private val engineNodeFactory: NodeFactoryCallback = { factory ->
@@ -69,6 +73,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
     override fun setDimension(dimension: EngineDimension) {
         this.dimension = dimension
+        drawableZGraph.setDimension(dimension, nodeGraph)
     }
 
     override fun <T : GameNode<*>> createNode(dimension: EngineDimension, script: KClass<T>, factory: (NodeFactory) -> Unit) {
@@ -126,7 +131,7 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
     internal fun draw(overlayScreen: WindowScreen) {
         drawContext.update(overlayScreen)
-        nodeGraph.draw(dimension, drawContext)
+        drawableZGraph.draw(drawContext)
     }
 
     internal fun drawOverlay() {

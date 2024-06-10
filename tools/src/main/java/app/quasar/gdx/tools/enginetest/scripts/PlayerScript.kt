@@ -25,8 +25,15 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
         data.rotation += clock.mulDeltaTime(data.rotateSpeed)
 
         if(Gdx.input.isKeyJustPressed(Keys.TAB)) {
-            context.engine.setDimension(EngineTestWorld.DessertDimen)
             self.setDimension(EngineTestWorld.DessertDimen)
+            context.engine.setDimension(EngineTestWorld.DessertDimen)
+            context.engine.createNode(selfDimension, DimensionTransition::class)
+        }
+
+        //TODO: fix issue that calling self.setDimensionAfter setting engine world means that this entity wont be drawn
+        if(Gdx.input.isKeyJustPressed(Keys.P)) {
+            self.setDimension(EngineTestWorld.MainDimen)
+            context.engine.setDimension(EngineTestWorld.MainDimen)
             context.engine.createNode(selfDimension, DimensionTransition::class)
         }
 
