@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import java.io.File
 
+//TODO: hard coded values here. Make all theme extendable and in class files
 class EngineTestApplication(
     private val runtime: CommonRuntime
 ): ApplicationAdapter() {
