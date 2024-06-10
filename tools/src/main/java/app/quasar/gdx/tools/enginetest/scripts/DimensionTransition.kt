@@ -24,6 +24,7 @@ class DimensionTransition: GameNode<BackgroundData>() {
 
         if(globalTimer > TIMEOUT_SECONDS) {
             self.destroy()
+            context.render.setAlpha(1f)
         } else {
             //calculate fade position
             fadeTimer += context.clock.deltaTime

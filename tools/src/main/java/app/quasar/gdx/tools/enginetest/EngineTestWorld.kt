@@ -8,12 +8,12 @@ import app.quasar.qgl.tiles.GameWorld
 class EngineTestWorld: GameWorld() {
 
     override fun onCreate(engine: EngineApi): EngineDimension {
-        engine.createNode(DessertDimen, DessertRoadScript::class)
         engine.createNode(NextDimen, TilemapScript::class)
         engine.createNode(MainDimen, DestroyScript::class)
         engine.createNode(MainDimen, SpinnerScript::class)
         engine.createNode(MainDimen, BackgroundScript::class)
         engine.createNode(MainDimen, PlayerScript::class)
+        engine.createNode(DessertDimen, DessertRoadScript::class)
 
         return MainDimen
     }
