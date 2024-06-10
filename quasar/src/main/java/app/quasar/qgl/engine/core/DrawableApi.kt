@@ -6,7 +6,11 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 
-interface DrawableApi {
+interface RenderApi {
+    fun setAlpha(alpha: Float)
+}
+
+interface DrawableApi: RenderApi {
     val defaultFont: BitmapFont
 
     fun tilePx(id: SpriteId, x: Float, y: Float)

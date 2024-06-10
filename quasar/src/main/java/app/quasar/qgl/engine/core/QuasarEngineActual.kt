@@ -40,16 +40,19 @@ class QuasarEngineActual(factory: QuasarEngineFactory.() -> Unit = {}): QuasarEn
 
         val project = config.requireProject()
 
+        val draw = config.requireDrawableApi()
+
         nodeGraph = createOrLoadGraph(config.nodeGraph)
         engineClock = EngineClock()
         simContext = SimContext(
             engine = this,
             clock = engineClock,
             project = project,
-            camera = config.requireCamera()
+            camera = config.requireCamera(),
+            render = draw
         )
         drawContext = DrawContext(
-            draw = config.requireDrawableApi(),
+            draw = draw,
             project = project,
         )
         accounting = config.accounting ?: EngineAccounting(runtimeGameId = 10000)

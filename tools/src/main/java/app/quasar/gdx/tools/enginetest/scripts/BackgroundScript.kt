@@ -1,9 +1,7 @@
 package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tools.enginetest.data.BackgroundData
-import app.quasar.qgl.engine.core.DrawContext
-import app.quasar.qgl.engine.core.GameNode
-import app.quasar.qgl.engine.core.NodeArgument
+import app.quasar.qgl.engine.core.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 
@@ -18,6 +16,9 @@ class BackgroundScript: GameNode<BackgroundData>() {
 
     override fun onDestroy() {
         texture.dispose()
+    }
+
+    override fun onSimulate(self: SelfContext, context: SimContext, data: BackgroundData) {
     }
 
     override fun onDraw(context: DrawContext, data: BackgroundData) {

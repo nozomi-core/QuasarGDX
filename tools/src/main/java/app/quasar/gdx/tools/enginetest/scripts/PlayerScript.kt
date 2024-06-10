@@ -27,6 +27,7 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
         if(Gdx.input.isKeyJustPressed(Keys.TAB)) {
             context.engine.setDimension(EngineTestWorld.DessertDimen)
             self.setDimension(EngineTestWorld.DessertDimen)
+            context.engine.createNode(selfDimension, DimensionTransition::class)
         }
 
         /*if(Gdx.input.isKeyPressed(Keys.W)) {

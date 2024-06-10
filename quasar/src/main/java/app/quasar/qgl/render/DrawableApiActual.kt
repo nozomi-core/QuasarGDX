@@ -58,4 +58,8 @@ class DrawableApiActual(
     override fun texture(texture: Texture, x: Float, y: Float) {
         spriteBatch.draw(texture, x,  y)
     }
+
+    override fun setAlpha(alpha: Float) {
+        spriteBatch.setColor(spriteBatch.color.r, spriteBatch.color.g, spriteBatch.color.b, alpha)
+    }
 }
