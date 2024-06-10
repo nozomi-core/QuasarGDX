@@ -4,53 +4,60 @@ import app.quasar.qgl.engine.core.interfaces.StaticPosition
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
 import com.badlogic.gdx.math.Vector3
 
-//TODO: Consider naming this `DimensionGraph` that implements same functions as `NodeGraph`
-class DrawableZGraph(node: NodeGraph): GraphListener {
-    private val drawableNodes = mutableListOf<GameNode<*>>()
-    private var currentDrawDimension = EngineDimension.default()
+class DimensionGraph(node: NodeGraph): GraphListener {
+    private val dimensionNodes = mutableListOf<GameNode<*>>()
+    private var currentDimension = EngineDimension.default()
 
-    private val zComparator = ZIndexComparator(drawableNodes)
+    private val zComparator = ZIndexComparator(dimensionNodes)
 
     init {
         node.addListener(this)
     }
 
     override fun onAdded(node: GameNode<*>) {
-        if(node.selfDimension.id == currentDrawDimension.id) {
-            drawableNodes.add(node)
+        if(node.selfDimension.id == currentDimension.id) {
+            dimensionNodes.add(node)
+            node.enter()
         }
     }
 
     override fun onRemoved(node: GameNode<*>) {
-        if(node.selfDimension.id == currentDrawDimension.id) {
-            drawableNodes.remove(node)
+        if(node.selfDimension.id == currentDimension.id) {
+            dimensionNodes.remove(node)
+            node.exit()
         }
     }
 
     internal fun notifyDimensionChanged(node: GameNode<*>) {
-        if(node.selfDimension.id == currentDrawDimension.id) {
-            drawableNodes.add(node)
+        if(node.selfDimension.id == currentDimension.id) {
+            node.enter()
+            dimensionNodes.add(node)
         } else {
-            drawableNodes.remove(node)
+            val wasRemoved = dimensionNodes.remove(node)
+            if(wasRemoved) {
+                node.exit()
+            }
         }
     }
 
     internal fun draw(context: DrawContext) {
         sortZIndex()
-        drawableNodes.forEach {
+        dimensionNodes.forEach {
             it.draw(context)
         }
     }
 
     internal fun setDimension(dimen: EngineDimension, graph: NodeGraph) {
-        currentDrawDimension = dimen
-        drawableNodes.clear()
-        drawableNodes.addAll(graph.getNodesWithDimension(currentDrawDimension))
+        currentDimension = dimen
+        dimensionNodes.forEach { it.exit() }
+        dimensionNodes.clear()
+        dimensionNodes.addAll(graph.getNodesWithDimension(currentDimension))
+        dimensionNodes.forEach { it.enter() }
     }
 
     //TODO: test optimisation so minimise sort calls per frame
     internal fun sortZIndex() {
-        drawableNodes.sortWith(zComparator)
+        dimensionNodes.sortWith(zComparator)
     }
 }
 

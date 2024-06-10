@@ -10,12 +10,19 @@ import app.quasar.qgl.serialize.QGLEntity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.Input.Keys
+import com.badlogic.gdx.audio.Sound
 
 @QGLEntity("player")
 class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
 
+
+
     override fun onCreate(argument: NodeArgument): PlayerData {
         return PlayerData()
+    }
+
+    override fun onAttach(self: SelfContext, engine: EngineApi, data: PlayerData) {
+
     }
 
     override fun onSimulate(self: SelfContext, context: SimContext, data: PlayerData) {
@@ -53,6 +60,10 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
             context.engine.createNode(selfDimension, MissileScript::class) {
                 it.argument = AnyNodeArgument(position.cpy())
             }
+        }
+
+        if(Gdx.input.isKeyJustPressed(Keys.M)) {
+            context.engine.createNode(selfDimension, AmbientScript::class)
         }
 
         if(Gdx.input.isKeyJustPressed(Keys.NUM_1)) {

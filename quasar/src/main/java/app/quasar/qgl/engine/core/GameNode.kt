@@ -26,9 +26,13 @@ abstract class GameNode<D>: ReadableGameNode {
     private var parent: GameNode<*>? = null
 
     protected abstract fun onCreate(argument: NodeArgument): D
+    protected open fun onAttach(self: SelfContext,engine: EngineApi, data: D) {}
     protected open fun onDestroy() {}
     protected open fun onSimulate(self: SelfContext, context: SimContext, data: D) {}
     protected open fun onDraw(context: DrawContext, data: D) {}
+
+    protected open fun onEnter(){}
+    protected open fun onExit() {}
 
     private val childList = mutableListOf<GameNode<*>>()
 
@@ -45,13 +49,24 @@ abstract class GameNode<D>: ReadableGameNode {
         }
 
         override fun setDimension(dimension: EngineDimension) {
+            //Only notifiy the engine when the dimension changes. Its possible to call setDimension with same id
+            if(dimension.id != selfDimension.id) {
+                engine.notifyDimensionChanged(this@GameNode)
+            }
             record.dimension = dimension
-            engine.notifyDimensionChanged(this@GameNode)
         }
 
         override fun destroy() {
             engine.destroyNode(this@GameNode)
         }
+    }
+
+    internal fun enter() {
+        onEnter()
+    }
+
+    internal fun exit() {
+        onExit()
     }
 
     internal fun create(factories: List<NodeFactoryCallback>) {
@@ -72,6 +87,7 @@ abstract class GameNode<D>: ReadableGameNode {
 
     internal fun attachEngine(engine: QuasarEngine) {
         this.engine = engine
+        onAttach(selfContext, engine, record.data)
     }
 
     private fun attachChild(childNode: GameNode<*>) {
