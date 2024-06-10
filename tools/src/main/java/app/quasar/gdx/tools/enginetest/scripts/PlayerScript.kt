@@ -1,6 +1,7 @@
 package app.quasar.gdx.tools.enginetest.scripts
 
 import app.quasar.gdx.tiles.CoreTiles
+import app.quasar.gdx.tools.enginetest.EngineTestWorld
 import app.quasar.gdx.tools.enginetest.data.PlayerData
 import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.engine.core.interfaces.WorldPosition
@@ -22,6 +23,11 @@ class PlayerScript: VectorNode<PlayerData>(), WorldPosition {
         val speed = 50f
 
         data.rotation += clock.mulDeltaTime(data.rotateSpeed)
+
+        if(Gdx.input.isKeyJustPressed(Keys.TAB)) {
+            context.engine.setDimension(EngineTestWorld.DessertDimen)
+            self.setDimension(EngineTestWorld.DessertDimen)
+        }
 
         /*if(Gdx.input.isKeyPressed(Keys.W)) {
             position.y += clock.mulDeltaTime(speed)
