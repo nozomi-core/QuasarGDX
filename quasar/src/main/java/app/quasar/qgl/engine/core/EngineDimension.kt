@@ -10,5 +10,7 @@ class EngineDimension private constructor(val id: Int) {
                 dimenMap[id] = it
             }
         }
+
+        fun default() = create(0)
     }
 }

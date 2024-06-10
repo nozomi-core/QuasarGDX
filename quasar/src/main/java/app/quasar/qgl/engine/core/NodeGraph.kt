@@ -29,14 +29,6 @@ class NodeGraph(
         }
     }
 
-    internal fun draw(dimension: EngineDimension, context: DrawContext) {
-        nodeList.forEach {
-            if(dimension.id == it.selfDimension.id) {
-                it.draw(context)
-            }
-        }
-    }
-
     internal fun <T : GameNode<*>> createNode(engine: QuasarEngine, script: KClass<T>, factories: List<NodeFactoryCallback>) {
         scheduleAfterSimulationEvent {
             val newNode = script.createInstance()
@@ -82,6 +74,10 @@ class NodeGraph(
     internal fun addListener(graphListener: GraphListener) {
         nodeList.forEach { graphListener.onAdded(it) }
         listeners.add(graphListener)
+    }
+
+    internal fun getNodesWithDimension(dimen: EngineDimension): List<GameNode<*>> {
+        return nodeList.filter { it.selfDimension.id == dimen.id }
     }
 
     private fun notifyAdded(node: GameNode<*>) = listeners.forEach { it.onAdded(node) }
