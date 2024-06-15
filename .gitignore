@@ -116,3 +116,4 @@ Thumbs.db
 ## Build
 /tools/build/
 /quasar/build/
+/assets

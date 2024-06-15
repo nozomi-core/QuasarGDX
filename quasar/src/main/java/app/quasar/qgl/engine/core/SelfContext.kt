@@ -2,9 +2,8 @@ package app.quasar.qgl.engine.core
 
 import kotlin.reflect.KClass
 
-interface SelfContext: NodeSearchable {
-    fun destroyNode()
-    fun <T: GameNode<*>> createChild(node: KClass<T>, argument: Any? = null)
-    fun <T: GameNode<*>> createSingleChild(node: KClass<T>, argument: Any? = null)
-    fun getParent(): GameNode<*>
+interface SelfContext {
+    fun <T: GameNode<*>> spawnChild(dimension: EngineDimension, script: KClass<T>, factory: (NodeFactory) -> Unit = {})
+    fun setDimension(dimension: EngineDimension)
+    fun destroy()
 }

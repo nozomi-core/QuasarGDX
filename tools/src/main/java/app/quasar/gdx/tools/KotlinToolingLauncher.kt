@@ -1,10 +1,8 @@
 package app.quasar.gdx.tools
 
-import app.quasar.gdx.CoreConfig
-import app.quasar.gdx.CoreGame
-import app.quasar.gdx.tools.console.SwingGameConsole
-import app.quasar.gdx.tools.mapeditor.MapEditorApplication
-import app.quasar.qgl.QuasarRuntime
+import app.quasar.gdx.tools.console.QuasarToolConsole
+import app.quasar.gdx.tools.enginetest.EngineTestApplication
+import app.quasar.qgl.engine.CommonRuntime
 import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
@@ -24,17 +22,14 @@ fun runKotlinTooling(args: Array<String>) {
         it.contains("-tool=")
     } ?: return println("no tool in CLI specified")
 
-    val toolName = toolArgument.split("=")[1]
+    val runtime = CommonRuntime()
 
-    val runtime = QuasarRuntime()
+    QuasarToolConsole(runtime)
 
-    runtime.onWorldEngine {
-        SwingGameConsole(it)
-    }
-
-    val gdxApp: ApplicationListener = when(toolName) {
-        CommandArgs.MAP_EDITOR -> MapEditorApplication(runtime)
-        CommandArgs.DEBUG_GAME -> CoreGame(runtime, CoreConfig(isDebug = true))
+    //TODO: add command args back
+    val gdxApp: ApplicationListener = when(toolArgument.split("=")[1]) {
+        CommandArgs.MAP_EDITOR -> EngineTestApplication(runtime)
+        CommandArgs.DEBUG_GAME -> EngineTestApplication(runtime)
         else -> null
     } ?: return println("tool cannot be found try a proper name")
 

@@ -1,13 +1,24 @@
 package app.quasar.qgl.engine.core
 
-import app.quasar.qgl.render.SpriteApi
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 
-interface DrawableApi {
-    fun tileGrid(id: TileId, gridX: Int, gridY: Int)
-    fun tilePx(id: TileId, x: Float, y: Float)
-    fun tilePx(id: TileId, vector: Vector3)
-    fun tilePx(id: TileId, x: Float, y: Float, scale: Float, rotation: Float)
+interface RenderApi {
+    fun setAlpha(alpha: Float)
+}
 
-    fun batchWith(callback: (SpriteApi) -> Unit)
+interface DrawableApi: RenderApi {
+    val defaultFont: BitmapFont
+
+    fun tilePx(id: SpriteId, x: Float, y: Float)
+    fun tilePx(id: SpriteId, vector: Vector3)
+    fun tilePx(id: SpriteId,vector: Vector3, scale: Float, rotation: Float)
+    fun tilePx(id: SpriteId, x: Float, y: Float, scale: Float, rotation: Float)
+
+    fun text(layout: GlyphLayout, x: Float, y: Float)
+    fun shape(callback: (ShapeRenderer) -> Unit)
+    fun texture(texture: Texture, x: Float, y: Float)
 }

@@ -1,13 +1,22 @@
 package app.quasar.qgl.serialize
 
 import java.io.*
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import kotlin.random.Random
+
+interface DataWriter {
+    fun writeInt(value: Int)
+    fun write(value: Int)
+    fun writeLong(value: Long)
+    fun writeFloat(value: Float)
+    fun writeDouble(value: Double)
+    fun writeBoolean(value: Boolean)
+    fun write(value: ByteArray)
+    fun writeString(value: String)
+    fun close()
+}
 
 class QGLBinary {
 
-    class Out(private val out: DataOutputStream) {
+    inner class Out(private val out: DataWriter) {
         private var isFinished = false
 
         @Throws(IOException::class)
@@ -131,7 +140,7 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeByteMatrix(id: Int, data: ByteMatrix) {
+        fun writeByteMatrix(id: Int, data: ByteCodex) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_BYTE_MATRIX)
@@ -159,7 +168,7 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeStringMatrix(id: Int, data: StringMatrix) {
+        fun writeStringMatrix(id: Int, data: StringCodex) {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_STRING_MATRIX)
@@ -177,7 +186,7 @@ class QGLBinary {
             validateId(id)
             out.writeInt(id)
             out.write(TYPE_BINARY_OBJECT)
-            out.writeInt(data.classId)
+            out.writeString(data.classId)
             out.writeInt(data.size)
             for(index in 0 until data.size) {
                 writeRecord(data[index])
@@ -185,46 +194,61 @@ class QGLBinary {
         }
 
         @Throws(IOException::class)
-        fun writeObjectMatrix(id: Int, data: BinaryObjectMatrix) {
+        private fun writeFrameStart(id: Int) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_BINARY_OBJECT_ARRAY)
-            out.writeInt(data.size)
-            for(index in 0 until data.size) {
-                val item = data[index]
-                writeObject(item.classId, item)
+            out.write(TYPE_FRAME_START)
+        }
+
+        @Throws(IOException::class)
+        private fun writeFrameEnd(id: Int) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_FRAME_END)
+        }
+
+        @Throws(IOException::class)
+        fun writeFrame(id: Int, callback: () -> Unit) {
+            validateId(id)
+            writeFrameStart(id)
+            callback()
+            writeFrameEnd(id)
+        }
+
+        @Throws(IOException::class)
+        private fun writeObjectBlob(id: Int, value: BinaryObject) {
+            validateId(id)
+            out.writeInt(id)
+            out.write(TYPE_OBJECT_BLOB)
+            out.writeString(value.classId)
+            out.writeInt(value.size)
+
+            for(i in 0 until value.size) {
+                writeRecord(value[i])
             }
         }
 
         @Throws(IOException::class)
-        fun writeClientGuid(id: Int, data: ClientGuid) {
-            validateId(id)
-            writeString(id, data.guid)
-        }
-
-        @Throws(IOException::class)
-        fun writeFrameStart(id: Int) {
+        private fun writeIntMatrix(id: Int, value: IntMatrix) {
             validateId(id)
             out.writeInt(id)
-            out.write(TYPE_FRAME)
-        }
+            out.write(TYPE_INT_MATRIX)
+            //Column size
+            val columns = value.matrix.size
+            val rows = value.matrix[0].size
 
-        @Throws(IOException::class)
-        fun writeFrameEnd(id: Int) {
-            validateId(id)
-            out.writeInt(id)
-            out.write(TYPE_FRAME)
-        }
+            out.writeInt(columns)
+            out.writeInt(rows)
 
-        @Throws(IOException::class)
-        fun writeFrame(startId: Int, endId: Int, callback: () -> Unit) {
-            validateId(startId)
-            validateId(endId)
-            writeFrameStart(startId)
-            callback()
-            writeFrameEnd(endId)
-        }
+            for(x in 0 until columns) {
+                val nextColumn = value.matrix[x]
 
+                for(y in 0 until rows) {
+                    val matrixValue = nextColumn[y]
+                    out.writeInt(matrixValue)
+                }
+            }
+        }
 
         private fun writeRecord(record: BinaryRecord) {
             when(record.data) {
@@ -241,12 +265,12 @@ class QGLBinary {
                 is Char -> writeChar(record.id, record.data)
                 is CharArray -> writeCharArray(record.id, record.data)
                 is ByteArray -> writeBytes(record.id, record.data)
-                is ByteMatrix -> writeByteMatrix(record.id, record.data)
+                is ByteCodex -> writeByteMatrix(record.id, record.data)
                 is String -> writeString(record.id, record.data)
-                is StringMatrix -> writeStringMatrix(record.id, record.data)
-                is BinaryObject,
-                is BinaryObjectMatrix -> throw Exception("for now we don't support records having objects, the idea is flat structure")
-                is ClientGuid -> writeClientGuid(record.id, record.data)
+                is StringCodex -> writeStringMatrix(record.id, record.data)
+                is BinaryObject -> writeObjectBlob(record.id, record.data)
+                is IntMatrix -> writeIntMatrix(record.id, record.data)
+                is BinaryObjectCodex -> throw Exception("for now we don't support records having objects, the idea is flat structure")
 
                 else -> throw Exception("Type in record not supported")
             }
@@ -268,11 +292,18 @@ class QGLBinary {
         }
     }
 
-    class In(private val inp: DataInputStream) {
+    inner class In(private val inp: DataInputStream) {
 
-        fun readUntil(id: Int, output: BinaryOutput): Boolean {
+        fun readFrame(callback: (BinaryOutput) -> Unit) {
+            val output = BinaryOutput()
             read(output)
-            return output.id != id
+            if(output.type != TYPE_FRAME_START) throw Exception("Current output is not a frame")
+            read(output)
+
+            while(output.type != TYPE_FRAME_END) {
+                callback(output)
+                read(output)
+            }
         }
 
         fun read(record: BinaryOutput): Boolean {
@@ -369,7 +400,7 @@ class QGLBinary {
                         inp.read(childBytes)
                         bytesArray.add(childBytes)
                     }
-                    record.data = ByteMatrix(bytesArray)
+                    record.data = ByteCodex(bytesArray)
                 }
                 TYPE_STRING -> {
                     record.data = readStringType()
@@ -386,10 +417,10 @@ class QGLBinary {
                         stringList.add(String(decodedBytes))
                     }
 
-                    record.data = StringMatrix(stringList)
+                    record.data = StringCodex(stringList)
                 }
                 TYPE_BINARY_OBJECT -> {
-                    val classId = inp.readInt()
+                    val classId = inp.readUTF()
 
                     val typeSize = inp.readInt()
                     val objectList = mutableListOf<BinaryRecord>()
@@ -415,13 +446,41 @@ class QGLBinary {
                     }
                     record.data = objectList
                 }
-                TYPE_CLIENT_GUID -> {
-                    val output = BinaryOutput()
-                    read(output)
-                    record.data = ClientGuid(output.data as String)
-                }
-                TYPE_FRAME -> {
+                TYPE_FRAME_START -> {
                     record.data = Unit
+                }
+                TYPE_FRAME_END -> {
+                    record.data = Unit
+                }
+                TYPE_OBJECT_BLOB -> {
+                    val recordList = mutableListOf<BinaryRecord>()
+
+                    val output = BinaryOutput()
+
+                    val classId = inp.readUTF()
+                    val typeSize = inp.readInt()
+
+                    for(i in 0 until typeSize) {
+                        read(output)
+                        recordList.add(
+                            BinaryRecord(output.id, output.data)
+                        )
+                    }
+                    record.data = BinaryObject(classId, recordList.toTypedArray())
+                }
+                TYPE_INT_MATRIX -> {
+                    val columns = inp.readInt()
+                    val rows = inp.readInt()
+
+                    val matrix = IntMatrix(rows, columns)
+
+                    for(x in 0 until columns) {
+                        for(y in 0 until rows) {
+                            val nextValue = inp.readInt()
+                            matrix.set(x, y, nextValue)
+                        }
+                    }
+                    record.data = matrix
                 }
 
                 else -> throw Exception("type id not supported")
@@ -457,31 +516,33 @@ class QGLBinary {
         const val TYPE_STRING_MATRIX: Int =         16
         const val TYPE_BINARY_OBJECT: Int =         17
         const val TYPE_BINARY_OBJECT_ARRAY: Int =   18
-        const val TYPE_CLIENT_GUID: Int =           19
-        const val TYPE_FRAME: Int =                 20
-        const val TYPE_FRAME_END: Int =             21
+        const val TYPE_FRAME_START: Int =           19
+        const val TYPE_FRAME_END: Int =             20
+        const val TYPE_OBJECT_BLOB: Int =           21
+        const val TYPE_INT_MATRIX: Int =            22
 
         const val ID_NO_DATA_READ = -50
         const val ID_END_OF_DATA = -100
 
         fun createFileOut(file: File, writeCallback: (out: Out) -> Unit) {
-            val stream = Out(DataOutputStream(FileOutputStream(file)))
+            val binary = QGLBinary()
+            val stream = binary.Out(BinaryDataWriter(FileOutputStream(file)))
             writeCallback(stream)
             stream.close()
         }
 
-        fun createFileIn(file: File): In = In(DataInputStream(FileInputStream(file)))
+        fun createFileIn(file: File): In = QGLBinary().In(DataInputStream(FileInputStream(file)))
 
         fun createMemoryOut(writeCallback: (out: Out) -> Unit): InlineBinaryFormat {
             val byteOut = ByteArrayOutputStream()
-            val memoryStream = Out(DataOutputStream(byteOut))
+            val memoryStream = QGLBinary().Out(BinaryDataWriter(byteOut))
             writeCallback(memoryStream)
             memoryStream.close()
             return InlineBinaryFormat(byteOut.toByteArray())
         }
 
         fun createMemoryIn(memory: InlineBinaryFormat): In {
-            return In(DataInputStream(ByteArrayInputStream(memory.byteData)))
+            return QGLBinary().In(DataInputStream(ByteArrayInputStream(memory.byteData)))
         }
     }
 }
@@ -493,14 +554,12 @@ class BinaryOutput {
 
     fun hasData() = id != QGLBinary.ID_END_OF_DATA
     fun toBinaryRecord() = BinaryRecord(id, data)
-    fun isObject() = type == QGLBinary.TYPE_BINARY_OBJECT
-    fun isFrame() = type == QGLBinary.TYPE_FRAME
 }
 
 class InlineBinaryFormat(val byteData: ByteArray)
 
 class BinaryObject(
-    val classId: Int,
+    val classId: String,
     private val matrix: Array<BinaryRecord>
 ): FastIterator<BinaryRecord> {
     override val size: Int get() = matrix.size
@@ -520,78 +579,35 @@ class BinaryObject(
     }
 }
 
-class BinaryRecord(
-    val id: Int,
-    val data: Any
-)
-
-class ByteMatrix(private val matrix: List<ByteArray>) {
-    val size: Int get() = matrix.size
+class ByteCodex(private val list: List<ByteArray>) {
+    val size: Int get() = list.size
     operator fun get(index: Int): ByteArray {
-        return matrix[index]
+        return list[index]
     }
 }
 
-class StringMatrix(private val matrix: List<String>) {
-    val size: Int get() = matrix.size
+class StringCodex(private val list: List<String>) {
+    val size: Int get() = list.size
     operator fun get(index: Int): String {
-        return matrix[index]
+        return list[index]
     }
 }
 
-class BinaryObjectMatrix(private val matrix: List<BinaryObject>) {
-    val size: Int get() = matrix.size
+class BinaryObjectCodex(private val list: List<BinaryObject>) {
+    val size: Int get() = list.size
     operator fun get(index: Int): BinaryObject {
-        return matrix[index]
+        return list[index]
     }
 }
 
-class ClientGuid(val guid: String) {
+class IntMatrix(row: Int, column: Int) {
+    internal val matrix = Array(column) { IntArray(row) { 0 } }
 
-    companion object     {
-        private fun byteArrayToHexString(byteArray: ByteArray): String {
-            val hexChars = "0123456789abcdef"
-            val hexString = StringBuilder(2 * byteArray.size)
-            for (byte in byteArray) {
-                val intVal = byte.toInt() and 0xFF
-                hexString.append(hexChars[intVal ushr 4])
-                hexString.append(hexChars[intVal and 0x0F])
-            }
-            return hexString.toString()
-        }
-
-        fun create(): Triple<ClientGuid, Long, Long> {
-            val random = Random(System.currentTimeMillis())
-
-            val timeNow = System.currentTimeMillis()
-            val longRandom = random.nextLong()
-
-            val timeBytes = ByteBuffer.allocate(java.lang.Long.BYTES).apply {
-                order(ByteOrder.BIG_ENDIAN)
-                putLong(timeNow)
-            }.array()
-
-            val randomBytes = ByteBuffer.allocate(java.lang.Long.BYTES).apply {
-                order(ByteOrder.BIG_ENDIAN)
-                putLong(longRandom)
-            }.array()
-
-
-            val scrambledTime = BinaryUtils.xorUsing(timeBytes, randomBytes)
-
-            val guidBytes = ByteBuffer.allocate(java.lang.Long.BYTES * 2).apply {
-                order(ByteOrder.BIG_ENDIAN)
-                put(randomBytes)
-                put(scrambledTime)
-            }.array()
-
-            val guid = ClientGuid(byteArrayToHexString(guidBytes))
-
-            return Triple(guid, longRandom, timeNow)
-        }
+    fun set(x: Int, y: Int, value: Int) {
+        matrix[x][y] = value
     }
+    fun get(x: Int, y: Int): Int = matrix[x][y]
 }
-
 
 interface FastIterator<T> {
     val size: Int

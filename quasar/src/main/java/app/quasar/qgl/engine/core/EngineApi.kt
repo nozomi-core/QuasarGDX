@@ -2,9 +2,12 @@ package app.quasar.qgl.engine.core
 
 import kotlin.reflect.KClass
 
-//The public API for the engine that is safe to expose to the game nodes
-interface EngineApi: NodeSearchable {
+interface EngineApi {
+    val current: EngineDimension
     fun generateId(): Long
-    fun <T: GameNode<*>> createNode(node: KClass<T>, argument: Any? = null)
-    fun <T: GameNode<*>> createSingleNode(node: KClass<T>, argument: Any? = null)
+    fun setDimension(dimension: EngineDimension)
+    fun <T: GameNode<*>> createNode(dimension: EngineDimension, script: KClass<T>, factory: (NodeFactory) -> Unit = {})
+    fun <T: GameNode<D>, D> replace(node: GameNode<D>, replaceScript: KClass<T>)
+    fun queryNodeByTag(tag: String): NodeReference<ReadableGameNode>?
+    fun queryAll(): List<NodeReference<ReadableGameNode>>
 }
