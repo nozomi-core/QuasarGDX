@@ -1,9 +1,6 @@
 package app.quasar.qgl._fixtures
 
-import app.quasar.qgl.engine.core.CameraApi
-import app.quasar.qgl.engine.core.DrawContext
-import app.quasar.qgl.engine.core.DrawableApi
-import app.quasar.qgl.engine.core.TileId
+import app.quasar.qgl.engine.core.*
 import app.quasar.qgl.render.SpriteApi
 import com.badlogic.gdx.math.Vector3
 
@@ -21,5 +18,5 @@ class TestEmptyCameraApi: CameraApi {
 }
 
 object TestDrawContext {
-    fun create() = DrawContext(TestEmptyDrawableApi(), TestEmptyCameraApi()) {}
+    fun create() = DrawContext(TestEmptyDrawableApi(), TestEmptyCameraApi(), OverlayScreen(100f, 100f) ) {}
 }
