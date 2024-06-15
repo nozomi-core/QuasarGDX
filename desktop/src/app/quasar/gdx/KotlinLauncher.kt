@@ -23,10 +23,11 @@ fun runKotlinGame(args: Array<String>) {
         config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode())
     }
 
+    /* todo: FIX THIS
     Lwjgl3Application(
         CoreGame(
             CoreRuntime(),
             CoreConfig(isDebug = isDebug
         )
-     ), config)
+     ), config)*/
 }
