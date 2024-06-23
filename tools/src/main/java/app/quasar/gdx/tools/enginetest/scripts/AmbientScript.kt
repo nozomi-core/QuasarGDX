@@ -15,7 +15,7 @@ class AmbientScript: GameNode<BackgroundData>() {
 
     override fun onEnter() {
         // Load the sound file
-        sound = Gdx.audio.newSound(Gdx.files.internal("music/park_ambient.wav"))
+        sound = Gdx.audio.newSound(Gdx.files.internal("music/ambient.wav"))
         // Play the sound
         sound.play(1.0f);
     }
